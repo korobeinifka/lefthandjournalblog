@@ -1,18 +1,27 @@
 ---
 import PageLayout from "@/layouts/PageLayout.astro";
-import ArticlePreview from "@/components/Blog/ArticlePreview.astro";
-import BlogSearch from "@/components/Blog/BlogSearch.svelte";
 import { getCollection } from "astro:content";
+import EditorialCard from "@/components/Blog/EditorialCard.astro";
 
-const articles = (await getCollection("blogs")).sort((a, b) => {
-  const dateA = new Date(a.data.pubdate);
-  const dateB = new Date(b.data.pubdate);
-  return dateB.valueOf() - dateA.valueOf();
-});
+const posts = (await getCollection("blogs")).sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+);
 ---
 
-<PageLayout title="Blog | Bijoy Kar">
-  <div class="mt-10 flex justify-center py-4">
-    <BlogSearch client:idle articles={articles} />
-  </div>
+<PageLayout title="Archive">
+  <section class="flex flex-col gap-12">
+    <div class="flex flex-col gap-4">
+      <h1 class="font-display text-4xl leading-tight text-primary-text sm:text-5xl">
+        Archive of every dispatch
+      </h1>
+      <p class="max-w-2xl text-lg text-secondary-text">
+        Browse the full catalogue of Lefthand Journal essays. Use the categories above to narrow your reading, or wander through the grid below.
+      </p>
+    </div>
+    <div class="grid gap-8 md:grid-cols-2 xl:grid-cols-3">
+      {posts.map((post) => (
+        <EditorialCard post={post} />
+      ))}
+    </div>
+  </section>
 </PageLayout>

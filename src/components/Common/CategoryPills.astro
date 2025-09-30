@@ -1,0 +1,22 @@
+---
+import { CATEGORY_LINKS } from "@/utils/categories";
+
+interface Props {
+  class?: string;
+}
+
+const { class: className = "" }: Props = Astro.props;
+---
+
+<ul class={`flex flex-wrap gap-3 ${className}`}>
+  {CATEGORY_LINKS.map((category) => (
+    <li>
+      <a
+        href={`/categories/${category.slug}`}
+        class="inline-flex items-center rounded-full border border-border-ink/70 bg-card-bg px-4 py-2 text-xs font-semibold uppercase tracking-[0.3em] text-secondary-text transition-colors duration-200 hover:text-primary-text focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-text"
+      >
+        {category.label}
+      </a>
+    </li>
+  ))}
+</ul>

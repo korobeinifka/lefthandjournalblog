@@ -1,0 +1,46 @@
+---
+import type { CollectionEntry } from "astro:content";
+
+interface Props {
+  post: CollectionEntry<"blogs">;
+}
+
+const { post }: Props = Astro.props;
+const { data, slug } = post;
+const formattedDate = data.pubDate.toLocaleDateString("en-US", {
+  month: "short",
+  day: "2-digit",
+  year: "numeric",
+});
+const heroImage = data.heroImage ?? "/images/placeholder-card.svg";
+const heroImageAlt = data.heroImageAlt ?? data.title;
+---
+
+<a href={`/blog/${slug}`} class="group block h-full">
+  <article class="flex h-full flex-col overflow-hidden rounded-xl border border-border-ink/80 bg-card-bg transition-transform duration-200 group-hover:-translate-y-1">
+    <div class="relative aspect-[16/9] w-full overflow-hidden border-b border-border-ink/60">
+      <img
+        src={heroImage}
+        alt={heroImageAlt}
+        loading="lazy"
+        class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+      />
+    </div>
+    <div class="flex flex-1 flex-col gap-4 px-5 py-6">
+      <p class="text-xs font-semibold uppercase tracking-[0.35em] text-muted-text">
+        {formattedDate} • {data.category}
+      </p>
+      <h2 class="font-display text-2xl leading-tight text-primary-text">
+        {data.title}
+      </h2>
+      <p class="text-base text-secondary-text">
+        {data.description}
+      </p>
+      <div class="mt-auto">
+        <span class="inline-flex items-center text-sm font-semibold uppercase tracking-[0.35em] text-secondary-text transition-colors duration-200 group-hover:text-primary-text">
+          Read More
+        </span>
+      </div>
+    </div>
+  </article>
+</a>
