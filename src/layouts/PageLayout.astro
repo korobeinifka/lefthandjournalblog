@@ -5,38 +5,49 @@ import Header from "@/components/Header/Header.astro";
 import Footer from "@/components/Footer/Footer.astro";
 
 interface Props {
-  title: string;
+  title?: string;
+  description?: string;
 }
 
-const { title }: Props = Astro.props;
+const { title = "", description }: Props = Astro.props;
+const pageTitle = title ? `${title} | Lefthand Journal` : "Lefthand Journal";
+const metaDescription =
+  description ??
+  "Lefthand Journal is a minimal editorial space exploring chess strategy, geopolitical shifts, technology, and philosophy.";
 ---
 
 <!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="description" content="Parsonal Blog" />
+    <meta name="description" content={metaDescription} />
     <meta name="viewport" content="width=device-width" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
-    <title>{title}</title>
+    <title>{pageTitle}</title>
     <ViewTransitions />
   </head>
-  <body class="bg-primary-bg text-primary-text font-body">
-    <div class="">
+  <body class="bg-primary-bg text-primary-text font-body transition-colors duration-300">
+    <div>
       <Header />
     </div>
-    <main class="container mx-auto px-4 mt-[4rem] min-h-[80vh]">
+    <main class="mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8 pt-28 pb-16 min-h-[70vh]">
       <slot />
     </main>
     <Footer />
-    <script>
-      document.addEventListener("astro:after-swap", (e) => {
-        document.documentElement.setAttribute(
-          "data-theme",
-          localStorage.getItem("theme") || "auto",
-        );
-      });
+    <script is:inline>
+      const applyTheme = () => {
+        try {
+          const stored = window.localStorage.getItem("theme");
+          const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+          const theme = stored === "light" || stored === "dark" ? stored : prefersDark ? "dark" : "light";
+          document.documentElement.setAttribute("data-theme", theme);
+        } catch (error) {
+          document.documentElement.setAttribute("data-theme", "light");
+        }
+      };
+      applyTheme();
+      document.addEventListener("astro:after-swap", applyTheme);
     </script>
   </body>
 </html>

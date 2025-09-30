@@ -1,39 +1,17 @@
 import { defineCollection, z } from "astro:content";
+import { CATEGORY_OPTIONS } from "../utils/categories";
 
 const blogs = defineCollection({
   type: "content",
-  // Type-check frontmatter using a schema
   schema: z.object({
     title: z.string(),
     description: z.string(),
-    // Transform string to Date object
-    pubdate: z.string(),
-    tags: z.array(z.string()),
+    pubDate: z.coerce.date(),
+    category: z.enum(CATEGORY_OPTIONS),
     author: z.string(),
-    uuid: z.string(),
-    heroImg: z.string().optional(),
-    authorHeadLine: z.string().optional(),
-    authorImgLink: z.string().optional(),
+    heroImage: z.string().optional(),
+    heroImageAlt: z.string().optional(),
   }),
 });
 
-const authors = defineCollection({
-  type: "data",
-  schema: z.object({
-    name: z.string(),
-    headlines: z.string(),
-    about: z.string(),
-    profileImgLink: z.string(),
-    links: z.object({
-      twitter: z.string(),
-      linkedIn: z.string(),
-      github: z.string(),
-    }),
-    articleCount: z.number(),
-    articles: z.array(z.string()),
-    skills: z.array(z.string()),
-    college: z.string(),
-  }),
-});
-
-export const collections = { blogs, authors };
+export const collections = { blogs };

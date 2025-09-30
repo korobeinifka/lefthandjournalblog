@@ -8,7 +8,7 @@ import vercel from "@astrojs/vercel/static";
 // https://astro.build/config
 export default defineConfig({
   integrations: [tailwind(), icon(), svelte(), sitemap()],
-  site: "https://iamBijoyKar.github.io",
+  site: "https://lefthandjournal.com",
   // base: "/blog2.0",
   output: "static",
   adapter: vercel(),
