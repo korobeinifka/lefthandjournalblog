@@ -42,3 +42,7 @@ npm run preview
 ```
 
 The project ships as a static site and can be deployed to any static hosting provider.
+
+## Publishing & database operations
+
+For Hostinger setup instructions, SQL schema details, API endpoint overview, and export/import guidance, see [docs/publishing.md](docs/publishing.md).

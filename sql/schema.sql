@@ -1,0 +1,62 @@
+-- Lefthand Journal database schema
+-- Run this file in your MySQL-compatible Hostinger database (MariaDB 10.6+).
+
+CREATE TABLE IF NOT EXISTS users (
+  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(150) NOT NULL,
+  email VARCHAR(191) NOT NULL UNIQUE,
+  password_hash VARCHAR(255) NULL,
+  avatar_url VARCHAR(255) NULL,
+  bio TEXT NULL,
+  role ENUM('author', 'editor', 'admin') NOT NULL DEFAULT 'author',
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS categories (
+  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  slug VARCHAR(191) NOT NULL UNIQUE,
+  name VARCHAR(150) NOT NULL,
+  description TEXT NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS posts (
+  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  slug VARCHAR(191) NOT NULL,
+  status ENUM('draft', 'scheduled', 'published', 'archived') NOT NULL DEFAULT 'draft',
+  title VARCHAR(200) NOT NULL,
+  excerpt TEXT NULL,
+  body_html MEDIUMTEXT NOT NULL,
+  cover_image_url VARCHAR(255) NULL,
+  cover_image_alt VARCHAR(255) NULL,
+  category_id BIGINT UNSIGNED NOT NULL,
+  author_id BIGINT UNSIGNED NOT NULL,
+  scheduled_publish_at DATETIME NULL,
+  published_at DATETIME NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  CONSTRAINT fk_posts_category FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT fk_posts_author FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT uq_posts_slug UNIQUE (slug)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS post_assets (
+  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  post_id BIGINT UNSIGNED NOT NULL,
+  asset_type ENUM('image', 'video', 'file', 'embed') NOT NULL DEFAULT 'image',
+  url VARCHAR(255) NOT NULL,
+  alt_text VARCHAR(255) NULL,
+  caption TEXT NULL,
+  sort_order INT UNSIGNED NOT NULL DEFAULT 0,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  CONSTRAINT fk_assets_post FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE INDEX idx_posts_slug ON posts (slug);
+CREATE INDEX idx_posts_status ON posts (status);
+CREATE INDEX idx_posts_category ON posts (category_id);
+
+CREATE INDEX idx_assets_post_sort ON post_assets (post_id, sort_order);
