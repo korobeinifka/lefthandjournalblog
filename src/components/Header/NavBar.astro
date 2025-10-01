@@ -41,8 +41,13 @@ const focusRingClass =
           focusRingClass,
           "appearance-none bg-transparent font-[inherit] text-[inherit] tracking-[inherit] leading-none",
           isCategoriesActive
+
             ? "!text-primary-text border-b border-primary-text"
             : "!text-secondary-text hover:!text-primary-text",
+
+            ? "text-primary-text border-b border-primary-text"
+            : "text-secondary-text hover:!text-primary-text",
+
         ]}
         aria-expanded="false"
         aria-controls={dropdownId}
@@ -146,6 +151,7 @@ const focusRingClass =
       const isRouteActive = toggleButton.dataset.active === "true";
       let isOpen = false;
 
+
       const applyHighlight = (shouldHighlight) => {
         toggleButton.classList.toggle("!text-primary-text", shouldHighlight);
         toggleButton.classList.toggle("border-b", shouldHighlight);
@@ -155,6 +161,10 @@ const focusRingClass =
           "hover:!text-primary-text",
           !shouldHighlight,
         );
+
+      const applyHighlight = () => {
+        // No-op: styling handled in CSS via [aria-expanded] and [data-active]
+
       };
 
       const setOpen = (open, { restoreFocus = true } = {}) => {

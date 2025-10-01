@@ -1,0 +1,39 @@
+name: Deploy to Hostinger
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install deps
+        run: npm ci
+
+      - name: Build (Astro)
+        run: npm run build
+
+      # Publica a pasta ESTÁTICA gerada pelo adapter vercel/static
+      - name: Deploy via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.HOSTINGER_HOST }}
+          username: ${{ secrets.HOSTINGER_USER }}
+          password: ${{ secrets.HOSTINGER_PASS }}
+          local-dir: .vercel/output/static/
+          server-dir: ${{ secrets.HOSTINGER_PATH }}
+          # 1ª execução: substitui tudo. Depois você pode tirar se quiser deploy incremental.
+          dangerous-clean-slate: true
+          # Opcional: ignore coisas do servidor que não devem ser apagadas
+          exclude: |
+            **/.well-known/**
+            **/mail/**

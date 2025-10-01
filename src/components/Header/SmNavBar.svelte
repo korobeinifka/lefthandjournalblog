@@ -9,7 +9,7 @@
     const mobileMenuId = 'mobile-navigation-menu';
 
     const mobileNavLinkClass =
-        'block w-full pb-1 text-left transition-colors duration-200 hover:text-primary-text focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-text';
+        'appearance-none bg-transparent font-inherit text-[inherit] tracking-[inherit] block w-full pb-1 text-left font-semibold uppercase leading-none tracking-[0.2em] transition-colors duration-200 hover:text-primary-text focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-text';
 
     let showMenu = false;
     let showCategories = false;
