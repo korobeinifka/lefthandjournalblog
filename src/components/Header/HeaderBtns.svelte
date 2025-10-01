@@ -202,7 +202,7 @@
         bind:this={searchButton}
         type="button"
         on:click={handleSearchButtonClick}
-        class="flex h-10 w-10 items-center justify-center rounded-full border border-border-ink/80 bg-card-bg text-primary-text transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-text"
+        class="flex h-10 w-10 items-center justify-center rounded-full border border-border-ink/80 bg-card-bg text-primary-text transition-colors duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-text"
         aria-label={searchOpen ? 'Close search' : 'Open search'}
         aria-expanded={searchOpen}
         aria-haspopup="dialog"
@@ -211,7 +211,7 @@
     </button>
     <button
         on:click={toggleTheme}
-        class="flex h-10 w-10 items-center justify-center rounded-full border border-border-ink/80 bg-card-bg text-primary-text transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-text"
+        class="flex h-10 w-10 items-center justify-center rounded-full border border-border-ink/80 bg-card-bg text-primary-text transition-colors duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-text"
         aria-label={`Activate ${theme === 'light' ? 'dark' : 'light'} mode`}
     >
         {#if theme === 'light'}

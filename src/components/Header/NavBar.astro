@@ -6,23 +6,24 @@ const dropdownId = "desktop-category-dropdown";
 const buttonId = "desktop-category-button";
 
 const isCategoriesActive = pathname.startsWith("/categories");
+
+// usa .nav-link (definida no global.css) para manter borda fixa e transições idênticas
 const navLinkBaseClass =
-  "inline-flex items-center px-0 pb-1 pt-0 transition-colors duration-200";
+  "nav-link inline-flex items-center px-0 pb-1 pt-0 leading-none font-[inherit] tracking-[inherit]";
 const focusRingClass =
   "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-text";
 ---
 
 <nav class="hidden md:block">
-  <ul
-    class="flex items-center gap-8 text-sm font-semibold uppercase tracking-[0.2em] leading-none"
-  >
+  <ul class="flex items-center gap-8 text-sm font-semibold uppercase tracking-[0.2em] leading-none">
+    <!-- HOME -->
     <li>
       <a
         href="/"
         class:list={[
           navLinkBaseClass,
           pathname === "/"
-            ? "text-primary-text border-b border-primary-text"
+            ? "text-primary-text border-primary-text"
             : "text-secondary-text hover:text-primary-text",
         ]}
       >
@@ -30,6 +31,7 @@ const focusRingClass =
       </a>
     </li>
 
+    <!-- CATEGORY (dropdown) -->
     <li class="relative" data-category-root>
       <button
         id={buttonId}
@@ -41,14 +43,15 @@ const focusRingClass =
           focusRingClass,
           "appearance-none bg-transparent font-[inherit] text-[inherit] tracking-[inherit] leading-none",
           isCategoriesActive
-            ? "!text-primary-text border-b border-primary-text"
-            : "!text-secondary-text hover:!text-primary-text",
+            ? "text-primary-text border-primary-text"
+            : "text-secondary-text hover:text-primary-text",
         ]}
         aria-expanded="false"
         aria-controls={dropdownId}
       >
         CATEGORY
       </button>
+
       <div
         id={dropdownId}
         data-category-dropdown
@@ -58,34 +61,31 @@ const focusRingClass =
         tabindex="-1"
         hidden
       >
-        <ul
-          class="flex flex-col gap-2 text-xs font-semibold uppercase tracking-[0.3em] text-secondary-text"
-        >
-          {
-            CATEGORY_LINKS.map((category) => (
-              <li>
-                <a
-                  href={`/categories/${category.slug}`}
-                  class="block px-4 py-1.5 transition-colors duration-200 hover:text-primary-text focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-text"
-                  role="menuitem"
-                  data-category-link
-                >
-                  {category.label}
-                </a>
-              </li>
-            ))
-          }
+        <ul class="flex flex-col gap-2 text-xs font-semibold uppercase tracking-[0.3em] text-secondary-text">
+          {CATEGORY_LINKS.map((category) => (
+            <li>
+              <a
+                href={`/categories/${category.slug}`}
+                class="block px-4 py-1.5 transition-colors duration-300 hover:text-primary-text focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-text"
+                role="menuitem"
+                data-category-link
+              >
+                {category.label}
+              </a>
+            </li>
+          ))}
         </ul>
       </div>
     </li>
 
+    <!-- ABOUT -->
     <li>
       <a
         href="/about"
         class:list={[
           navLinkBaseClass,
           pathname.startsWith("/about")
-            ? "text-primary-text border-b border-primary-text"
+            ? "text-primary-text border-primary-text"
             : "text-secondary-text hover:text-primary-text",
         ]}
       >
@@ -115,39 +115,24 @@ const focusRingClass =
       cleanupDropdown = null;
 
       const root = document.querySelector("[data-category-root]");
-      if (!isHTMLElement(root)) {
-        return;
-      }
+      if (!isHTMLElement(root)) return;
 
       const dropdown = root.querySelector("[data-category-dropdown]");
       const toggleButton = root.querySelector("[data-category-button]");
 
-      if (!isHTMLElement(dropdown) || !isHTMLElement(toggleButton)) {
-        return;
-      }
+      if (!isHTMLElement(dropdown) || !isHTMLElement(toggleButton)) return;
 
       const categoryLinks = Array.from(
-        dropdown.querySelectorAll("[data-category-link]"),
+        dropdown.querySelectorAll("[data-category-link]")
       ).filter(isAnchorElement);
 
       const isRouteActive = toggleButton.dataset.active === "true";
       let isOpen = false;
 
-      const applyHighlight = (shouldHighlight) => {
-        toggleButton.classList.toggle("!text-primary-text", shouldHighlight);
-        toggleButton.classList.toggle("border-b", shouldHighlight);
-        toggleButton.classList.toggle("border-primary-text", shouldHighlight);
-        toggleButton.classList.toggle("!text-secondary-text", !shouldHighlight);
-        toggleButton.classList.toggle(
-          "hover:!text-primary-text",
-          !shouldHighlight,
-        );
-      };
-
       const setOpen = (open, { restoreFocus = true } = {}) => {
         if (isOpen === open) return;
-
         isOpen = open;
+
         toggleButton.setAttribute("aria-expanded", String(open));
         dropdown.hidden = !open;
         dropdown.classList.toggle("hidden", !open);
@@ -157,8 +142,6 @@ const focusRingClass =
         dropdown.classList.toggle("opacity-100", open);
         dropdown.classList.toggle("translate-y-1", !open);
         dropdown.classList.toggle("translate-y-0", open);
-
-        applyHighlight(open || isRouteActive);
 
         if (open) {
           requestAnimationFrame(() => {
@@ -170,20 +153,12 @@ const focusRingClass =
       };
 
       const openDropdown = () => setOpen(true);
-      const closeDropdown = (options = {}) => {
-        const { restoreFocus = true } = options;
-        setOpen(false, { restoreFocus });
-      };
+      const closeDropdown = (options = {}) => setOpen(false, options);
 
       const handleToggleClick = (event) => {
         event.preventDefault();
         event.stopPropagation();
-
-        if (isOpen) {
-          closeDropdown();
-        } else {
-          openDropdown();
-        }
+        isOpen ? closeDropdown() : openDropdown();
       };
 
       const handleButtonKeydown = (event) => {
@@ -191,9 +166,7 @@ const focusRingClass =
           event.stopPropagation();
           closeDropdown();
         } else if (
-          (event.key === "ArrowDown" ||
-            event.key === "Enter" ||
-            event.key === " ") &&
+          (event.key === "ArrowDown" || event.key === "Enter" || event.key === " ") &&
           !isOpen
         ) {
           event.preventDefault();
@@ -212,23 +185,17 @@ const focusRingClass =
         if (!isOpen) return;
         const target = event.target;
         if (!isNode(target)) return;
-        if (!root.contains(target)) {
-          closeDropdown({ restoreFocus: false });
-        }
+        if (!root.contains(target)) closeDropdown({ restoreFocus: false });
       };
 
       const handleDocumentKeydown = (event) => {
-        if (event.key === "Escape" && isOpen) {
-          closeDropdown();
-        }
+        if (event.key === "Escape" && isOpen) closeDropdown();
       };
 
       const linkCleanups = categoryLinks.map((link) => {
         const handleLinkClick = () => closeDropdown({ restoreFocus: false });
         link.addEventListener("click", handleLinkClick);
-        return () => {
-          link.removeEventListener("click", handleLinkClick);
-        };
+        return () => link.removeEventListener("click", handleLinkClick);
       });
 
       toggleButton.addEventListener("click", handleToggleClick);
@@ -237,16 +204,15 @@ const focusRingClass =
       document.addEventListener("click", handleDocumentClick);
       document.addEventListener("keydown", handleDocumentKeydown);
 
-      applyHighlight(isRouteActive);
       dropdown.classList.add(
         "hidden",
         "opacity-0",
         "pointer-events-none",
-        "translate-y-1",
+        "translate-y-1"
       );
 
       cleanupDropdown = () => {
-        linkCleanups.forEach((cleanup) => cleanup());
+        linkCleanups.forEach((fn) => fn());
         toggleButton.removeEventListener("click", handleToggleClick);
         toggleButton.removeEventListener("keydown", handleButtonKeydown);
         dropdown.removeEventListener("keydown", handleDropdownKeydown);
@@ -255,26 +221,13 @@ const focusRingClass =
       };
     };
 
-    const setupDropdown = () => {
-      initDropdown();
-    };
-
-    const handlePageLoad = () => {
-      setupDropdown();
-    };
-
-    const handleAfterSwap = () => {
-      setupDropdown();
-    };
-
-    const handleUnload = () => {
-      teardown();
-    };
+    const setupDropdown = () => initDropdown();
+    const handlePageLoad = () => setupDropdown();
+    const handleAfterSwap = () => setupDropdown();
+    const handleUnload = () => teardown();
 
     if (document.readyState === "loading") {
-      document.addEventListener("DOMContentLoaded", setupDropdown, {
-        once: true,
-      });
+      document.addEventListener("DOMContentLoaded", setupDropdown, { once: true });
     } else {
       setupDropdown();
     }
