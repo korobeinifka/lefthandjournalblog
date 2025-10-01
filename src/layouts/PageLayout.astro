@@ -3,6 +3,7 @@ import "@/styles/global.css";
 import { ViewTransitions } from "astro:transitions";
 import Header from "@/components/Header/Header.astro";
 import Footer from "@/components/Footer/Footer.astro";
+import BackToTop from "@/components/Common/BackToTop.svelte";
 
 interface Props {
   title?: string;
@@ -36,6 +37,7 @@ const metaDescription =
       <slot />
     </main>
     <Footer />
+    <BackToTop client:load />
     <script is:inline>
       const applyTheme = () => {
         try {
