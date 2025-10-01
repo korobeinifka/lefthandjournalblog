@@ -4,6 +4,10 @@ import PageLayout from "./PageLayout.astro";
 
 const { title, description, pubDate, author, heroImage, heroImageAlt, category } =
   Astro.props.data as CollectionEntry<"blogs">["data"];
+const canonicalUrl = Astro.url.href;
+const absoluteHeroImage = heroImage
+  ? new URL(heroImage, Astro.site ?? Astro.url).href
+  : undefined;
 const formattedDate = pubDate.toLocaleDateString("en-US", {
   year: "numeric",
   month: "long",
@@ -12,6 +16,24 @@ const formattedDate = pubDate.toLocaleDateString("en-US", {
 ---
 
 <PageLayout title={title} description={description}>
+  <Fragment slot="head">
+    <link rel="canonical" href={canonicalUrl} />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content={title} />
+    {description && <meta property="og:description" content={description} />}
+    <meta property="og:url" content={canonicalUrl} />
+    {absoluteHeroImage && <meta property="og:image" content={absoluteHeroImage} />}
+    {absoluteHeroImage && (
+      <meta property="og:image:alt" content={heroImageAlt ?? title} />
+    )}
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    {description && <meta name="twitter:description" content={description} />}
+    {absoluteHeroImage && <meta name="twitter:image" content={absoluteHeroImage} />}
+    {absoluteHeroImage && (
+      <meta name="twitter:image:alt" content={heroImageAlt ?? title} />
+    )}
+  </Fragment>
   <article class="mx-auto flex w-full max-w-3xl flex-col gap-12 py-6 sm:py-10">
     <header class="flex flex-col gap-6">
       <p class="text-xs font-semibold uppercase tracking-[0.35em] text-muted-text">
@@ -21,10 +43,43 @@ const formattedDate = pubDate.toLocaleDateString("en-US", {
         {title}
       </h1>
       <p class="text-lg text-secondary-text">{description}</p>
-      <div class="flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-secondary-text">
-        <span class="font-semibold text-primary-text">By {author}</span>
-        <span aria-hidden="true">•</span>
-        <time datetime={pubDate.toISOString()}>{formattedDate}</time>
+      <div class="flex flex-wrap items-center justify-between gap-3 text-sm text-secondary-text">
+        <div class="flex flex-wrap items-center gap-x-3 gap-y-2">
+          <span class="font-semibold text-primary-text">By {author}</span>
+          <span aria-hidden="true">•</span>
+          <time datetime={pubDate.toISOString()}>{formattedDate}</time>
+        </div>
+        <div class="flex items-center gap-2">
+          <button
+            type="button"
+            class="inline-flex h-9 w-9 items-center justify-center rounded-full border border-border-ink/60 bg-surface-bg text-secondary-text transition hover:text-primary-text focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-surface-bg"
+            data-share-button
+            data-share-url={canonicalUrl}
+            aria-label="Copy article link"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+              class="h-4 w-4"
+              aria-hidden="true"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M8.25 7.5h-2.1a2.4 2.4 0 0 0-2.4 2.4v8.1a2.4 2.4 0 0 0 2.4 2.4h8.1a2.4 2.4 0 0 0 2.4-2.4v-2.1"
+              />
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M15.75 4.5h3.75m0 0V8.25m0-3.75L12 12.75"
+              />
+            </svg>
+            <span class="sr-only">Copy article link</span>
+          </button>
+        </div>
       </div>
       {heroImage && (
         <figure class="overflow-hidden rounded-xl border border-border-ink/70 bg-surface-bg">
@@ -36,4 +91,55 @@ const formattedDate = pubDate.toLocaleDateString("en-US", {
       <slot />
     </section>
   </article>
+  <div
+    data-share-toast
+    role="status"
+    aria-live="polite"
+    class="pointer-events-none fixed inset-x-0 top-28 flex justify-center opacity-0 transition-opacity duration-300 data-[visible=true]:opacity-100"
+    data-visible="false"
+  >
+    <span class="rounded-full bg-surface-bg/95 px-3 py-2 text-sm text-primary-text shadow-lg ring-1 ring-border-ink/40">
+      Link copied to clipboard.
+    </span>
+  </div>
+  <script is:inline>
+    let shareToastTimeout;
+
+    const attachShareButton = () => {
+      const buttons = document.querySelectorAll('[data-share-button]');
+      const toast = document.querySelector('[data-share-toast]');
+      const toastMessage = toast?.querySelector('span');
+      if (!toast || !toastMessage) return;
+
+      const showToast = (message) => {
+        toastMessage.textContent = message;
+        toast.setAttribute('data-visible', 'true');
+        window.clearTimeout(shareToastTimeout);
+        shareToastTimeout = window.setTimeout(() => {
+          toast.setAttribute('data-visible', 'false');
+        }, 2400);
+      };
+
+      buttons.forEach((button) => {
+        if (button.dataset.initialized === 'true') return;
+        button.dataset.initialized = 'true';
+        button.addEventListener('click', async () => {
+          const url = button.dataset.shareUrl || window.location.href;
+          if (!navigator.clipboard) {
+            showToast('Copy not supported in this browser');
+            return;
+          }
+          try {
+            await navigator.clipboard.writeText(url);
+            showToast('Link copied to clipboard');
+          } catch (error) {
+            showToast('Unable to copy link');
+          }
+        });
+      });
+    };
+
+    attachShareButton();
+    document.addEventListener('astro:after-swap', attachShareButton);
+  </script>
 </PageLayout>
