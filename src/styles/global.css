@@ -21,20 +21,13 @@
 @layer components {
 
    /* Navegação: estilos consistentes para links e botões de categoria */
+  /* A versão anterior misturava uma transição de 300ms com este bloco mal fechado,
+     o que fazia os itens de navegação animarem fora do tempo especificado. */
   .nav-item {
     color: rgb(var(--primary-text));
     background-color: rgb(var(--card-bg));
-    border: 1px solid rgb(var(--border-ink));
+    border-bottom: 1px solid transparent; /* mantém o alinhamento sem exibir bordas no estado inicial */
     transition: color 160ms ease, background-color 160ms ease, border-color 160ms ease, fill 160ms ease;
-
-  /* links e botão de categoria: mesma transição */
-  .nav-item {
-    transition-property: color, border-color;
-    transition-duration: 300ms;
-    transition-timing-function: ease;
-    border-bottom-width: 1px;          /* borda SEMPRE presente (evita reflow) */
-    border-color: transparent;          /* cor muda só no estado ativo/hover */
-
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
@@ -45,14 +38,14 @@
   .nav-item:focus-visible {
     color: rgb(var(--secondary-text));
     background-color: rgb(var(--surface-bg));
-    border-color: rgb(var(--secondary-text));
+    border-bottom-color: rgb(var(--secondary-text));
   }
 
   .nav-item:active,
   .nav-item[aria-current="page"] {
     color: rgb(var(--primary-text));
     background-color: rgb(var(--surface-bg));
-    border-color: rgb(var(--primary-text));
+    border-bottom-color: rgb(var(--primary-text));
   }
 
 
@@ -172,5 +165,3 @@
     padding: 1.5rem;
     overflow-x: auto;
   }
-
-}
