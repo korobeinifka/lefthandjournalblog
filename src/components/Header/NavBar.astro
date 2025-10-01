@@ -81,22 +81,40 @@ const isCategoriesActive = pathname.startsWith("/categories");
 
 <script is:inline>
   let cleanupDropdown = null;
+  let pendingDropdownRetry = null;
+
+  const scheduleDropdownRetry = () => {
+    if (pendingDropdownRetry !== null) return;
+
+    pendingDropdownRetry = requestAnimationFrame(() => {
+      pendingDropdownRetry = null;
+      initDropdown();
+    });
+  };
 
   const initDropdown = () => {
-    cleanupDropdown?.();
-
     const root = document.querySelector('[data-category-root]');
     const dropdown = root?.querySelector('[data-category-dropdown]');
     const toggleButton = root?.querySelector('[data-category-button]');
 
     if (!root || !dropdown || !toggleButton) {
-      cleanupDropdown = null;
+      scheduleDropdownRetry();
       return;
     }
 
     const categoryLinks = Array.from(
       dropdown.querySelectorAll('[data-category-link]')
     );
+    if (pendingDropdownRetry !== null) {
+      cancelAnimationFrame(pendingDropdownRetry);
+      pendingDropdownRetry = null;
+    }
+
+    cleanupDropdown?.();
+    cleanupDropdown = null;
+
+    const svgIcon = toggleButton.querySelector('svg');
+    const categoryLinks = Array.from(dropdown.querySelectorAll('[data-category-link]'));
     const isRouteActive = toggleButton.dataset.active === 'true';
     let isOpen = false;
 
@@ -226,6 +244,10 @@ const isCategoriesActive = pathname.startsWith("/categories");
   document.addEventListener('astro:page-load', handlePageLoad);
   document.addEventListener('astro:after-swap', handleAfterSwap);
   document.addEventListener('astro:unload', () => {
+    if (pendingDropdownRetry !== null) {
+      cancelAnimationFrame(pendingDropdownRetry);
+      pendingDropdownRetry = null;
+    }
     cleanupDropdown?.();
     cleanupDropdown = null;
     document.removeEventListener('astro:page-load', handlePageLoad);
