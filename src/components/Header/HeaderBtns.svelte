@@ -1,8 +1,10 @@
 <script> 
     import Icon from '@iconify/svelte';
     import { onMount } from 'svelte';
+    import SearchOverlay from './SearchOverlay.svelte';
 
     let theme = 'light';
+    let showSearch = false;
 
     const setTheme = (nextTheme) => {
         theme = nextTheme;
@@ -36,13 +38,31 @@
     onMount(() => {
         initialiseTheme();
     });
+
+    const openSearch = () => {
+        showSearch = true;
+    };
+
+    const closeSearch = () => {
+        showSearch = false;
+    };
 </script>
 
-<div class="flex items-center">
+<div class="flex items-center gap-3">
+    <button
+        on:click={openSearch}
+        class="flex h-10 w-10 items-center justify-center rounded-full border border-border-ink/80 bg-card-bg text-primary-text transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-text"
+        aria-label="Open search"
+        type="button"
+    >
+        <Icon icon="tabler:search" class="h-5 w-5" />
+    </button>
+
     <button
         on:click={toggleTheme}
         class="flex h-10 w-10 items-center justify-center rounded-full border border-border-ink/80 bg-card-bg text-primary-text transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-text"
         aria-label={`Activate ${theme === 'light' ? 'dark' : 'light'} mode`}
+        type="button"
     >
         {#if theme === 'light'}
             <Icon icon="solar:sun-2-bold" class="h-5 w-5" />
@@ -50,4 +70,8 @@
             <Icon icon="solar:moon-bold" class="h-5 w-5" />
         {/if}
     </button>
+
+    {#if showSearch}
+        <SearchOverlay on:close={closeSearch} />
+    {/if}
 </div>

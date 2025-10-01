@@ -9,7 +9,7 @@
     const mobileMenuId = 'mobile-navigation-menu';
 
     const mobileNavLinkClass =
-        'appearance-none bg-transparent font-inherit text-[inherit] tracking-[inherit] block w-full pb-1 text-left font-semibold uppercase leading-none tracking-[0.2em] transition-colors duration-200 hover:text-primary-text focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-text';
+        'appearance-none bg-transparent font-inherit text-[inherit] tracking-[inherit] flex w-full items-center justify-between py-2 text-left font-semibold uppercase leading-none tracking-[0.2em] transition-colors duration-200 hover:text-primary-text focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-text';
 
     let showMenu = false;
     let showCategories = false;
@@ -175,7 +175,7 @@
                                     <li>
                                         <a
                                             href={`/categories/${category.slug}`}
-                                            class="block px-4 py-1.5 transition-colors duration-200 hover:text-primary-text focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-text"
+                                            class="flex w-full items-center justify-between px-4 py-2 transition-colors duration-200 hover:text-primary-text focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-text"
                                             on:click={closeMenu}
                                             role="menuitem"
                                         >

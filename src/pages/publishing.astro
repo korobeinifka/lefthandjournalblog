@@ -1,128 +1,38 @@
 ---
 import PageLayout from "@/layouts/PageLayout.astro";
+import PublishingWorkspace from "@/components/Publishing/PublishingWorkspace.svelte";
+import type { PublishingPost } from "@/components/Publishing/types";
 import { CATEGORY_OPTIONS } from "@/utils/categories";
+
 import FormValidator from "@/components/Publishing/FormValidator.svelte";
 import PublishingGate from "@/components/Publishing/PublishingGate.svelte";
 import { getCollection, type CollectionEntry } from "astro:content";
 
-// Intro copy for the Pitch section
-const introParagraphs = [
-  "Share upcoming stories or works-in-progress you'd like to see featured on Lefthand Journal.",
-  "We review every submission and follow up if the tone, research, and point of view align with our editorial mission.",
-];
+import { getCollection } from "astro:content";
 
-// Fetch and prepare blog data for the Studio section
+
 const rawPosts = await getCollection("blogs");
-type BlogEntry = CollectionEntry<"blogs">;
-
-const posts: BlogEntry[] = [...rawPosts].sort(
-  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
-);
-
 const now = new Date();
-const publishedPosts = posts.filter(
-  (post) => post.data.pubDate.valueOf() <= now.valueOf()
-);
-const scheduledPosts = posts.filter(
-  (post) => post.data.pubDate.valueOf() > now.valueOf()
-);
 
-// Studio metrics
-const metrics = [
-  { label: "Total entries", value: posts.length.toString() },
-  { label: "Published", value: publishedPosts.length.toString() },
-  { label: "Scheduled", value: scheduledPosts.length.toString() },
-  {
-    label: "Active categories",
-    value:
-      posts.length === 0
-        ? "0"
-        : CATEGORY_OPTIONS.filter((category) =>
-            posts.some((post) => post.data.category === category)
-          ).length.toString(),
-  },
-];
-
-// Category coverage
-const categoriesWithCounts = CATEGORY_OPTIONS.map((category) => ({
-  label: category,
-  count: posts.filter((post) => post.data.category === category).length,
+const initialPosts: PublishingPost[] = rawPosts.map((entry) => ({
+  id: entry.id,
+  slug: entry.slug,
+  title: entry.data.title,
+  description: entry.data.description,
+  category: entry.data.category,
+  pubDate: entry.data.pubDate.toISOString(),
+  heroImage: entry.data.heroImage ?? undefined,
+  heroImageAlt: entry.data.heroImageAlt ?? undefined,
+  status: entry.data.pubDate.valueOf() > now.valueOf() ? "scheduled" : "published",
+  body: entry.body,
 }));
-const maxCategoryCount = categoriesWithCounts.reduce(
-  (max, category) => Math.max(max, category.count),
-  0
-);
-const categoryCoverage = categoriesWithCounts.map((category) => ({
-  ...category,
-  percentage:
-    maxCategoryCount === 0
-      ? 0
-      : Math.round((category.count / maxCategoryCount) * 100),
-}));
-
-// Helpers & UI classes
-const formatDate = (date: Date) =>
-  new Intl.DateTimeFormat("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  }).format(date);
-
-type QueueSection = {
-  title: string;
-  description: string;
-  posts: BlogEntry[];
-  empty: string;
-};
-
-const queueSections: QueueSection[] = [
-  {
-    title: "Scheduled",
-    description: "Posts queued with future publish dates.",
-    posts: scheduledPosts,
-    empty: "No scheduled posts. Schedule a dispatch to see it here.",
-  },
-  {
-    title: "Published",
-    description: "Live stories already available on the site.",
-    posts: publishedPosts,
-    empty: "No published posts yet. Publish a piece to populate this list.",
-  },
-];
-
-const checklistItems = [
-  {
-    title: "Clarity & lede",
-    description:
-      "Ground readers in the central idea within the opening paragraphs and trim redundant framing.",
-  },
-  {
-    title: "Voice & tone",
-    description:
-      "Maintain the calm, deliberate cadence of Lefthand Journal—short subheads, long-form sentences where they count.",
-  },
-  {
-    title: "Rhythm & visuals",
-    description:
-      "Balance paragraphs with pull quotes or imagery, and confirm alt text reflects the story's metaphor.",
-  },
-];
-
-const buttonBaseClass =
-  "inline-flex items-center justify-center gap-2 rounded-full border border-border-ink/70 px-5 py-2 text-xs font-semibold uppercase tracking-[0.3em] transition-colors duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-text";
-const primaryButtonClass = `${buttonBaseClass} bg-primary-text text-primary-bg hover:bg-primary-bg hover:text-primary-text hover:border-primary-text`;
-const secondaryButtonClass = `${buttonBaseClass} bg-card-bg text-secondary-text hover:text-primary-text hover:border-primary-text`;
-const ghostButtonClass = `${buttonBaseClass} bg-transparent text-secondary-text hover:bg-primary-text hover:text-primary-bg hover:border-primary-text`;
-const inputClass =
-  "w-full rounded-lg border border-border-ink/70 bg-card-bg px-4 py-3 text-base text-primary-text shadow-sm transition-colors duration-200 focus:border-primary-text focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-text";
-const checkboxClass =
-  "h-4 w-4 rounded border border-border-ink/70 accent-primary-text focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-text";
 ---
 
 <PageLayout
   title="Publishing"
-  description="Pitch a story and manage releases with the same calm precision."
+  description="Compose, review, and release stories without breaking the magazine's calm cadence."
 >
+
   <PublishingGate client:load>
     <!-- Pitch: submission form -->
     <section class="mx-auto max-w-3xl">
@@ -411,51 +321,29 @@ const checkboxClass =
         <p class="text-sm text-secondary-text">
           Monitor what's shipping soon and what's already live. Use the actions
           below each post to adjust cadence or revisit published work.
+
+  <section class="mx-auto max-w-6xl py-12 sm:py-16">
+    <div class="space-y-12 rounded-3xl border border-border-ink/70 bg-card-bg/95 p-8 shadow-lg shadow-black/5 sm:p-12">
+      <header class="max-w-3xl space-y-4">
+        <p class="text-xs font-semibold uppercase tracking-[0.35em] text-muted-text">
+          Publishing studio
+
         </p>
-      </div>
+        <h1 class="font-display text-4xl leading-tight text-primary-text sm:text-5xl">
+          Keep the editorial rhythm steady
+        </h1>
+        <p class="text-lg text-secondary-text">
+          Draft essays, adjust typography, and move calmly from idea to publication. Every control below mirrors the
+          magazine's layout so you can focus on the writing.
+        </p>
+      </header>
 
-      <div class="mt-6 grid gap-8 lg:grid-cols-2">
-        {queueSections.map((section) => (
-          <div class="flex flex-col gap-4">
-            <div class="flex flex-col gap-1">
-              <h4 class="text-sm font-semibold uppercase tracking-[0.3em] text-muted-text">
-                {section.title}
-              </h4>
-              <p class="text-sm text-secondary-text">{section.description}</p>
-            </div>
-
-            {section.posts.length ? (
-              <ul class="flex flex-col divide-y divide-border-ink/60 overflow-hidden rounded-xl border border-border-ink/60 bg-surface-bg">
-                {section.posts.map((post) => (
-                  <li class="flex flex-col gap-4 px-5 py-4 sm:px-6">
-                    <div class="flex flex-col gap-2">
-                      <p class="text-base font-semibold text-primary-text">
-                        {post.data.title}
-                      </p>
-                      <div class="flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-secondary-text">
-                        <span class="inline-flex items-center rounded-full border border-border-ink/60 px-3 py-1 text-xs font-semibold uppercase tracking-[0.3em] text-secondary-text">
-                          {post.data.category}
-                        </span>
-                        <span>{formatDate(post.data.pubDate)}</span>
-                      </div>
-                    </div>
-                    <div class="flex flex-wrap gap-3">
-                      <a href={`/blog/${post.slug}`} class={secondaryButtonClass}>View post</a>
-                      <button type="button" class={ghostButtonClass}>Duplicate</button>
-                      <button type="button" class={ghostButtonClass}>Archive</button>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p class="rounded-xl border border-dashed border-border-ink/70 bg-surface-bg px-6 py-8 text-sm text-secondary-text">
-                {section.empty}
-              </p>
-            )}
-          </div>
-        ))}
-      </div>
-    </section>
+      <PublishingWorkspace
+        client:load
+        initialPosts={initialPosts}
+        categoryOptions={[...CATEGORY_OPTIONS]}
+      />
+    </div>
   </section>
   </PublishingGate>
 </PageLayout>
