@@ -19,6 +19,14 @@
 }
 
 @layer components {
+
+   /* Navegação: estilos consistentes para links e botões de categoria */
+  .nav-item {
+    color: rgb(var(--primary-text));
+    background-color: rgb(var(--card-bg));
+    border: 1px solid rgb(var(--border-ink));
+    transition: color 160ms ease, background-color 160ms ease, border-color 160ms ease, fill 160ms ease;
+
   /* links e botão de categoria: mesma transição */
   .nav-item {
     transition-property: color, border-color;
@@ -26,16 +34,42 @@
     transition-timing-function: ease;
     border-bottom-width: 1px;          /* borda SEMPRE presente (evita reflow) */
     border-color: transparent;          /* cor muda só no estado ativo/hover */
+
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
   }
+
+
+  .nav-item:hover,
+  .nav-item:focus-visible {
+    color: rgb(var(--secondary-text));
+    background-color: rgb(var(--surface-bg));
+    border-color: rgb(var(--secondary-text));
+  }
+
+  .nav-item:active,
+  .nav-item[aria-current="page"] {
+    color: rgb(var(--primary-text));
+    background-color: rgb(var(--surface-bg));
+    border-color: rgb(var(--primary-text));
+  }
+
+
   .nav-stable {
     font-kerning: normal;
     font-variant-ligatures: none;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
+
+  @media (prefers-reduced-motion: reduce) {
+    .nav-item {
+      transition: none;
+    }
+  }
+
+
 
 
   /* Dropdown: mesma fluidez */
