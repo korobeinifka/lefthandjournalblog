@@ -111,9 +111,14 @@
   }
 
   [data-category-button] {
+
     transition-property: color, border-color, background-color, text-decoration-color, fill, stroke;
     transition-duration: 0.2s;
     transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+
+    transition-duration: 0.3s;
+    transition-timing-function: ease;
+
     transition-delay: 0s;
   }
 }
