@@ -11,6 +11,28 @@ npm run dev
 
 The site runs at `http://localhost:4321` by default.
 
+### Managing content with TinaCMS
+
+TinaCMS is configured to edit the Markdown posts stored in `src/content/blogs` without changing their frontmatter structure. To
+run the editor locally:
+
+1. Install dependencies (includes the Tina CLI):
+   ```sh
+   npm install
+   ```
+2. Start the Tina development server alongside Astro:
+   ```sh
+   npm run tina:dev
+   ```
+   This command runs `tinacms dev -c "npm run dev"`, which proxies Git commits through the Tina local backend so every save wri
+   tes directly to the repository.
+3. Visit `http://localhost:4321/admin` to launch the Tina UI. Authenticate if prompted (the local backend will use your Git cre
+   dentials) and edit posts inline.
+4. Commit the generated Markdown updates in `src/content/blogs` once you finish editing.
+
+For a production build of the Tina admin, run `npm run tina:build`. The static assets are emitted to `public/admin` and can be
+served along with the site.
+
 ## Editing content
 
 - Articles live in `src/content/blogs`. Each Markdown file uses the following frontmatter:

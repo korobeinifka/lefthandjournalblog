@@ -1,0 +1,26 @@
+---
+
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>TinaCMS Admin</title>
+  </head>
+  <body>
+    <div id="tina-root">Loading TinaCMS…</div>
+    <script type="module">
+      import { TinaCMSApp } from "@tinacms/app";
+      import { createElement } from "react";
+      import { createRoot } from "react-dom/client";
+      import tinaConfig from "../../tina/config";
+
+      const target = document.getElementById("tina-root");
+      if (target) {
+        const root = createRoot(target);
+        root.render(createElement(TinaCMSApp, { config: tinaConfig }));
+      }
+    </script>
+  </body>
+</html>
