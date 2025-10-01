@@ -1,0 +1,16 @@
+<svg width="1200" height="675" viewBox="0 0 1200 675" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Lefthand Journal placeholder image</title>
+  <desc id="desc">Abstract warm toned gradient placeholder</desc>
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f4efe4" />
+      <stop offset="100%" stop-color="#d8c7ad" />
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="675" fill="url(#grad)" />
+  <g fill="#1f1914" opacity="0.35">
+    <rect x="120" y="220" width="520" height="12" rx="6" />
+    <rect x="120" y="260" width="960" height="8" rx="4" />
+    <rect x="120" y="300" width="880" height="8" rx="4" />
+  </g>
+</svg>
