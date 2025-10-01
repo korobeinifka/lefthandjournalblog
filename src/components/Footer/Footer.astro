@@ -1,13 +1,127 @@
 ---
 const date = new Date();
 const year = date.getFullYear();
+
+const localeOptions = [
+  {
+    code: 'en',
+    label: 'English',
+  },
+];
 ---
 
-<footer class="border-t border-border-ink/60 bg-primary-bg/90">
+<footer class="relative border-t border-border-ink/60 bg-primary-bg/90">
   <div class="mx-auto flex max-w-6xl items-center justify-center px-4 py-8 text-sm text-secondary-text">
     <p class="text-center">
       &copy; {year} Lefthand Journal ·
       <a href="/about" class="ml-1 underline-offset-4 hover:underline">About</a>
     </p>
   </div>
+  <button
+    type="button"
+    class="group absolute bottom-4 right-4 inline-flex h-10 w-10 items-center justify-center rounded-full border border-border-ink/60 bg-primary-bg/80 text-secondary-text transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-ink hover:border-border-ink hover:text-primary-text"
+    data-locale-switch
+    data-locale-options={JSON.stringify(localeOptions)}
+  >
+    <span class="sr-only">Change language</span>
+    <svg
+      class="h-5 w-5"
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
+    >
+      <circle cx="12" cy="12" r="8.25" stroke="currentColor" stroke-width="1.5" />
+      <path
+        d="M4.5 12h15M12 4.5v15"
+        stroke="currentColor"
+        stroke-width="1.5"
+        stroke-linecap="round"
+      />
+      <path
+        d="M8.25 5.625c1.338 2.086 2.062 4.456 2.062 6.375s-.724 4.289-2.062 6.375M15.75 5.625c-1.338 2.086-2.062 4.456-2.062 6.375s.724 4.289 2.062 6.375"
+        stroke="currentColor"
+        stroke-width="1.5"
+        stroke-linecap="round"
+      />
+    </svg>
+  </button>
 </footer>
+
+<script type="module">
+  const storageKey = 'lefthandjournal:locale';
+  const button = document.querySelector('[data-locale-switch]');
+
+  if (button) {
+    const rawOptions = button.dataset.localeOptions ?? '[]';
+    let parsedOptions = [];
+
+    try {
+      parsedOptions = JSON.parse(rawOptions);
+    } catch (error) {
+      parsedOptions = [];
+    }
+
+    const options = Array.isArray(parsedOptions) ? parsedOptions : [];
+    const localeCodes = options.map((option) => option?.code).filter(Boolean);
+    const fallbackLocale = localeCodes[0] ?? 'en';
+    const labels = new Map(options.map((option) => [option.code, option.label]));
+    const root = document.documentElement;
+
+    const applyLocale = (locale, { broadcast = false } = {}) => {
+      const nextLocale = localeCodes.includes(locale) ? locale : fallbackLocale;
+
+      root.dataset.locale = nextLocale;
+      root.lang = nextLocale;
+
+      try {
+        window.localStorage.setItem(storageKey, nextLocale);
+      } catch (error) {
+        // Ignore storage errors (e.g., private mode).
+      }
+
+      const friendlyName = labels.get(nextLocale) ?? nextLocale;
+      const announcement = `Change language (current: ${friendlyName})`;
+      button.setAttribute('aria-label', announcement);
+      button.setAttribute('title', announcement);
+
+      if (broadcast) {
+        document.dispatchEvent(
+          new CustomEvent('localechange', {
+            detail: { locale: nextLocale },
+          }),
+        );
+      }
+
+      return nextLocale;
+    };
+
+    let savedLocale = null;
+
+    try {
+      savedLocale = window.localStorage.getItem(storageKey);
+    } catch (error) {
+      savedLocale = null;
+    }
+
+    const initialLocale = savedLocale && localeCodes.includes(savedLocale) ? savedLocale : fallbackLocale;
+    let activeLocale = applyLocale(initialLocale);
+
+    button.addEventListener('click', () => {
+      if (localeCodes.length === 0) {
+        return;
+      }
+
+      const currentIndex = localeCodes.indexOf(activeLocale);
+      const nextIndex = currentIndex >= 0 ? (currentIndex + 1) % localeCodes.length : 0;
+      const nextLocale = localeCodes[nextIndex] ?? fallbackLocale;
+
+      if (nextLocale === activeLocale) {
+        applyLocale(nextLocale, { broadcast: true });
+        return;
+      }
+
+      activeLocale = applyLocale(nextLocale, { broadcast: true });
+    });
+  }
+</script>
