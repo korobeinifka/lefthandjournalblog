@@ -7,13 +7,15 @@ const buttonId = "desktop-category-button";
 
 const isCategoriesActive = pathname.startsWith("/categories");
 const navLinkBaseClass =
-  "inline-flex items-center px-0 pb-1 pt-0 text-sm font-semibold uppercase tracking-[0.2em] leading-none transition-colors duration-200";
+  "inline-flex items-center px-0 pb-1 pt-0 transition-colors duration-200";
 const focusRingClass =
   "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-text";
 ---
 
 <nav class="hidden md:block">
-  <ul class="flex items-center gap-8">
+  <ul
+    class="flex items-center gap-8 text-sm font-semibold uppercase tracking-[0.2em] leading-none"
+  >
     <li>
       <a
         href="/"
@@ -37,10 +39,10 @@ const focusRingClass =
         class:list={[
           navLinkBaseClass,
           focusRingClass,
-          "bg-transparent",
+          "appearance-none bg-transparent font-[inherit] text-[inherit] tracking-[inherit] leading-none",
           isCategoriesActive
-            ? "text-primary-text border-b border-primary-text"
-            : "text-secondary-text hover:text-primary-text",
+            ? "!text-primary-text border-b border-primary-text"
+            : "!text-secondary-text hover:!text-primary-text",
         ]}
         aria-expanded="false"
         aria-controls={dropdownId}
@@ -56,21 +58,39 @@ const focusRingClass =
         tabindex="-1"
         hidden
       >
-        <ul class="flex flex-col gap-2 text-xs font-semibold uppercase tracking-[0.3em] text-secondary-text">
-          {CATEGORY_LINKS.map((category) => (
-            <li>
-              <a
-                href={`/categories/${category.slug}`}
-                class="block px-4 py-1.5 transition-colors duration-200 hover:text-primary-text focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-text"
-                role="menuitem"
-                data-category-link
-              >
-                {category.label}
-              </a>
-            </li>
-          ))}
+        <ul
+          class="flex flex-col gap-2 text-xs font-semibold uppercase tracking-[0.3em] text-secondary-text"
+        >
+          {
+            CATEGORY_LINKS.map((category) => (
+              <li>
+                <a
+                  href={`/categories/${category.slug}`}
+                  class="block px-4 py-1.5 transition-colors duration-200 hover:text-primary-text focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-text"
+                  role="menuitem"
+                  data-category-link
+                >
+                  {category.label}
+                </a>
+              </li>
+            ))
+          }
         </ul>
       </div>
+    </li>
+
+    <li>
+      <a
+        href="/publishing"
+        class:list={[
+          navLinkBaseClass,
+          pathname.startsWith("/publishing")
+            ? "text-primary-text border-b border-primary-text"
+            : "text-secondary-text hover:text-primary-text",
+        ]}
+      >
+        Publishing
+      </a>
     </li>
     <li>
       <a
@@ -120,18 +140,21 @@ const focusRingClass =
       }
 
       const categoryLinks = Array.from(
-        dropdown.querySelectorAll("[data-category-link]")
+        dropdown.querySelectorAll("[data-category-link]"),
       ).filter(isAnchorElement);
 
       const isRouteActive = toggleButton.dataset.active === "true";
       let isOpen = false;
 
       const applyHighlight = (shouldHighlight) => {
-        toggleButton.classList.toggle("text-primary-text", shouldHighlight);
+        toggleButton.classList.toggle("!text-primary-text", shouldHighlight);
         toggleButton.classList.toggle("border-b", shouldHighlight);
         toggleButton.classList.toggle("border-primary-text", shouldHighlight);
-        toggleButton.classList.toggle("text-secondary-text", !shouldHighlight);
-        toggleButton.classList.toggle("hover:text-primary-text", !shouldHighlight);
+        toggleButton.classList.toggle("!text-secondary-text", !shouldHighlight);
+        toggleButton.classList.toggle(
+          "hover:!text-primary-text",
+          !shouldHighlight,
+        );
       };
 
       const setOpen = (open, { restoreFocus = true } = {}) => {
@@ -181,7 +204,9 @@ const focusRingClass =
           event.stopPropagation();
           closeDropdown();
         } else if (
-          (event.key === "ArrowDown" || event.key === "Enter" || event.key === " ") &&
+          (event.key === "ArrowDown" ||
+            event.key === "Enter" ||
+            event.key === " ") &&
           !isOpen
         ) {
           event.preventDefault();
@@ -226,7 +251,12 @@ const focusRingClass =
       document.addEventListener("keydown", handleDocumentKeydown);
 
       applyHighlight(isRouteActive);
-      dropdown.classList.add("hidden", "opacity-0", "pointer-events-none", "translate-y-1");
+      dropdown.classList.add(
+        "hidden",
+        "opacity-0",
+        "pointer-events-none",
+        "translate-y-1",
+      );
 
       cleanupDropdown = () => {
         linkCleanups.forEach((cleanup) => cleanup());
@@ -255,7 +285,9 @@ const focusRingClass =
     };
 
     if (document.readyState === "loading") {
-      document.addEventListener("DOMContentLoaded", setupDropdown, { once: true });
+      document.addEventListener("DOMContentLoaded", setupDropdown, {
+        once: true,
+      });
     } else {
       setupDropdown();
     }

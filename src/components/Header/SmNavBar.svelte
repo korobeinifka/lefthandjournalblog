@@ -188,6 +188,11 @@
                     {/if}
                 </li>
                 <li>
+                    <a href="/publishing" on:click={closeMenu} class={mobileNavLinkClass}>
+                        Publishing
+                    </a>
+                </li>
+                <li>
                     <a href="/about" on:click={closeMenu} class={mobileNavLinkClass}>
                         About
                     </a>
