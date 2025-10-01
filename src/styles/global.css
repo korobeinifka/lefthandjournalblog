@@ -109,4 +109,10 @@
     padding: 1.5rem;
     overflow-x: auto;
   }
+
+  [data-category-button] {
+    transition-duration: 0.3s;
+    transition-timing-function: ease;
+    transition-delay: 0s;
+  }
 }

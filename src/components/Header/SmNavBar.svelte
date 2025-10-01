@@ -127,9 +127,9 @@
         aria-label={showMenu ? 'Close navigation' : 'Open navigation'}
     >
         {#if showMenu}
-            <Icon icon="ri:close-line" class="h-5 w-5" />
+            <Icon icon="ri:close-line" class="pointer-events-none h-5 w-5" />
         {:else}
-            <Icon icon="ri:menu-line" class="h-5 w-5" />
+            <Icon icon="ri:menu-line" class="pointer-events-none h-5 w-5" />
         {/if}
     </button>
     {#if showMenu}
