@@ -1,5 +1,9 @@
 ---
+import { CATEGORY_LINKS } from "@/utils/categories";
+
 const { pathname } = Astro.url;
+const dropdownId = "desktop-category-dropdown";
+const buttonId = "desktop-category-button";
 ---
 
 <nav class="hidden md:block">
@@ -14,17 +18,56 @@ const { pathname } = Astro.url;
         Home
       </a>
     </li>
-    <li>
-      <a
-        href="/categories"
-        class={`pb-1 transition-colors duration-200 ${
+    <li class="relative">
+      <button
+        id={buttonId}
+        data-category-button
+        type="button"
+        class={`flex items-center gap-2 pb-1 transition-colors duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-text ${
           pathname.startsWith("/categories")
             ? "text-primary-text border-b border-primary-text"
             : "hover:text-primary-text"
         }`}
+        aria-expanded="false"
+        aria-controls={dropdownId}
       >
         Categories
-      </a>
+        <svg
+          class="h-3 w-3 transition-transform duration-200"
+          aria-hidden="true"
+          focusable="false"
+          viewBox="0 0 12 8"
+        >
+          <path
+            d="M1.41.58 6 5.17 10.59.58 12 2 6 8 0 2z"
+            fill="currentColor"
+          />
+        </svg>
+      </button>
+      <div
+        id={dropdownId}
+        data-category-dropdown
+        class="absolute left-1/2 top-full mt-3 hidden w-48 -translate-x-1/2 rounded-lg border border-border-ink/80 bg-card-bg py-3 opacity-0 shadow-sm transition-all duration-150 pointer-events-none"
+        role="menu"
+        aria-labelledby={buttonId}
+        tabindex="-1"
+        hidden
+      >
+        <ul class="flex flex-col gap-2 text-xs font-semibold uppercase tracking-[0.3em] text-secondary-text">
+          {CATEGORY_LINKS.map((category) => (
+            <li>
+              <a
+                href={`/categories/${category.slug}`}
+                class="block px-4 py-1.5 transition-colors duration-200 hover:text-primary-text focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-text"
+                role="menuitem"
+                data-category-link
+              >
+                {category.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
     </li>
     <li>
       <a
@@ -38,3 +81,71 @@ const { pathname } = Astro.url;
     </li>
   </ul>
 </nav>
+
+<script is:inline>
+  const dropdown = document.querySelector('[data-category-dropdown]');
+  const toggleButton = document.querySelector('[data-category-button]');
+
+  if (dropdown && toggleButton) {
+    const categoryLinks = dropdown.querySelectorAll('[data-category-link]');
+    const svgIcon = toggleButton.querySelector('svg');
+    let isOpen = false;
+
+    const setOpen = (open) => {
+      isOpen = open;
+      toggleButton.setAttribute('aria-expanded', String(open));
+      dropdown.hidden = !open;
+      dropdown.classList.toggle('hidden', !open);
+      dropdown.classList.toggle('pointer-events-none', !open);
+      dropdown.classList.toggle('pointer-events-auto', open);
+      dropdown.classList.toggle('opacity-0', !open);
+      dropdown.classList.toggle('opacity-100', open);
+      dropdown.classList.toggle('translate-y-1', open);
+      svgIcon?.classList.toggle('rotate-180', open);
+
+      if (open) {
+        requestAnimationFrame(() => {
+          categoryLinks[0]?.focus();
+        });
+      } else {
+        toggleButton.focus();
+      }
+    };
+
+    setOpen(false);
+
+    const toggleDropdown = (event) => {
+      event.stopPropagation();
+      setOpen(!isOpen);
+    };
+
+    const handleEscape = (event) => {
+      if (event.key === 'Escape' && isOpen) {
+        setOpen(false);
+      }
+    };
+
+    const handleDocumentClick = (event) => {
+      if (isOpen && !dropdown.contains(event.target) && !toggleButton.contains(event.target)) {
+        setOpen(false);
+      }
+    };
+
+    toggleButton.addEventListener('click', toggleDropdown);
+    toggleButton.addEventListener('keydown', handleEscape);
+    dropdown.addEventListener('keydown', handleEscape);
+    categoryLinks.forEach((link) => {
+      link.addEventListener('click', () => setOpen(false));
+    });
+    document.addEventListener('click', handleDocumentClick);
+    document.addEventListener('keydown', handleEscape);
+
+    document.addEventListener('astro:unload', () => {
+      document.removeEventListener('click', handleDocumentClick);
+      document.removeEventListener('keydown', handleEscape);
+      toggleButton.removeEventListener('click', toggleDropdown);
+      toggleButton.removeEventListener('keydown', handleEscape);
+      dropdown.removeEventListener('keydown', handleEscape);
+    });
+  }
+</script>
