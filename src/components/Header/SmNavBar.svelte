@@ -8,6 +8,9 @@
     const categoriesButtonId = 'mobile-category-button';
     const mobileMenuId = 'mobile-navigation-menu';
 
+    const mobileNavLinkClass =
+        'block w-full pb-1 text-left transition-colors duration-200 hover:text-primary-text focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-text';
+
     let showMenu = false;
     let showCategories = false;
     let categoriesButton;
@@ -140,7 +143,7 @@
         >
             <ul class="flex flex-col gap-3 text-sm font-semibold uppercase tracking-[0.2em] text-secondary-text">
                 <li>
-                    <a href="/" on:click={closeMenu} class="block pb-1">
+                    <a href="/" on:click={closeMenu} class={mobileNavLinkClass}>
                         Home
                     </a>
                 </li>
@@ -148,7 +151,7 @@
                     <button
                         id={categoriesButtonId}
                         bind:this={categoriesButton}
-                        class="block w-full pb-1 text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-text"
+                        class={mobileNavLinkClass}
                         type="button"
                         on:click|stopPropagation={toggleCategories}
                         on:keydown={handleCategoriesKeydown}
@@ -185,7 +188,7 @@
                     {/if}
                 </li>
                 <li>
-                    <a href="/about" on:click={closeMenu} class="block pb-1">
+                    <a href="/about" on:click={closeMenu} class={mobileNavLinkClass}>
                         About
                     </a>
                 </li>
