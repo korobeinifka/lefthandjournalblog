@@ -37,7 +37,11 @@ const isCategoriesActive = pathname.startsWith("/categories");
         aria-expanded="false"
         aria-controls={dropdownId}
       >
+
+        CATEGORY
+
         Categories
+
       </button>
       <div
         id={dropdownId}
@@ -80,6 +84,125 @@ const isCategoriesActive = pathname.startsWith("/categories");
 </nav>
 
 <script is:inline>
+
+  (() => {
+    const STATE_KEY = '__lfjDesktopCategoryDropdown';
+    const previousState = window[STATE_KEY];
+    previousState?.teardown?.();
+
+    let cleanupDropdown = null;
+
+    const initDropdown = () => {
+      cleanupDropdown?.();
+
+      const root = document.querySelector('[data-category-root]');
+      const dropdown = root?.querySelector('[data-category-dropdown]');
+      const toggleButton = root?.querySelector('[data-category-button]');
+
+      if (!root || !dropdown || !toggleButton) {
+        cleanupDropdown = null;
+        return;
+      }
+
+      const categoryLinks = Array.from(
+        dropdown.querySelectorAll('[data-category-link]')
+      );
+      const isRouteActive = toggleButton.dataset.active === 'true';
+      let isOpen = false;
+
+      const applyHighlight = (shouldHighlight) => {
+        toggleButton.classList.toggle('text-primary-text', shouldHighlight);
+        toggleButton.classList.toggle('border-b', shouldHighlight);
+        toggleButton.classList.toggle('border-primary-text', shouldHighlight);
+      };
+
+      const setOpen = (open, { restoreFocus = true } = {}) => {
+        if (isOpen === open) return;
+
+        isOpen = open;
+        toggleButton.setAttribute('aria-expanded', String(open));
+        dropdown.hidden = !open;
+        dropdown.classList.toggle('hidden', !open);
+        dropdown.classList.toggle('pointer-events-none', !open);
+        dropdown.classList.toggle('pointer-events-auto', open);
+        dropdown.classList.toggle('opacity-0', !open);
+        dropdown.classList.toggle('opacity-100', open);
+        dropdown.classList.toggle('translate-y-1', open);
+
+        applyHighlight(open || isRouteActive);
+
+        if (open) {
+          requestAnimationFrame(() => {
+            categoryLinks[0]?.focus();
+          });
+        } else if (restoreFocus) {
+          toggleButton.focus();
+        }
+      };
+
+      const openDropdown = () => setOpen(true);
+      const closeDropdown = ({ restoreFocus = true } = {}) =>
+        setOpen(false, { restoreFocus });
+
+      const handleToggleClick = (event) => {
+        event.stopPropagation();
+        if (isOpen) {
+          closeDropdown();
+        } else {
+          openDropdown();
+        }
+      };
+
+      const handleButtonKeydown = (event) => {
+        if (event.key === 'Escape' && isOpen) {
+          event.stopPropagation();
+          closeDropdown();
+        } else if (
+          (event.key === 'ArrowDown' || event.key === 'Enter' || event.key === ' ')
+          && !isOpen
+        ) {
+          event.preventDefault();
+          openDropdown();
+        }
+      };
+
+      const handleDropdownKeydown = (event) => {
+        if (event.key === 'Escape' && isOpen) {
+          event.stopPropagation();
+          closeDropdown();
+        }
+      };
+
+      const handleDocumentClick = (event) => {
+        if (!isOpen) return;
+
+        if (!root.contains(event.target)) {
+          closeDropdown({ restoreFocus: false });
+        }
+      };
+
+      const handleDocumentKeydown = (event) => {
+        if (event.key === 'Escape' && isOpen) {
+          event.stopPropagation();
+          closeDropdown();
+        }
+      };
+
+      const linkHandlers = categoryLinks.map((link) => {
+        const handler = () => closeDropdown({ restoreFocus: false });
+        link.addEventListener('click', handler);
+        return { link, handler };
+      });
+
+      toggleButton.addEventListener('click', handleToggleClick);
+      toggleButton.addEventListener('keydown', handleButtonKeydown);
+      dropdown.addEventListener('keydown', handleDropdownKeydown);
+      document.addEventListener('click', handleDocumentClick);
+      document.addEventListener('keydown', handleDocumentKeydown);
+
+      applyHighlight(isRouteActive);
+      dropdown.classList.add('hidden', 'opacity-0', 'pointer-events-none');
+
   let cleanupDropdown = null;
   let pendingDropdownRetry = null;
 
@@ -139,10 +262,40 @@ const isCategoriesActive = pathname.startsWith("/categories");
 
       applyHighlight(open || isRouteActive);
 
-      if (open) {
-        requestAnimationFrame(() => {
-          categoryLinks[0]?.focus();
+
+      cleanupDropdown = () => {
+        linkHandlers.forEach(({ link, handler }) => {
+          link.removeEventListener('click', handler);
         });
+
+        toggleButton.removeEventListener('click', handleToggleClick);
+        toggleButton.removeEventListener('keydown', handleButtonKeydown);
+        dropdown.removeEventListener('keydown', handleDropdownKeydown);
+        document.removeEventListener('click', handleDocumentClick);
+        document.removeEventListener('keydown', handleDocumentKeydown);
+      };
+    };
+
+    const setupDropdown = () => {
+      initDropdown();
+    };
+
+    const handlePageLoad = () => {
+      setupDropdown();
+    };
+
+    const handleAfterSwap = () => {
+      setupDropdown();
+    };
+
+    const teardown = () => {
+      cleanupDropdown?.();
+      cleanupDropdown = null;
+      document.removeEventListener('astro:page-load', handlePageLoad);
+      document.removeEventListener('astro:after-swap', handleAfterSwap);
+      document.removeEventListener('astro:unload', handleUnload);
+      document.removeEventListener('DOMContentLoaded', setupDropdown);
+
       } else if (restoreFocus) {
         toggleButton.focus();
       }
@@ -187,14 +340,26 @@ const isCategoriesActive = pathname.startsWith("/categories");
       if (!root.contains(event.target)) {
         closeDropdown({ restoreFocus: false });
       }
+
     };
 
-    const handleDocumentKeydown = (event) => {
-      if (event.key === 'Escape' && isOpen) {
-        event.stopPropagation();
-        closeDropdown();
-      }
+    const handleUnload = () => {
+      teardown();
     };
+
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', setupDropdown, { once: true });
+    } else {
+      setupDropdown();
+    }
+
+    document.addEventListener('astro:page-load', handlePageLoad);
+    document.addEventListener('astro:after-swap', handleAfterSwap);
+    document.addEventListener('astro:unload', handleUnload);
+
+    window[STATE_KEY] = { teardown };
+  })();
 
     const linkHandlers = categoryLinks.map((link) => {
       const handler = () => closeDropdown({ restoreFocus: false });
@@ -253,4 +418,5 @@ const isCategoriesActive = pathname.startsWith("/categories");
     document.removeEventListener('astro:page-load', handlePageLoad);
     document.removeEventListener('astro:after-swap', handleAfterSwap);
   });
+
 </script>
