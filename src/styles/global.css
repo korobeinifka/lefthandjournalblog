@@ -16,9 +16,11 @@
     --muted-text: 128 118 109;
     color-scheme: light;
   }
+}
+
 @layer components {
-   /* links e botão de categoria: mesma transição */
-  .nav-link {
+  /* links e botão de categoria: mesma transição */
+  .nav-item {
     transition-property: color, border-color;
     transition-duration: 300ms;
     transition-timing-function: ease;
@@ -27,23 +29,14 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
-    }
+  }
   .nav-stable {
     font-kerning: normal;
     font-variant-ligatures: none;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
-  
-  
-  #desktop-category-button {
-    transition-property: color, border-color;
-    transition-duration: 300ms;
-    transition-timing-function: ease;
-    -webkit-font-smoothing: antialiased;   /* evita “engrossar” no toggle */
-    -moz-osx-font-smoothing: grayscale;
-    text-rendering: optimizeLegibility;
-  }
+
 
   /* Dropdown: mesma fluidez */
   [data-category-dropdown] {
