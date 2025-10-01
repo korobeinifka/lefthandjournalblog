@@ -41,19 +41,15 @@ const focusRingClass =
           focusRingClass,
           "appearance-none bg-transparent font-[inherit] text-[inherit] tracking-[inherit] leading-none",
           isCategoriesActive
-
             ? "!text-primary-text border-b border-primary-text"
             : "!text-secondary-text hover:!text-primary-text",
-
-            ? "text-primary-text border-b border-primary-text"
-            : "text-secondary-text hover:!text-primary-text",
-
         ]}
         aria-expanded="false"
         aria-controls={dropdownId}
       >
         CATEGORY
       </button>
+
       <div
         id={dropdownId}
         data-category-dropdown
@@ -66,20 +62,18 @@ const focusRingClass =
         <ul
           class="flex flex-col gap-2 text-xs font-semibold uppercase tracking-[0.3em] text-secondary-text"
         >
-          {
-            CATEGORY_LINKS.map((category) => (
-              <li>
-                <a
-                  href={`/categories/${category.slug}`}
-                  class="block px-4 py-1.5 transition-colors duration-200 hover:text-primary-text focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-text"
-                  role="menuitem"
-                  data-category-link
-                >
-                  {category.label}
-                </a>
-              </li>
-            ))
-          }
+          {CATEGORY_LINKS.map((category) => (
+            <li>
+              <a
+                href={`/categories/${category.slug}`}
+                class="block px-4 py-1.5 transition-colors duration-200 hover:text-primary-text focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-text"
+                role="menuitem"
+                data-category-link
+              >
+                {category.label}
+              </a>
+            </li>
+          ))}
         </ul>
       </div>
     </li>
@@ -97,6 +91,7 @@ const focusRingClass =
         Publishing
       </a>
     </li>
+
     <li>
       <a
         href="/about"
@@ -119,52 +114,42 @@ const focusRingClass =
     const globalWindow = window;
     const STATE_KEY = "__lfjDesktopCategoryDropdown";
 
+    // teardown any previous instance (during astro:after-swap etc.)
     globalWindow[STATE_KEY]?.teardown?.();
 
     /** @type {(() => void) | null} */
     let cleanupDropdown = null;
 
-    const isHTMLElement = (value) => value instanceof HTMLElement;
-    const isAnchorElement = (value) => value instanceof HTMLAnchorElement;
-    const isNode = (value) => value instanceof Node;
+    const isHTMLElement = (v) => v instanceof HTMLElement;
+    const isAnchorElement = (v) => v instanceof HTMLAnchorElement;
+    const isNode = (v) => v instanceof Node;
 
     const initDropdown = () => {
       cleanupDropdown?.();
       cleanupDropdown = null;
 
       const root = document.querySelector("[data-category-root]");
-      if (!isHTMLElement(root)) {
-        return;
-      }
+      if (!isHTMLElement(root)) return;
 
       const dropdown = root.querySelector("[data-category-dropdown]");
       const toggleButton = root.querySelector("[data-category-button]");
 
-      if (!isHTMLElement(dropdown) || !isHTMLElement(toggleButton)) {
-        return;
-      }
+      if (!isHTMLElement(dropdown) || !isHTMLElement(toggleButton)) return;
 
       const categoryLinks = Array.from(
-        dropdown.querySelectorAll("[data-category-link]"),
+        dropdown.querySelectorAll("[data-category-link]")
       ).filter(isAnchorElement);
 
       const isRouteActive = toggleButton.dataset.active === "true";
       let isOpen = false;
 
-
+      // single valid implementation (the duplicate caused your syntax errors)
       const applyHighlight = (shouldHighlight) => {
         toggleButton.classList.toggle("!text-primary-text", shouldHighlight);
         toggleButton.classList.toggle("border-b", shouldHighlight);
         toggleButton.classList.toggle("border-primary-text", shouldHighlight);
         toggleButton.classList.toggle("!text-secondary-text", !shouldHighlight);
-        toggleButton.classList.toggle(
-          "hover:!text-primary-text",
-          !shouldHighlight,
-        );
-
-      const applyHighlight = () => {
-        // No-op: styling handled in CSS via [aria-expanded] and [data-active]
-
+        toggleButton.classList.toggle("hover:!text-primary-text", !shouldHighlight);
       };
 
       const setOpen = (open, { restoreFocus = true } = {}) => {
@@ -193,65 +178,51 @@ const focusRingClass =
       };
 
       const openDropdown = () => setOpen(true);
-      const closeDropdown = (options = {}) => {
-        const { restoreFocus = true } = options;
+      const closeDropdown = (opts = {}) => {
+        const { restoreFocus = true } = opts;
         setOpen(false, { restoreFocus });
       };
 
-      const handleToggleClick = (event) => {
-        event.preventDefault();
-        event.stopPropagation();
+      const handleToggleClick = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        isOpen ? closeDropdown() : openDropdown();
+      };
 
-        if (isOpen) {
+      const handleButtonKeydown = (e) => {
+        if (e.key === "Escape" && isOpen) {
+          e.stopPropagation();
           closeDropdown();
-        } else {
+        } else if ((e.key === "ArrowDown" || e.key === "Enter" || e.key === " ") && !isOpen) {
+          e.preventDefault();
           openDropdown();
         }
       };
 
-      const handleButtonKeydown = (event) => {
-        if (event.key === "Escape" && isOpen) {
-          event.stopPropagation();
-          closeDropdown();
-        } else if (
-          (event.key === "ArrowDown" ||
-            event.key === "Enter" ||
-            event.key === " ") &&
-          !isOpen
-        ) {
-          event.preventDefault();
-          openDropdown();
-        }
-      };
-
-      const handleDropdownKeydown = (event) => {
-        if (event.key === "Escape" && isOpen) {
-          event.stopPropagation();
+      const handleDropdownKeydown = (e) => {
+        if (e.key === "Escape" && isOpen) {
+          e.stopPropagation();
           closeDropdown();
         }
       };
 
-      const handleDocumentClick = (event) => {
+      const handleDocumentClick = (e) => {
         if (!isOpen) return;
-        const target = event.target;
+        const target = e.target;
         if (!isNode(target)) return;
         if (!root.contains(target)) {
           closeDropdown({ restoreFocus: false });
         }
       };
 
-      const handleDocumentKeydown = (event) => {
-        if (event.key === "Escape" && isOpen) {
-          closeDropdown();
-        }
+      const handleDocumentKeydown = (e) => {
+        if (e.key === "Escape" && isOpen) closeDropdown();
       };
 
       const linkCleanups = categoryLinks.map((link) => {
-        const handleLinkClick = () => closeDropdown({ restoreFocus: false });
-        link.addEventListener("click", handleLinkClick);
-        return () => {
-          link.removeEventListener("click", handleLinkClick);
-        };
+        const onClick = () => closeDropdown({ restoreFocus: false });
+        link.addEventListener("click", onClick);
+        return () => link.removeEventListener("click", onClick);
       });
 
       toggleButton.addEventListener("click", handleToggleClick);
@@ -261,15 +232,10 @@ const focusRingClass =
       document.addEventListener("keydown", handleDocumentKeydown);
 
       applyHighlight(isRouteActive);
-      dropdown.classList.add(
-        "hidden",
-        "opacity-0",
-        "pointer-events-none",
-        "translate-y-1",
-      );
+      dropdown.classList.add("hidden", "opacity-0", "pointer-events-none", "translate-y-1");
 
       cleanupDropdown = () => {
-        linkCleanups.forEach((cleanup) => cleanup());
+        linkCleanups.forEach((fn) => fn());
         toggleButton.removeEventListener("click", handleToggleClick);
         toggleButton.removeEventListener("keydown", handleButtonKeydown);
         dropdown.removeEventListener("keydown", handleDropdownKeydown);
@@ -278,36 +244,10 @@ const focusRingClass =
       };
     };
 
-    const setupDropdown = () => {
-      initDropdown();
-    };
+    const setupDropdown = () => initDropdown();
 
-    const handlePageLoad = () => {
-      setupDropdown();
-    };
-
-    const handleAfterSwap = () => {
-      setupDropdown();
-    };
-
-    const handleUnload = () => {
-      teardown();
-    };
-
-    if (document.readyState === "loading") {
-      document.addEventListener("DOMContentLoaded", setupDropdown, {
-        once: true,
-      });
-    } else {
-      setupDropdown();
-    }
-
-    document.addEventListener("astro:page-load", handlePageLoad);
-    document.addEventListener("astro:after-swap", handleAfterSwap);
-    document.addEventListener("astro:unload", handleUnload);
-
-    /** @type {{ teardown: () => void }} */
-    const api = { teardown: () => {} };
+    const handlePageLoad = () => setupDropdown();
+    const handleAfterSwap = () => setupDropdown();
 
     const teardown = () => {
       cleanupDropdown?.();
@@ -315,13 +255,22 @@ const focusRingClass =
       document.removeEventListener("DOMContentLoaded", setupDropdown);
       document.removeEventListener("astro:page-load", handlePageLoad);
       document.removeEventListener("astro:after-swap", handleAfterSwap);
-      document.removeEventListener("astro:unload", handleUnload);
-      if (globalWindow[STATE_KEY] === api) {
-        globalWindow[STATE_KEY] = undefined;
-      }
+      document.removeEventListener("astro:unload", teardown);
+      if (globalWindow[STATE_KEY] === api) globalWindow[STATE_KEY] = undefined;
     };
 
-    api.teardown = teardown;
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", setupDropdown, { once: true });
+    } else {
+      setupDropdown();
+    }
+
+    document.addEventListener("astro:page-load", handlePageLoad);
+    document.addEventListener("astro:after-swap", handleAfterSwap);
+    document.addEventListener("astro:unload", teardown);
+
+    /** @type {{ teardown: () => void }} */
+    const api = { teardown };
     globalWindow[STATE_KEY] = api;
   })();
 </script>
