@@ -1,5 +1,120 @@
 ---
 import PageLayout from "@/layouts/PageLayout.astro";
+import { CATEGORY_OPTIONS } from "@/utils/categories";
+import FormValidator from "@/components/Publishing/FormValidator.svelte";
+
+const introParagraphs = [
+  "Share upcoming stories or works-in-progress you'd like to see featured on Lefthand Journal.",
+  "We review every submission and follow up if the tone, research, and point of view align with our editorial mission.",
+];
+---
+
+<PageLayout title="Publishing" description="Pitch a story to the Lefthand Journal editorial desk.">
+  <section class="mx-auto max-w-3xl">
+    <div class="rounded-3xl border border-border-ink/70 bg-card-bg/95 px-8 py-10 shadow-lg shadow-black/5">
+      <div class="space-y-4 text-center sm:text-left">
+        <h1 class="font-display text-4xl text-primary-text">Pitch your next piece</h1>
+        {introParagraphs.map((paragraph) => (
+          <p class="text-base text-secondary-text">{paragraph}</p>
+        ))}
+      </div>
+
+      <form class="mt-10 space-y-6" data-publishing-form novalidate>
+        <div class="flex flex-col gap-2">
+          <label for="title" class="text-sm font-semibold uppercase tracking-[0.35em] text-muted-text">Title</label>
+          <input
+            id="title"
+            name="title"
+            type="text"
+            placeholder="Working headline"
+            class="w-full rounded-2xl border border-border-ink/60 bg-surface-bg/80 px-4 py-3 text-base text-primary-text shadow-sm transition focus:border-border-ink focus:outline-none focus:ring-2 focus:ring-border-ink/60"
+            required
+            aria-invalid="false"
+            data-required-field
+            data-helper-id="title-helper"
+            data-validation-message="Add a short, descriptive title for your piece."
+          />
+        </div>
+
+        <div class="flex flex-col gap-2">
+          <label for="description" class="text-sm font-semibold uppercase tracking-[0.35em] text-muted-text">Description</label>
+          <textarea
+            id="description"
+            name="description"
+            rows="4"
+            placeholder="What makes this story compelling?"
+            class="w-full rounded-2xl border border-border-ink/60 bg-surface-bg/80 px-4 py-3 text-base text-primary-text shadow-sm transition focus:border-border-ink focus:outline-none focus:ring-2 focus:ring-border-ink/60"
+            required
+            aria-invalid="false"
+            data-required-field
+            data-helper-id="description-helper"
+            data-validation-message="Share a concise description so the editorial team has context."
+          ></textarea>
+        </div>
+
+        <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-6">
+          <div class="flex w-full flex-col gap-2">
+            <label for="pubDate" class="text-sm font-semibold uppercase tracking-[0.35em] text-muted-text">Target publication date</label>
+            <input
+              id="pubDate"
+              name="pubDate"
+              type="date"
+              class="w-full rounded-2xl border border-border-ink/60 bg-surface-bg/80 px-4 py-3 text-base text-primary-text shadow-sm transition focus:border-border-ink focus:outline-none focus:ring-2 focus:ring-border-ink/60"
+              required
+              aria-invalid="false"
+              data-required-field
+              data-helper-id="pubdate-helper"
+              data-validation-message="Let us know when you hope to publish."
+            />
+          </div>
+          <div class="flex w-full flex-col gap-2">
+            <label for="category" class="text-sm font-semibold uppercase tracking-[0.35em] text-muted-text">Category</label>
+            <select
+              id="category"
+              name="category"
+              class="w-full rounded-2xl border border-border-ink/60 bg-surface-bg/80 px-4 py-3 text-base text-primary-text shadow-sm transition focus:border-border-ink focus:outline-none focus:ring-2 focus:ring-border-ink/60"
+              required
+              aria-invalid="false"
+              data-required-field
+              data-helper-id="category-helper"
+              data-validation-message="Select the category that best fits your piece."
+            >
+              <option value="" disabled selected>Choose a category</option>
+              {CATEGORY_OPTIONS.map((option) => (
+                <option value={option}>{option}</option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        <div class="flex flex-col gap-3">
+          <label for="notes" class="text-sm font-semibold uppercase tracking-[0.35em] text-muted-text">Additional notes (optional)</label>
+          <textarea
+            id="notes"
+            name="notes"
+            rows="4"
+            placeholder="Links, research, or collaborators you'd like to highlight"
+            class="w-full rounded-2xl border border-border-ink/60 bg-surface-bg/80 px-4 py-3 text-base text-primary-text shadow-sm transition focus:border-border-ink focus:outline-none focus:ring-2 focus:ring-border-ink/60"
+          ></textarea>
+        </div>
+
+        <div class="flex items-center justify-between gap-6 border-t border-border-ink/50 pt-6">
+          <p class="text-sm text-secondary-text">
+            Our team responds within 5 business days. All submissions remain confidential.
+          </p>
+          <button
+            type="submit"
+            class="inline-flex items-center justify-center rounded-full bg-primary-text px-6 py-3 text-sm font-semibold uppercase tracking-[0.35em] text-primary-bg transition hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-primary-text/30"
+          >
+            Submit pitch
+          </button>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <FormValidator client:load />
+=======
 import { getCollection, type CollectionEntry } from "astro:content";
 import { CATEGORY_OPTIONS } from "@/utils/categories";
 
