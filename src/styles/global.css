@@ -16,6 +16,31 @@
     --muted-text: 128 118 109;
     color-scheme: light;
   }
+/* Put this AFTER your existing @layer base block */
+
+@layer components {
+  /* CATEGORY button should transition exactly like other links */
+  #desktop-category-button {
+    /* match link timings: lockstep with nav items */
+    transition-property: color, border-color;
+    transition-duration: 200ms;
+    transition-timing-function: linear;
+  }
+
+  /* Active/open states driven by attributes, not JS class toggles */
+  #desktop-category-button[aria-expanded="true"],
+  #desktop-category-button[data-active="true"] {
+    color: rgb(var(--primary-text));
+    border-bottom: 1px solid rgb(var(--primary-text));
+  }
+
+  /* (Optional) Smooth the dropdown with the same timing */
+  [data-category-dropdown] {
+    transition-property: opacity, transform;
+    transition-duration: 200ms;
+    transition-timing-function: linear;
+  }
+}
 
   @media (prefers-color-scheme: dark) {
     :root {
