@@ -7,9 +7,10 @@ const buttonId = "desktop-category-button";
 
 const isCategoriesActive = pathname.startsWith("/categories");
 
-// usa .nav-link (definida no global.css) para manter borda fixa e transições idênticas
+// usa .nav-item (definida no global.css) para manter borda fixa e transições idênticas
+// (antes o botão usava classe diferente e os links herdavam .nav-link, causando transição mais lenta)
 const navLinkBaseClass =
-  "nav-link inline-flex items-center px-0 pb-1 pt-0 leading-none font-[inherit] tracking-[inherit]";
+  "nav-item inline-flex items-center px-0 pb-1 pt-0 leading-none font-[inherit] tracking-[inherit]";
 const focusRingClass =
   "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-text";
 ---
