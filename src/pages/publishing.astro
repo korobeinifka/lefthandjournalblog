@@ -1,458 +1,51 @@
 ---
 import PageLayout from "@/layouts/PageLayout.astro";
+import PublishingWorkspace from "@/components/Publishing/PublishingWorkspace.svelte";
+import type { PublishingPost } from "@/components/Publishing/types";
 import { CATEGORY_OPTIONS } from "@/utils/categories";
-import FormValidator from "@/components/Publishing/FormValidator.svelte";
-import { getCollection, type CollectionEntry } from "astro:content";
+import { getCollection } from "astro:content";
 
-// Intro copy for the Pitch section
-const introParagraphs = [
-  "Share upcoming stories or works-in-progress you'd like to see featured on Lefthand Journal.",
-  "We review every submission and follow up if the tone, research, and point of view align with our editorial mission.",
-];
-
-// Fetch and prepare blog data for the Studio section
 const rawPosts = await getCollection("blogs");
-type BlogEntry = CollectionEntry<"blogs">;
-
-const posts: BlogEntry[] = [...rawPosts].sort(
-  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
-);
-
 const now = new Date();
-const publishedPosts = posts.filter(
-  (post) => post.data.pubDate.valueOf() <= now.valueOf()
-);
-const scheduledPosts = posts.filter(
-  (post) => post.data.pubDate.valueOf() > now.valueOf()
-);
 
-// Studio metrics
-const metrics = [
-  { label: "Total entries", value: posts.length.toString() },
-  { label: "Published", value: publishedPosts.length.toString() },
-  { label: "Scheduled", value: scheduledPosts.length.toString() },
-  {
-    label: "Active categories",
-    value:
-      posts.length === 0
-        ? "0"
-        : CATEGORY_OPTIONS.filter((category) =>
-            posts.some((post) => post.data.category === category)
-          ).length.toString(),
-  },
-];
-
-// Category coverage
-const categoriesWithCounts = CATEGORY_OPTIONS.map((category) => ({
-  label: category,
-  count: posts.filter((post) => post.data.category === category).length,
+const initialPosts: PublishingPost[] = rawPosts.map((entry) => ({
+  id: entry.id,
+  slug: entry.slug,
+  title: entry.data.title,
+  description: entry.data.description,
+  category: entry.data.category,
+  pubDate: entry.data.pubDate.toISOString(),
+  heroImage: entry.data.heroImage ?? undefined,
+  heroImageAlt: entry.data.heroImageAlt ?? undefined,
+  status: entry.data.pubDate.valueOf() > now.valueOf() ? "scheduled" : "published",
+  body: entry.body,
 }));
-const maxCategoryCount = categoriesWithCounts.reduce(
-  (max, category) => Math.max(max, category.count),
-  0
-);
-const categoryCoverage = categoriesWithCounts.map((category) => ({
-  ...category,
-  percentage:
-    maxCategoryCount === 0
-      ? 0
-      : Math.round((category.count / maxCategoryCount) * 100),
-}));
-
-// Helpers & UI classes
-const formatDate = (date: Date) =>
-  new Intl.DateTimeFormat("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  }).format(date);
-
-type QueueSection = {
-  title: string;
-  description: string;
-  posts: BlogEntry[];
-  empty: string;
-};
-
-const queueSections: QueueSection[] = [
-  {
-    title: "Scheduled",
-    description: "Posts queued with future publish dates.",
-    posts: scheduledPosts,
-    empty: "No scheduled posts. Schedule a dispatch to see it here.",
-  },
-  {
-    title: "Published",
-    description: "Live stories already available on the site.",
-    posts: publishedPosts,
-    empty: "No published posts yet. Publish a piece to populate this list.",
-  },
-];
-
-const checklistItems = [
-  {
-    title: "Clarity & lede",
-    description:
-      "Ground readers in the central idea within the opening paragraphs and trim redundant framing.",
-  },
-  {
-    title: "Voice & tone",
-    description:
-      "Maintain the calm, deliberate cadence of Lefthand Journal—short subheads, long-form sentences where they count.",
-  },
-  {
-    title: "Rhythm & visuals",
-    description:
-      "Balance paragraphs with pull quotes or imagery, and confirm alt text reflects the story's metaphor.",
-  },
-];
-
-const buttonBaseClass =
-  "inline-flex items-center justify-center gap-2 rounded-full border border-border-ink/70 px-5 py-2 text-xs font-semibold uppercase tracking-[0.3em] transition-colors duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-text";
-const primaryButtonClass = `${buttonBaseClass} bg-primary-text text-primary-bg hover:bg-primary-bg hover:text-primary-text hover:border-primary-text`;
-const secondaryButtonClass = `${buttonBaseClass} bg-card-bg text-secondary-text hover:text-primary-text hover:border-primary-text`;
-const ghostButtonClass = `${buttonBaseClass} bg-transparent text-secondary-text hover:bg-primary-text hover:text-primary-bg hover:border-primary-text`;
-const inputClass =
-  "w-full rounded-lg border border-border-ink/70 bg-card-bg px-4 py-3 text-base text-primary-text shadow-sm transition-colors duration-200 focus:border-primary-text focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-text";
-const checkboxClass =
-  "h-4 w-4 rounded border border-border-ink/70 accent-primary-text focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-text";
 ---
 
 <PageLayout
   title="Publishing"
-  description="Pitch a story and manage releases with the same calm precision."
+  description="Compose, review, and release stories without breaking the magazine's calm cadence."
 >
-  <!-- Pitch: submission form -->
-  <section class="mx-auto max-w-3xl">
-    <div class="rounded-3xl border border-border-ink/70 bg-card-bg/95 px-8 py-10 shadow-lg shadow-black/5">
-      <div class="space-y-4 text-center sm:text-left">
-        <h1 class="font-display text-4xl text-primary-text">Pitch your next piece</h1>
-        {introParagraphs.map((paragraph) => (
-          <p class="text-base text-secondary-text">{paragraph}</p>
-        ))}
-      </div>
-
-      <form class="mt-10 space-y-6" data-publishing-form novalidate>
-        <div class="flex flex-col gap-2">
-          <label for="title" class="text-sm font-semibold uppercase tracking-[0.35em] text-muted-text">Title</label>
-          <input
-            id="title"
-            name="title"
-            type="text"
-            placeholder="Working headline"
-            class="w-full rounded-2xl border border-border-ink/60 bg-surface-bg/80 px-4 py-3 text-base text-primary-text shadow-sm transition focus:border-border-ink focus:outline-none focus:ring-2 focus:ring-border-ink/60"
-            required
-            aria-invalid="false"
-            data-required-field
-            data-helper-id="title-helper"
-            data-validation-message="Add a short, descriptive title for your piece."
-          />
-        </div>
-
-        <div class="flex flex-col gap-2">
-          <label for="description" class="text-sm font-semibold uppercase tracking-[0.35em] text-muted-text">Description</label>
-          <textarea
-            id="description"
-            name="description"
-            rows="4"
-            placeholder="What makes this story compelling?"
-            class="w-full rounded-2xl border border-border-ink/60 bg-surface-bg/80 px-4 py-3 text-base text-primary-text shadow-sm transition focus:border-border-ink focus:outline-none focus:ring-2 focus:ring-border-ink/60"
-            required
-            aria-invalid="false"
-            data-required-field
-            data-helper-id="description-helper"
-            data-validation-message="Share a concise description so the editorial team has context."
-          ></textarea>
-        </div>
-
-        <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-6">
-          <div class="flex w-full flex-col gap-2">
-            <label for="pubDate" class="text-sm font-semibold uppercase tracking-[0.35em] text-muted-text">Target publication date</label>
-            <input
-              id="pubDate"
-              name="pubDate"
-              type="date"
-              class="w-full rounded-2xl border border-border-ink/60 bg-surface-bg/80 px-4 py-3 text-base text-primary-text shadow-sm transition focus:border-border-ink focus:outline-none focus:ring-2 focus:ring-border-ink/60"
-              required
-              aria-invalid="false"
-              data-required-field
-              data-helper-id="pubdate-helper"
-              data-validation-message="Let us know when you hope to publish."
-            />
-          </div>
-          <div class="flex w-full flex-col gap-2">
-            <label for="category" class="text-sm font-semibold uppercase tracking-[0.35em] text-muted-text">Category</label>
-            <select
-              id="category"
-              name="category"
-              class="w-full rounded-2xl border border-border-ink/60 bg-surface-bg/80 px-4 py-3 text-base text-primary-text shadow-sm transition focus:border-border-ink focus:outline-none focus:ring-2 focus:ring-border-ink/60"
-              required
-              aria-invalid="false"
-              data-required-field
-              data-helper-id="category-helper"
-              data-validation-message="Select the category that best fits your piece."
-            >
-              <option value="" disabled selected>Choose a category</option>
-              {CATEGORY_OPTIONS.map((option) => (
-                <option value={option}>{option}</option>
-              ))}
-            </select>
-          </div>
-        </div>
-
-        <div class="flex flex-col gap-3">
-          <label for="notes" class="text-sm font-semibold uppercase tracking-[0.35em] text-muted-text">Additional notes (optional)</label>
-          <textarea
-            id="notes"
-            name="notes"
-            rows="4"
-            placeholder="Links, research, or collaborators you'd like to highlight"
-            class="w-full rounded-2xl border border-border-ink/60 bg-surface-bg/80 px-4 py-3 text-base text-primary-text shadow-sm transition focus:border-border-ink focus:outline-none focus:ring-2 focus:ring-border-ink/60"
-          ></textarea>
-        </div>
-
-        <div class="flex items-center justify-between gap-6 border-t border-border-ink/50 pt-6">
-          <p class="text-sm text-secondary-text">
-            Our team responds within 5 business days. All submissions remain confidential.
-          </p>
-          <button
-            type="submit"
-            class="inline-flex items-center justify-center rounded-full bg-primary-text px-6 py-3 text-sm font-semibold uppercase tracking-[0.35em] text-primary-bg transition hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-primary-text/30"
-          >
-            Submit pitch
-          </button>
-        </div>
-      </form>
-    </div>
-
-    <!-- client-side validation for the pitch form -->
-    <FormValidator client:load />
-  </section>
-
-  <!-- Publishing Studio: metrics, coverage, queue -->
-  <section class="mt-16 flex flex-col gap-12">
-    <div class="flex flex-col gap-4">
-      <p class="text-sm uppercase tracking-[0.3em] text-muted-text">
-        Editorial control center
-      </p>
-      <h2 class="font-display text-3xl leading-tight text-primary-text sm:text-4xl">
-        Publish and manage with the same calm precision.
-      </h2>
-      <p class="max-w-3xl text-lg text-secondary-text">
-        This studio keeps every Lefthand dispatch on cadence. Capture new ideas,
-        review scheduled releases, and make sure each category continues to feel
-        balanced and intentional.
-      </p>
-    </div>
-
-    <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-      {metrics.map((metric) => (
-        <div class="rounded-2xl border border-border-ink/70 bg-card-bg p-6 shadow-sm">
-          <p class="text-xs font-semibold uppercase tracking-[0.3em] text-muted-text">
-            {metric.label}
-          </p>
-          <p class="mt-3 text-3xl font-display text-primary-text">
-            {metric.value}
-          </p>
-        </div>
-      ))}
-    </div>
-
-    <div class="grid gap-8 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
-      <section class="rounded-2xl border border-border-ink/70 bg-card-bg p-8 shadow-sm">
-        <div class="flex flex-col gap-3">
-          <h3 class="font-display text-2xl text-primary-text">
-            Create a new dispatch
-          </h3>
-          <p class="text-sm text-secondary-text">
-            Set the essentials before publishing. Drafts save instantly, and
-            publishing updates the archive, RSS feed, and category hubs.
-          </p>
-        </div>
-
-        <form class="mt-6 flex flex-col gap-6" aria-label="Create new post">
-          <label class="flex flex-col gap-2">
-            <span class="text-xs font-semibold uppercase tracking-[0.3em] text-muted-text">Title</span>
-            <input id="title-studio" name="title" type="text" placeholder="Working title" class={inputClass} />
-          </label>
-
-          <label class="flex flex-col gap-2">
-            <span class="text-xs font-semibold uppercase tracking-[0.3em] text-muted-text">Description</span>
-            <textarea
-              id="description-studio"
-              name="description"
-              rows={4}
-              placeholder="One paragraph that frames the idea for subscribers and social sharing."
-              class={inputClass}
-            ></textarea>
-          </label>
-
-          <div class="grid gap-4 sm:grid-cols-2">
-            <label class="flex flex-col gap-2">
-              <span class="text-xs font-semibold uppercase tracking-[0.3em] text-muted-text">Publish date</span>
-              <input id="pubDate-studio" name="pubDate" type="date" class={inputClass} />
-            </label>
-            <label class="flex flex-col gap-2">
-              <span class="text-xs font-semibold uppercase tracking-[0.3em] text-muted-text">Category</span>
-              <select id="category-studio" name="category" class={inputClass}>
-                <option value="">Select category</option>
-                {CATEGORY_OPTIONS.map((category) => (
-                  <option value={category}>{category}</option>
-                ))}
-              </select>
-            </label>
-          </div>
-
-          <div class="grid gap-4 sm:grid-cols-2">
-            <label class="flex flex-col gap-2">
-              <span class="text-xs font-semibold uppercase tracking-[0.3em] text-muted-text">Hero image URL</span>
-              <input id="heroImage" name="heroImage" type="url" placeholder="https://"
-                class={inputClass} />
-            </label>
-            <label class="flex flex-col gap-2">
-              <span class="text-xs font-semibold uppercase tracking-[0.3em] text-muted-text">Hero image alt text</span>
-              <input id="heroImageAlt" name="heroImageAlt" type="text" placeholder="Describe the metaphor the image delivers."
-                class={inputClass} />
-            </label>
-          </div>
-
-          <fieldset class="flex flex-col gap-3">
-            <legend class="text-xs font-semibold uppercase tracking-[0.3em] text-muted-text">Distribution</legend>
-            <div class="flex flex-wrap items-center gap-6">
-              <label class="flex items-center gap-3 text-sm text-secondary-text">
-                <input type="checkbox" name="sendNewsletter" class={checkboxClass} />
-                Send to newsletter subscribers
-              </label>
-              <label class="flex items-center gap-3 text-sm text-secondary-text">
-                <input type="checkbox" name="featureHome" class={checkboxClass} />
-                Feature on home grid
-              </label>
-              <label class="flex items-center gap-3 text-sm text-secondary-text">
-                <input type="checkbox" name="enableComments" class={checkboxClass} />
-                Enable discussion thread
-              </label>
-            </div>
-          </fieldset>
-
-          <div class="flex flex-wrap gap-3">
-            <button type="button" class={secondaryButtonClass}>Save draft</button>
-            <button type="submit" class={primaryButtonClass}>Publish</button>
-            <button type="button" class={ghostButtonClass}>Preview</button>
-          </div>
-
-          <p class="text-xs text-muted-text">
-            Autosave captures changes every few seconds. Publishing will trigger
-            the RSS rebuild and refresh the on-site grids.
-          </p>
-        </form>
-      </section>
-
-      <div class="flex flex-col gap-6">
-        <section class="rounded-2xl border border-border-ink/70 bg-card-bg p-6 shadow-sm">
-          <h3 class="font-display text-xl text-primary-text">Publishing checklist</h3>
-          <p class="mt-2 text-sm text-secondary-text">
-            A quick audit before you press publish keeps the journal's quiet polish intact.
-          </p>
-          <ul class="mt-5 flex flex-col gap-4">
-            {checklistItems.map((item) => (
-              <li class="flex items-start gap-3 rounded-xl border border-border-ink/60 bg-surface-bg px-4 py-3">
-                <span class="mt-1 inline-block h-2.5 w-2.5 flex-shrink-0 rounded-full bg-primary-text" />
-                <div class="flex flex-col gap-1">
-                  <p class="text-sm font-semibold text-primary-text">{item.title}</p>
-                  <p class="text-sm text-secondary-text">{item.description}</p>
-                </div>
-              </li>
-            ))}
-          </ul>
-          <div class="mt-6 flex flex-wrap gap-3">
-            <button type="button" class={secondaryButtonClass}>Open style guide</button>
-            <button type="button" class={ghostButtonClass}>Review analytics</button>
-          </div>
-        </section>
-
-        <section class="rounded-2xl border border-border-ink/70 bg-card-bg p-6 shadow-sm">
-          <h3 class="font-display text-xl text-primary-text">Category coverage</h3>
-          <p class="mt-2 text-sm text-secondary-text">
-            Balance the cadence across themes so readers see chess, geopolitics, philosophy, and technology in rhythm.
-          </p>
-          <ul class="mt-5 flex flex-col gap-3">
-            {categoryCoverage.map((category) => (
-              <li class="flex flex-col gap-3 rounded-xl border border-border-ink/60 bg-surface-bg px-4 py-4">
-                <div class="flex items-center justify-between">
-                  <div class="flex flex-col">
-                    <span class="text-xs font-semibold uppercase tracking-[0.3em] text-muted-text">
-                      {category.label}
-                    </span>
-                    <span class="text-base text-primary-text">
-                      {category.count} {category.count === 1 ? "post" : "posts"}
-                    </span>
-                  </div>
-                  <button type="button" class={ghostButtonClass}>View</button>
-                </div>
-                <div class="h-1.5 w-full overflow-hidden rounded-full bg-border-ink/40">
-                  <div
-                    class="h-full bg-primary-text"
-                    style={`width: ${category.percentage}%`}
-                    aria-hidden="true"
-                  />
-                </div>
-              </li>
-            ))}
-          </ul>
-        </section>
-      </div>
-    </div>
-
-    <section class="rounded-2xl border border-border-ink/70 bg-card-bg p-8 shadow-sm">
-      <div class="flex flex-col gap-3">
-        <h3 class="font-display text-2xl text-primary-text">Publishing queue</h3>
-        <p class="text-sm text-secondary-text">
-          Monitor what's shipping soon and what's already live. Use the actions
-          below each post to adjust cadence or revisit published work.
+  <section class="mx-auto max-w-6xl py-12 sm:py-16">
+    <div class="space-y-12 rounded-3xl border border-border-ink/70 bg-card-bg/95 p-8 shadow-lg shadow-black/5 sm:p-12">
+      <header class="max-w-3xl space-y-4">
+        <p class="text-xs font-semibold uppercase tracking-[0.35em] text-muted-text">
+          Publishing studio
         </p>
-      </div>
+        <h1 class="font-display text-4xl leading-tight text-primary-text sm:text-5xl">
+          Keep the editorial rhythm steady
+        </h1>
+        <p class="text-lg text-secondary-text">
+          Draft essays, adjust typography, and move calmly from idea to publication. Every control below mirrors the
+          magazine's layout so you can focus on the writing.
+        </p>
+      </header>
 
-      <div class="mt-6 grid gap-8 lg:grid-cols-2">
-        {queueSections.map((section) => (
-          <div class="flex flex-col gap-4">
-            <div class="flex flex-col gap-1">
-              <h4 class="text-sm font-semibold uppercase tracking-[0.3em] text-muted-text">
-                {section.title}
-              </h4>
-              <p class="text-sm text-secondary-text">{section.description}</p>
-            </div>
-
-            {section.posts.length ? (
-              <ul class="flex flex-col divide-y divide-border-ink/60 overflow-hidden rounded-xl border border-border-ink/60 bg-surface-bg">
-                {section.posts.map((post) => (
-                  <li class="flex flex-col gap-4 px-5 py-4 sm:px-6">
-                    <div class="flex flex-col gap-2">
-                      <p class="text-base font-semibold text-primary-text">
-                        {post.data.title}
-                      </p>
-                      <div class="flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-secondary-text">
-                        <span class="inline-flex items-center rounded-full border border-border-ink/60 px-3 py-1 text-xs font-semibold uppercase tracking-[0.3em] text-secondary-text">
-                          {post.data.category}
-                        </span>
-                        <span>{formatDate(post.data.pubDate)}</span>
-                      </div>
-                    </div>
-                    <div class="flex flex-wrap gap-3">
-                      <a href={`/blog/${post.slug}`} class={secondaryButtonClass}>View post</a>
-                      <button type="button" class={ghostButtonClass}>Duplicate</button>
-                      <button type="button" class={ghostButtonClass}>Archive</button>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p class="rounded-xl border border-dashed border-border-ink/70 bg-surface-bg px-6 py-8 text-sm text-secondary-text">
-                {section.empty}
-              </p>
-            )}
-          </div>
-        ))}
-      </div>
-    </section>
+      <PublishingWorkspace
+        client:load
+        initialPosts={initialPosts}
+        categoryOptions={[...CATEGORY_OPTIONS]}
+      />
+    </div>
   </section>
 </PageLayout>
