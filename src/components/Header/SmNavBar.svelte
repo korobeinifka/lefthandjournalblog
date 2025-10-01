@@ -11,6 +11,8 @@
     let showCategories = false;
     let categoriesButton;
     let categoriesMenu;
+    let navRoot;
+    let menuButton;
 
     const closeCategories = ({ restoreFocus } = { restoreFocus: true }) => {
         if (showCategories) {
@@ -37,15 +39,29 @@
     };
 
     const toggleMenu = () => {
-        showMenu = !showMenu;
-        if (!showMenu) {
-            closeCategories({ restoreFocus: false });
+        if (showMenu) {
+            closeMenu({ restoreFocus: false });
+        } else {
+            showMenu = true;
         }
     };
 
-    const closeMenu = () => {
+    const closeMenu = (options) => {
+        const { restoreFocus = true } =
+            options && typeof options === 'object' && 'restoreFocus' in options
+                ? options
+                : { restoreFocus: true };
+
+        if (!showMenu) {
+            return;
+        }
+
         showMenu = false;
         closeCategories({ restoreFocus: false });
+
+        if (restoreFocus) {
+            menuButton?.focus();
+        }
     };
 
     const handleCategoriesKeydown = (event) => {
@@ -59,12 +75,18 @@
 
     onMount(() => {
         const handleDocumentClick = (event) => {
+            const target = event.target;
+
             if (
                 showCategories &&
-                !categoriesMenu?.contains(event.target) &&
-                !categoriesButton?.contains(event.target)
+                !categoriesMenu?.contains(target) &&
+                !categoriesButton?.contains(target)
             ) {
-                closeCategories();
+                closeCategories({ restoreFocus: false });
+            }
+
+            if (showMenu && !navRoot?.contains(target)) {
+                closeMenu({ restoreFocus: false });
             }
         };
 
@@ -93,8 +115,9 @@
     });
 </script>
 
-<div class="relative">
+<div class="relative" bind:this={navRoot}>
     <button
+        bind:this={menuButton}
         on:click={toggleMenu}
         class="flex h-10 w-10 items-center justify-center rounded-full border border-border-ink/80 bg-card-bg text-primary-text transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-text"
         aria-label={showMenu ? 'Close navigation' : 'Open navigation'}
@@ -120,22 +143,14 @@
                     <button
                         id={categoriesButtonId}
                         bind:this={categoriesButton}
-                        class="flex w-full items-center justify-between gap-2 pb-1 text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-text"
+                        class="block w-full pb-1 text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-text"
                         type="button"
                         on:click|stopPropagation={toggleCategories}
                         on:keydown={handleCategoriesKeydown}
                         aria-expanded={showCategories}
                         aria-controls={categoriesMenuId}
                     >
-                        <span>Categories</span>
-                        <svg
-                            class={`h-3 w-3 transition-transform duration-200 ${showCategories ? 'rotate-180' : ''}`}
-                            aria-hidden="true"
-                            focusable="false"
-                            viewBox="0 0 12 8"
-                        >
-                            <path d="M1.41.58 6 5.17 10.59.58 12 2 6 8 0 2z" fill="currentColor" />
-                        </svg>
+                        CATEGORY
                     </button>
                     {#if showCategories}
                         <div
