@@ -30,7 +30,7 @@ jobs:
           username: ${{ secrets.HOSTINGER_USER }}
           password: ${{ secrets.HOSTINGER_PASS }}
           local-dir: .vercel/output/static/
-          server-dir: ${{ secrets.HOSTINGER_PATH }}
+          server-dir: ./
           # 1ª execução: substitui tudo. Depois você pode tirar se quiser deploy incremental.
           dangerous-clean-slate: true
           # Opcional: ignore coisas do servidor que não devem ser apagadas
