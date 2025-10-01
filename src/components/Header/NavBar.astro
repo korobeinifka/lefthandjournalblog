@@ -1,5 +1,10 @@
 ---
+import { CATEGORY_LINKS } from "@/utils/categories";
+
 const { pathname } = Astro.url;
+const dropdownId = "desktop-category-dropdown";
+const buttonId = "desktop-category-button";
+const isCategoriesActive = pathname.startsWith("/categories");
 ---
 
 <nav class="hidden md:block">
@@ -14,17 +19,55 @@ const { pathname } = Astro.url;
         Home
       </a>
     </li>
-    <li>
-      <a
-        href="/categories"
-        class={`pb-1 transition-colors duration-200 ${
-          pathname.startsWith("/categories")
-            ? "text-primary-text border-b border-primary-text"
-            : "hover:text-primary-text"
+    <li class="relative" data-category-root>
+      <button
+        id={buttonId}
+        data-category-button
+        type="button"
+        data-active={isCategoriesActive}
+        class={`flex items-center gap-2 border-b border-transparent pb-1 transition-colors duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-text hover:text-primary-text ${
+          isCategoriesActive ? "border-primary-text text-primary-text" : ""
         }`}
+        aria-expanded="false"
+        aria-controls={dropdownId}
       >
         Categories
-      </a>
+        <svg
+          class="h-3 w-3 transition-transform duration-200"
+          aria-hidden="true"
+          focusable="false"
+          viewBox="0 0 12 8"
+        >
+          <path
+            d="M1.41.58 6 5.17 10.59.58 12 2 6 8 0 2z"
+            fill="currentColor"
+          />
+        </svg>
+      </button>
+      <div
+        id={dropdownId}
+        data-category-dropdown
+        class="absolute left-1/2 top-full mt-3 hidden w-48 -translate-x-1/2 rounded-lg border border-border-ink/80 bg-card-bg py-3 opacity-0 shadow-sm transition duration-150 ease-out pointer-events-none transform"
+        role="menu"
+        aria-labelledby={buttonId}
+        tabindex="-1"
+        hidden
+      >
+        <ul class="flex flex-col gap-2 text-xs font-semibold uppercase tracking-[0.3em] text-secondary-text">
+          {CATEGORY_LINKS.map((category) => (
+            <li>
+              <a
+                href={`/categories/${category.slug}`}
+                class="block px-4 py-1.5 transition-colors duration-200 hover:text-primary-text focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-text"
+                role="menuitem"
+                data-category-link
+              >
+                {category.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
     </li>
     <li>
       <a
@@ -38,3 +81,153 @@ const { pathname } = Astro.url;
     </li>
   </ul>
 </nav>
+
+<script is:inline>
+  let cleanupDropdown = null;
+
+  const initDropdown = () => {
+    cleanupDropdown?.();
+
+    const root = document.querySelector('[data-category-root]');
+    const dropdown = root?.querySelector('[data-category-dropdown]');
+    const toggleButton = root?.querySelector('[data-category-button]');
+
+    if (!root || !dropdown || !toggleButton) {
+      cleanupDropdown = null;
+      return;
+    }
+
+    const svgIcon = toggleButton.querySelector('svg');
+    const categoryLinks = Array.from(dropdown.querySelectorAll('[data-category-link]'));
+    const isRouteActive = toggleButton.dataset.active === 'true';
+    let isOpen = false;
+
+    const applyHighlight = (shouldHighlight) => {
+      toggleButton.classList.toggle('text-primary-text', shouldHighlight);
+      toggleButton.classList.toggle('border-primary-text', shouldHighlight);
+      toggleButton.classList.toggle('border-transparent', !shouldHighlight);
+    };
+
+    const setOpen = (open, { restoreFocus = true } = {}) => {
+      if (isOpen === open) return;
+
+      isOpen = open;
+      toggleButton.setAttribute('aria-expanded', String(open));
+      dropdown.hidden = !open;
+      dropdown.classList.toggle('hidden', !open);
+      dropdown.classList.toggle('pointer-events-none', !open);
+      dropdown.classList.toggle('pointer-events-auto', open);
+      dropdown.classList.toggle('opacity-0', !open);
+      dropdown.classList.toggle('opacity-100', open);
+      dropdown.classList.toggle('translate-y-2', open);
+      svgIcon?.classList.toggle('rotate-180', open);
+      applyHighlight(open || isRouteActive);
+
+      if (open) {
+        requestAnimationFrame(() => {
+          categoryLinks[0]?.focus();
+        });
+      } else if (restoreFocus) {
+        toggleButton.focus();
+      }
+    };
+
+    const openDropdown = () => setOpen(true);
+    const closeDropdown = ({ restoreFocus = true } = {}) => setOpen(false, { restoreFocus });
+
+    const handleToggleClick = (event) => {
+      event.stopPropagation();
+      if (isOpen) {
+        closeDropdown();
+      } else {
+        openDropdown();
+      }
+    };
+
+    const handleButtonKeydown = (event) => {
+      if (event.key === 'Escape' && isOpen) {
+        event.stopPropagation();
+        closeDropdown();
+      } else if ((event.key === 'ArrowDown' || event.key === 'Enter' || event.key === ' ') && !isOpen) {
+        event.preventDefault();
+        openDropdown();
+      }
+    };
+
+    const handleDropdownKeydown = (event) => {
+      if (event.key === 'Escape' && isOpen) {
+        event.stopPropagation();
+        closeDropdown();
+      }
+    };
+
+    const handleDocumentClick = (event) => {
+      if (!isOpen) return;
+
+      if (!root.contains(event.target)) {
+        closeDropdown({ restoreFocus: false });
+      }
+    };
+
+    const handleDocumentKeydown = (event) => {
+      if (event.key === 'Escape' && isOpen) {
+        event.stopPropagation();
+        closeDropdown();
+      }
+    };
+
+    const linkHandlers = categoryLinks.map((link) => {
+      const handler = () => closeDropdown({ restoreFocus: false });
+      link.addEventListener('click', handler);
+      return { link, handler };
+    });
+    toggleButton.addEventListener('click', handleToggleClick);
+    toggleButton.addEventListener('keydown', handleButtonKeydown);
+    dropdown.addEventListener('keydown', handleDropdownKeydown);
+    document.addEventListener('click', handleDocumentClick);
+    document.addEventListener('keydown', handleDocumentKeydown);
+
+    applyHighlight(isRouteActive);
+    dropdown.classList.add('hidden');
+    dropdown.classList.add('opacity-0');
+    dropdown.classList.add('pointer-events-none');
+
+    cleanupDropdown = () => {
+      linkHandlers.forEach(({ link, handler }) => {
+        link.removeEventListener('click', handler);
+      });
+      toggleButton.removeEventListener('click', handleToggleClick);
+      toggleButton.removeEventListener('keydown', handleButtonKeydown);
+      dropdown.removeEventListener('keydown', handleDropdownKeydown);
+      document.removeEventListener('click', handleDocumentClick);
+      document.removeEventListener('keydown', handleDocumentKeydown);
+    };
+  };
+
+  const setupDropdown = () => {
+    initDropdown();
+  };
+
+  const handlePageLoad = () => {
+    setupDropdown();
+  };
+
+  const handleAfterSwap = () => {
+    setupDropdown();
+  };
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', setupDropdown, { once: true });
+  } else {
+    setupDropdown();
+  }
+
+  document.addEventListener('astro:page-load', handlePageLoad);
+  document.addEventListener('astro:after-swap', handleAfterSwap);
+  document.addEventListener('astro:unload', () => {
+    cleanupDropdown?.();
+    cleanupDropdown = null;
+    document.removeEventListener('astro:page-load', handlePageLoad);
+    document.removeEventListener('astro:after-swap', handleAfterSwap);
+  });
+</script>
