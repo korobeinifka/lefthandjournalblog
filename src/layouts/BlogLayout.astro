@@ -1,6 +1,7 @@
 ---
 import type { CollectionEntry } from "astro:content";
 import PageLayout from "./PageLayout.astro";
+import ShareButton from "@/components/Utils/ShareButton.svelte";
 
 const { title, description, pubDate, author, heroImage, heroImageAlt, category } =
   Astro.props.data as CollectionEntry<"blogs">["data"];
@@ -9,6 +10,9 @@ const formattedDate = pubDate.toLocaleDateString("en-US", {
   month: "long",
   day: "numeric",
 });
+const shareUrl = Astro.site
+  ? new URL(Astro.url.pathname, Astro.site).toString()
+  : Astro.url.href;
 ---
 
 <PageLayout title={title} description={description}>
@@ -21,10 +25,13 @@ const formattedDate = pubDate.toLocaleDateString("en-US", {
         {title}
       </h1>
       <p class="text-lg text-secondary-text">{description}</p>
-      <div class="flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-secondary-text">
-        <span class="font-semibold text-primary-text">By {author}</span>
-        <span aria-hidden="true">•</span>
-        <time datetime={pubDate.toISOString()}>{formattedDate}</time>
+      <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div class="flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-secondary-text">
+          <span class="font-semibold text-primary-text">By {author}</span>
+          <span aria-hidden="true">•</span>
+          <time datetime={pubDate.toISOString()}>{formattedDate}</time>
+        </div>
+        <ShareButton client:idle url={shareUrl} title={title} />
       </div>
       {heroImage && (
         <figure class="overflow-hidden rounded-xl border border-border-ink/70 bg-surface-bg">
