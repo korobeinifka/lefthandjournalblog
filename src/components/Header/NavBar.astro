@@ -7,13 +7,15 @@ const buttonId = "desktop-category-button";
 
 const isCategoriesActive = pathname.startsWith("/categories");
 const navLinkBaseClass =
-  "inline-flex items-center px-0 pb-1 pt-0 text-sm font-semibold uppercase tracking-[0.2em] leading-none transition-colors duration-200";
+  "inline-flex items-center px-0 pb-1 pt-0 transition-colors duration-200";
 const focusRingClass =
   "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-text";
 ---
 
 <nav class="hidden md:block">
-  <ul class="flex items-center gap-8">
+  <ul
+    class="flex items-center gap-8 text-sm font-semibold uppercase tracking-[0.2em] leading-none"
+  >
     <li>
       <a
         href="/"
@@ -37,10 +39,10 @@ const focusRingClass =
         class:list={[
           navLinkBaseClass,
           focusRingClass,
-          "bg-transparent",
+          "appearance-none bg-transparent font-[inherit] text-[inherit] tracking-[inherit] leading-none",
           isCategoriesActive
-            ? "text-primary-text border-b border-primary-text"
-            : "text-secondary-text hover:text-primary-text",
+            ? "!text-primary-text border-b border-primary-text"
+            : "!text-secondary-text hover:!text-primary-text",
         ]}
         aria-expanded="false"
         aria-controls={dropdownId}
@@ -127,11 +129,11 @@ const focusRingClass =
       let isOpen = false;
 
       const applyHighlight = (shouldHighlight) => {
-        toggleButton.classList.toggle("text-primary-text", shouldHighlight);
+        toggleButton.classList.toggle("!text-primary-text", shouldHighlight);
         toggleButton.classList.toggle("border-b", shouldHighlight);
         toggleButton.classList.toggle("border-primary-text", shouldHighlight);
-        toggleButton.classList.toggle("text-secondary-text", !shouldHighlight);
-        toggleButton.classList.toggle("hover:text-primary-text", !shouldHighlight);
+        toggleButton.classList.toggle("!text-secondary-text", !shouldHighlight);
+        toggleButton.classList.toggle("hover:!text-primary-text", !shouldHighlight);
       };
 
       const setOpen = (open, { restoreFocus = true } = {}) => {
