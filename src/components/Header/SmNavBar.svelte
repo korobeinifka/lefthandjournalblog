@@ -6,6 +6,7 @@
 
     const categoriesMenuId = 'mobile-category-menu';
     const categoriesButtonId = 'mobile-category-button';
+    const mobileMenuId = 'mobile-navigation-menu';
 
     let showMenu = false;
     let showCategories = false;
@@ -118,8 +119,11 @@
 <div class="relative" bind:this={navRoot}>
     <button
         bind:this={menuButton}
+        type="button"
         on:click={toggleMenu}
-        class="flex h-10 w-10 items-center justify-center rounded-full border border-border-ink/80 bg-card-bg text-primary-text transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-text"
+        class="relative z-10 flex h-11 w-11 items-center justify-center rounded-full border border-border-ink/80 bg-card-bg text-primary-text transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-text"
+        aria-expanded={showMenu}
+        aria-controls={mobileMenuId}
         aria-label={showMenu ? 'Close navigation' : 'Open navigation'}
     >
         {#if showMenu}
@@ -130,6 +134,7 @@
     </button>
     {#if showMenu}
         <nav
+            id={mobileMenuId}
             transition:fade={{ duration: 120 }}
             class="absolute right-0 top-12 z-50 w-56 rounded-lg border border-border-ink/80 bg-card-bg p-4 shadow-sm"
         >
