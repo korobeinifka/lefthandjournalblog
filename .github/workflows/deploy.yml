@@ -44,7 +44,7 @@ jobs:
           password: ${{ secrets.HOSTINGER_PASS }}
           local-dir: .vercel/output/static/
           server-dir: ./
-          dangerous-clean-slate: true
+          dangerous-clean-slate: false
           exclude: |
             **/.well-known/**
             **/mail/**
