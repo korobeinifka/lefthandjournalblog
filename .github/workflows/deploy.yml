@@ -1,4 +1,3 @@
-# .github/workflows/deploy-hostinger.yml
 name: Deploy to Hostinger
 
 on:
@@ -8,15 +7,6 @@ on:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-
-    # ✅ Injeta os segredos como variáveis de ambiente no job
-    env:
-      TINA_CLIENT_ID: ${{ secrets.TINA_CLIENT_ID }}
-      TINA_TOKEN: ${{ secrets.TINA_TOKEN }}
-      # opcional: informa o branch atual ao Tina (seu config já suporta)
-      TINA_BRANCH: ${{ secrets.TINA_BRANCH }}
-      
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -25,30 +15,14 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'npm'   # habilita cache para npm
 
       - name: Install deps
         run: npm ci
 
-      # ✅ Constrói o /admin do Tina antes do build do site
-      - name: Build Tina Admin
-        run: npx tinacms build
-        continue-on-error: true
-
-      # (Opcional) se você criou o script de tema do admin
-      - name: Patch admin theme (optional)
-        if: ${{ hashFiles('scripts/patch-admin-head.js') != '' }}
-        run: node ./scripts/patch-admin-head.js
-
       - name: Build (Astro)
         run: npm run build
 
-      # Sanity check: admin deve existir dentro da saída estática
-      - name: Check admin is in output
-        run: |
-          ls -la .vercel/output/static/admin || (echo "Admin não encontrado. Verifique 'build.publicFolder'='public' e 'outputFolder'='admin' no tina/config.ts." && exit 1)
-        continue-on-error: true
-      # Publica a pasta estática gerada pelo adapter
+      # Publica a pasta ESTÁTICA gerada pelo adapter vercel/static
       - name: Deploy via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
@@ -57,7 +31,9 @@ jobs:
           password: ${{ secrets.HOSTINGER_PASS }}
           local-dir: .vercel/output/static/
           server-dir: ./
+          # 1ª execução: substitui tudo. Depois você pode tirar se quiser deploy incremental.
           dangerous-clean-slate: true
+          # Opcional: ignore coisas do servidor que não devem ser apagadas
           exclude: |
             **/.well-known/**
             **/mail/**
