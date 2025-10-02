@@ -25,7 +25,7 @@ const shareUrl = Astro.site
         {title}
       </h1>
       <p class="text-lg text-secondary-text">{description}</p>
-      <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+      <div class="flex flex-wrap items-center gap-3 max-[360px]:flex-col max-[360px]:items-start">
         <div class="flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-secondary-text">
           <span class="font-semibold text-primary-text">By {author}</span>
           <span aria-hidden="true">•</span>
