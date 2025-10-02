@@ -4,14 +4,158 @@
     import { CATEGORY_LINKS } from '@/utils/categories';
     import { onDestroy, onMount, tick } from 'svelte';
 
+    const DEFAULT_NAV_SPEED = 300;
+    const LINEAR_EASING = (t) => t;
+
+    const cubicBezier = (mX1, mY1, mX2, mY2) => {
+        const NEWTON_ITERATIONS = 4;
+        const NEWTON_MIN_SLOPE = 0.001;
+        const SUBDIVISION_PRECISION = 0.0000001;
+        const SUBDIVISION_MAX_ITERATIONS = 10;
+        const kSplineTableSize = 11;
+        const kSampleStepSize = 1 / (kSplineTableSize - 1);
+
+        const sampleValues = new Float32Array(kSplineTableSize);
+
+        const calcBezier = (t, a1, a2) => ((1 - 3 * a2 + 3 * a1) * t + (3 * a2 - 6 * a1)) * t * t + 3 * a1 * t;
+        const getSlope = (t, a1, a2) => 3 * (1 - 3 * a2 + 3 * a1) * t * t + 2 * (3 * a2 - 6 * a1) * t + 3 * a1;
+
+        for (let i = 0; i < kSplineTableSize; ++i) {
+            sampleValues[i] = calcBezier(i * kSampleStepSize, mX1, mX2);
+        }
+
+        const getTForX = (x) => {
+            let intervalStart = 0;
+            let currentSample = 1;
+            const lastSample = kSplineTableSize - 1;
+
+            for (; currentSample !== lastSample && sampleValues[currentSample] <= x; ++currentSample) {
+                intervalStart += kSampleStepSize;
+            }
+
+            --currentSample;
+
+            const dist = (x - sampleValues[currentSample]) / (sampleValues[currentSample + 1] - sampleValues[currentSample]);
+            let guessForT = intervalStart + dist * kSampleStepSize;
+
+            const initialSlope = getSlope(guessForT, mX1, mX2);
+            if (initialSlope >= NEWTON_MIN_SLOPE) {
+                for (let i = 0; i < NEWTON_ITERATIONS; ++i) {
+                    const currentSlope = getSlope(guessForT, mX1, mX2);
+                    if (currentSlope === 0) {
+                        return guessForT;
+                    }
+                    const currentX = calcBezier(guessForT, mX1, mX2) - x;
+                    guessForT -= currentX / currentSlope;
+                }
+                return guessForT;
+            }
+
+            if (initialSlope === 0) {
+                return guessForT;
+            }
+
+            let a = intervalStart;
+            let b = intervalStart + kSampleStepSize;
+            let currentT = guessForT;
+
+            for (let i = 0; i < SUBDIVISION_MAX_ITERATIONS && b - a > SUBDIVISION_PRECISION; ++i) {
+                const currentX = calcBezier(currentT, mX1, mX2) - x;
+                if (currentX > 0) {
+                    b = currentT;
+                } else {
+                    a = currentT;
+                }
+                currentT = (a + b) / 2;
+            }
+
+            return currentT;
+        };
+
+        return (x) => {
+            if (mX1 === mY1 && mX2 === mY2) {
+                return x;
+            }
+            return calcBezier(getTForX(x), mY1, mY2);
+        };
+    };
+
+    const easingMap = new Map([
+        ['linear', LINEAR_EASING],
+        ['ease', cubicBezier(0.25, 0.1, 0.25, 1)],
+        ['ease-in', cubicBezier(0.42, 0, 1, 1)],
+        ['ease-out', cubicBezier(0, 0, 0.58, 1)],
+        ['ease-in-out', cubicBezier(0.42, 0, 0.58, 1)]
+    ]);
+
+    const parseDuration = (value) => {
+        if (typeof value !== 'string') {
+            return DEFAULT_NAV_SPEED;
+        }
+
+        const trimmed = value.trim();
+
+        if (!trimmed) {
+            return DEFAULT_NAV_SPEED;
+        }
+
+        if (trimmed.endsWith('ms')) {
+            const numeric = Number.parseFloat(trimmed);
+            return Number.isNaN(numeric) ? DEFAULT_NAV_SPEED : numeric;
+        }
+
+        if (trimmed.endsWith('s')) {
+            const numeric = Number.parseFloat(trimmed);
+            return Number.isNaN(numeric) ? DEFAULT_NAV_SPEED : numeric * 1000;
+        }
+
+        const fallback = Number.parseFloat(trimmed);
+        return Number.isNaN(fallback) ? DEFAULT_NAV_SPEED : fallback;
+    };
+
+    const parseEasing = (value) => {
+        if (typeof value !== 'string') {
+            return LINEAR_EASING;
+        }
+
+        const trimmed = value.trim();
+
+        if (!trimmed) {
+            return LINEAR_EASING;
+        }
+
+        if (easingMap.has(trimmed)) {
+            return easingMap.get(trimmed);
+        }
+
+        const cubicMatch = trimmed.match(/cubic-bezier\(([^)]+)\)/i);
+        if (cubicMatch) {
+            const points = cubicMatch[1]
+                .split(',')
+                .map((part) => Number.parseFloat(part.trim()))
+                .filter((point) => Number.isFinite(point));
+
+            if (points.length === 4) {
+                return cubicBezier(points[0], points[1], points[2], points[3]);
+            }
+        }
+
+        return LINEAR_EASING;
+    };
+
+    let navFadeOptions = {
+        duration: DEFAULT_NAV_SPEED,
+        easing: LINEAR_EASING
+    };
+
     const categoriesMenuId = 'mobile-category-menu';
     const categoriesButtonId = 'mobile-category-button';
     const mobileMenuId = 'mobile-navigation-menu';
 
     const mobileNavLinkClass =
-        'group flex w-full items-center justify-between rounded-lg px-4 py-3 text-left text-sm font-semibold uppercase tracking-[0.28em] leading-none text-secondary-text transition-colors duration-200 hover:text-primary-text focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-text';
+        'group flex w-full items-center justify-between rounded-lg px-4 py-3 text-left text-sm font-semibold uppercase tracking-[0.28em] leading-none text-secondary-text transition-colors nav-transition hover:text-primary-text focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-text';
     const mobileCategoryLinkClass =
-        'block rounded-md px-4 py-2 text-xs font-semibold uppercase tracking-[0.3em] text-secondary-text transition-colors duration-200 hover:text-primary-text focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-text';
+        'block rounded-md px-4 py-2 text-xs font-semibold uppercase tracking-[0.3em] text-secondary-text transition-colors nav-transition hover:text-primary-text focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-text';
 
     let showMenu = false;
     let showCategories = false;
@@ -103,6 +247,21 @@
         closeMenu({ restoreFocus: false });
     };
 
+    const updateNavFadeOptions = () => {
+        if (typeof document === 'undefined') {
+            return;
+        }
+
+        const rootStyle = getComputedStyle(document.documentElement);
+        const duration = parseDuration(rootStyle.getPropertyValue('--nav-speed'));
+        const easing = parseEasing(rootStyle.getPropertyValue('--nav-ease'));
+
+        navFadeOptions = {
+            duration,
+            easing
+        };
+    };
+
     onMount(() => {
         const handleDocumentClick = (event) => {
             const target = event.target;
@@ -138,6 +297,18 @@
             document.removeEventListener('click', handleDocumentClick);
             document.removeEventListener('keydown', handleDocumentKeydown);
         };
+
+        updateNavFadeOptions();
+
+        const observer = new MutationObserver(updateNavFadeOptions);
+        observer.observe(document.documentElement, {
+            attributes: true,
+            attributeFilter: ['style', 'class', 'data-theme']
+        });
+
+        return () => {
+            observer.disconnect();
+        };
     });
 
     onDestroy(() => {
@@ -159,7 +330,7 @@
         bind:this={menuButton}
         type="button"
         on:click={toggleMenu}
-        class="relative z-50 flex h-11 w-11 items-center justify-center rounded-full border border-border-ink/80 bg-card-bg text-primary-text transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-text"
+        class="relative z-50 flex h-11 w-11 items-center justify-center rounded-full border border-border-ink/80 bg-card-bg text-primary-text transition-colors nav-transition focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-text"
         aria-expanded={showMenu}
         aria-controls={mobileMenuId}
         aria-haspopup="true"
@@ -175,21 +346,21 @@
     {#if showMenu}
         <div
             class="fixed inset-0 z-40 bg-primary-bg/70 backdrop-blur-sm"
-            transition:fade={{ duration: 120 }}
+            transition:fade={navFadeOptions}
             aria-hidden="true"
             on:click={handleOverlayClick}
         ></div>
         <nav
             id={mobileMenuId}
             aria-label="Mobile navigation"
-            transition:fade={{ duration: 120 }}
+            transition:fade={navFadeOptions}
             class="absolute right-0 top-12 z-50 w-64 max-w-[85vw] rounded-2xl border border-border-ink/80 bg-card-bg p-4 shadow-xl"
         >
             <ul class="flex flex-col gap-2 text-secondary-text">
                 <li>
                     <a href="/" on:click={closeMenu} class={mobileNavLinkClass}>
                         <span>Home</span>
-                        <Icon icon="ri:arrow-right-up-line" class="h-4 w-4 opacity-0 transition-opacity duration-200 group-hover:opacity-100" />
+                        <Icon icon="ri:arrow-right-up-line" class="h-4 w-4 opacity-0 transition-opacity nav-transition group-hover:opacity-100" />
                     </a>
                 </li>
                 <li class="relative">
@@ -236,7 +407,7 @@
                 <li>
                     <a href="/about" on:click={closeMenu} class={mobileNavLinkClass}>
                         <span>About</span>
-                        <Icon icon="ri:arrow-right-up-line" class="h-4 w-4 opacity-0 transition-opacity duration-200 group-hover:opacity-100" />
+                        <Icon icon="ri:arrow-right-up-line" class="h-4 w-4 opacity-0 transition-opacity nav-transition group-hover:opacity-100" />
                     </a>
                 </li>
             </ul>
