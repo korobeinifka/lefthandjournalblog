@@ -76,10 +76,10 @@
     <button
         type="button"
         on:click={handleShare}
-        class="inline-flex items-center gap-2 rounded-full border border-border-ink/70 bg-card-bg px-4 py-2 text-xs font-semibold uppercase tracking-[0.3em] text-secondary-text transition-colors duration-200 hover:text-primary-text focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-text"
+        class="inline-flex items-center gap-1.5 rounded-full border border-border-ink/60 bg-card-bg/80 px-3 py-1.5 text-[0.7rem] font-semibold uppercase tracking-[0.2em] text-secondary-text transition-colors duration-200 hover:border-primary-text hover:text-primary-text focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-text"
     >
-        <Icon icon={shareSupported ? 'ri:share-forward-line' : 'ri:file-copy-line'} class="h-4 w-4" />
-        <span>Share</span>
+        <Icon icon={shareSupported ? 'ri:share-forward-line' : 'ri:file-copy-line'} class="h-4 w-4 flex-shrink-0" />
+        <span class="leading-none">Share</span>
     </button>
     <span class="sr-only" aria-live="polite">{copied ? 'Link copied to clipboard' : ''}</span>
     {#if copied}
