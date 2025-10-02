@@ -2,15 +2,13 @@
     import Icon from '@iconify/svelte';
     import { onDestroy, onMount, tick } from 'svelte';
 
-    type SearchEntry = {
-        title: string;
-        description: string;
-        category: string;
-        url: string;
-        excerpt: string;
-        pubDate: string;
-        searchField: string;
-    };
+    import { mdViewport } from '@/stores/media';
+    import {
+        fetchSearchEntries,
+        filterSearchEntries,
+        formatSearchDate,
+        type SearchEntry,
+    } from '@/utils/search';
 
     let theme: 'light' | 'dark' = 'light';
     let searchOpen = false;
@@ -21,9 +19,13 @@
     let searchQuery = '';
     let searchInput: HTMLInputElement | null = null;
     let searchButton: HTMLButtonElement | null = null;
+    let dialogRef: HTMLElement | null = null;
+    let isMdViewport = false;
+    let previouslyFocusedElement: HTMLElement | null = null;
     let shortcutLabel = 'Ctrl K';
     let previousOverflow = '';
     let scrollLocked = false;
+    let unsubscribeViewport: (() => void) | null = null;
 
     const lockScroll = () => {
         if (typeof document === 'undefined' || scrollLocked) {
@@ -82,18 +84,7 @@
         searchError = '';
 
         try {
-            const response = await fetch('/search.json', {
-                headers: {
-                    Accept: 'application/json',
-                },
-            });
-
-            if (!response.ok) {
-                throw new Error('Unable to fetch search index');
-            }
-
-            const data: SearchEntry[] = await response.json();
-            searchEntries = data;
+            searchEntries = await fetchSearchEntries();
             hasLoadedSearch = true;
         } catch (error) {
             searchError = 'Search is unavailable right now. Please try again later.';
@@ -102,11 +93,43 @@
         }
     };
 
+    const getFocusableElements = () => {
+        if (!dialogRef) {
+            return [] as HTMLElement[];
+        }
+
+        const selector =
+            'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])';
+
+        return Array.from(dialogRef.querySelectorAll<HTMLElement>(selector)).filter(
+            (element) => !element.hasAttribute('data-focus-guard')
+        );
+    };
+
+    const openMobileSearch = () => {
+        if (typeof window === 'undefined') {
+            return;
+        }
+
+        window.dispatchEvent(new CustomEvent('open-mobile-search'));
+    };
+
     const openSearch = async () => {
+        if (!isMdViewport) {
+            openMobileSearch();
+            return;
+        }
+
+        previouslyFocusedElement = (document.activeElement as HTMLElement) ?? searchButton;
         searchOpen = true;
         await loadSearchIndex();
         await tick();
-        searchInput?.focus();
+        if (searchInput) {
+            searchInput.focus();
+        } else {
+            const [first] = getFocusableElements();
+            first?.focus();
+        }
     };
 
     const closeSearch = (options: { restoreFocus?: boolean } = { restoreFocus: true }) => {
@@ -116,28 +139,46 @@
 
         searchOpen = false;
         if (options.restoreFocus !== false) {
-            searchButton?.focus();
+            const target = previouslyFocusedElement ?? searchButton;
+            target?.focus();
         }
+        previouslyFocusedElement = null;
     };
 
-    const handleSearchKeydown = (event: KeyboardEvent) => {
+    const handleDialogKeydown = (event: KeyboardEvent) => {
         if (event.key === 'Escape') {
             event.preventDefault();
             event.stopPropagation();
             closeSearch();
+            return;
         }
-    };
 
-    const formatDate = (value: string) => {
-        const date = new Date(value);
-        if (Number.isNaN(date.valueOf())) {
-            return '';
+        if (event.key !== 'Tab') {
+            return;
         }
-        return date.toLocaleDateString('en-US', {
-            month: 'short',
-            day: 'numeric',
-            year: 'numeric',
-        });
+
+        const focusable = getFocusableElements();
+
+        if (focusable.length === 0) {
+            event.preventDefault();
+            return;
+        }
+
+        const activeElement = document.activeElement as HTMLElement;
+        const currentIndex = focusable.indexOf(activeElement);
+
+        if (event.shiftKey) {
+            if (currentIndex <= 0) {
+                event.preventDefault();
+                focusable[focusable.length - 1]?.focus();
+            }
+            return;
+        }
+
+        if (currentIndex === -1 || currentIndex === focusable.length - 1) {
+            event.preventDefault();
+            focusable[0]?.focus();
+        }
     };
 
     const handleGlobalKeydown = (event: KeyboardEvent) => {
@@ -145,8 +186,10 @@
             event.preventDefault();
             if (searchOpen) {
                 closeSearch();
-            } else {
+            } else if (isMdViewport) {
                 openSearch();
+            } else {
+                openMobileSearch();
             }
             return;
         }
@@ -158,6 +201,13 @@
 
     onMount(() => {
         initialiseTheme();
+        unsubscribeViewport = mdViewport.subscribe((value) => {
+            isMdViewport = value;
+
+            if (!isMdViewport && searchOpen) {
+                closeSearch({ restoreFocus: false });
+            }
+        });
         if (typeof document !== 'undefined') {
             document.addEventListener('keydown', handleGlobalKeydown);
         }
@@ -170,23 +220,20 @@
         if (typeof document !== 'undefined') {
             document.removeEventListener('keydown', handleGlobalKeydown);
         }
+        unsubscribeViewport?.();
         unlockScroll();
     });
 
     $: {
-        if (searchOpen) {
+        if (searchOpen && isMdViewport) {
             lockScroll();
         } else {
             unlockScroll();
         }
     }
 
-    $: trimmedQuery = searchQuery.trim().toLowerCase();
-    $: filteredResults = hasLoadedSearch
-        ? (trimmedQuery
-              ? searchEntries.filter((entry) => entry.searchField.includes(trimmedQuery)).slice(0, 12)
-              : searchEntries.slice(0, 6))
-        : [];
+    $: trimmedQuery = searchQuery.trim();
+    $: filteredResults = hasLoadedSearch ? filterSearchEntries(searchEntries, searchQuery) : [];
 
     const handleSearchButtonClick = () => {
         if (searchOpen) {
@@ -202,7 +249,7 @@
         bind:this={searchButton}
         type="button"
         on:click={handleSearchButtonClick}
-        class="flex h-10 w-10 items-center justify-center rounded-full border border-border-ink/80 bg-card-bg text-primary-text transition-colors nav-transition focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-text"
+        class="hidden h-10 w-10 items-center justify-center rounded-full border border-border-ink/80 bg-card-bg text-primary-text transition-colors nav-transition focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-text md:flex"
         aria-label={searchOpen ? 'Close search' : 'Open search'}
         aria-expanded={searchOpen}
         aria-haspopup="dialog"
@@ -232,6 +279,9 @@
             role="dialog"
             aria-modal="true"
             aria-labelledby="global-search-title"
+            aria-describedby="global-search-description"
+            bind:this={dialogRef}
+            on:keydown={handleDialogKeydown}
             class="relative z-10 flex w-full max-w-2xl flex-col overflow-hidden rounded-3xl border border-border-ink/80 bg-card-bg shadow-2xl max-h-[calc(100vh-3rem)] md:max-h-[calc(100vh-4rem)]"
         >
             <header class="flex items-center justify-between border-b border-border-ink/70 bg-surface-bg/80 px-6 py-4">
@@ -249,6 +299,9 @@
                 </button>
             </header>
             <div class="flex flex-1 flex-col gap-5 overflow-y-auto px-6 py-6">
+                <p id="global-search-description" class="sr-only">
+                    Search the Lefthand Journal archive. Type a query and use Tab to move between search controls and results.
+                </p>
                 <div class="flex items-center gap-3 rounded-2xl border border-border-ink/70 bg-card-bg px-4 py-3 shadow-sm">
                     <Icon icon="ri:search-line" class="h-5 w-5 text-secondary-text" />
                     <label class="sr-only" for="global-search-input">Search posts</label>
@@ -260,7 +313,6 @@
                         inputmode="search"
                         placeholder="Search topics, words, or posts"
                         class="flex-1 bg-transparent text-base text-primary-text placeholder:text-muted-text focus:outline-none"
-                        on:keydown={handleSearchKeydown}
                         autocomplete="off"
                         spellcheck="false"
                     />
@@ -291,7 +343,7 @@
                                         <span>{result.category}</span>
                                         {#if result.pubDate}
                                             <span aria-hidden="true">•</span>
-                                            <span>{formatDate(result.pubDate)}</span>
+                                            <span>{formatSearchDate(result.pubDate)}</span>
                                         {/if}
                                     </div>
                                     <p class="mt-2 font-display text-xl text-primary-text">{result.title}</p>
