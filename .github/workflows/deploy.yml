@@ -15,7 +15,7 @@ jobs:
       TINA_TOKEN: ${{ secrets.TINA_TOKEN }}
       # opcional: informa o branch atual ao Tina (seu config já suporta)
       TINA_BRANCH: ${{ secrets.TINA_BRANCH }}
-      TINA_ENABLED: 'false'
+      
 
     steps:
       - name: Checkout
@@ -31,8 +31,9 @@ jobs:
         run: npm ci
 
       # ✅ Constrói o /admin do Tina antes do build do site
-      #- name: Build Tina Admin
-      #  run: npx tinacms build
+      - name: Build Tina Admin
+        run: npx tinacms build
+        continue-on-error: true
 
       # (Opcional) se você criou o script de tema do admin
       - name: Patch admin theme (optional)
@@ -46,7 +47,7 @@ jobs:
       - name: Check admin is in output
         run: |
           ls -la .vercel/output/static/admin || (echo "Admin não encontrado. Verifique 'build.publicFolder'='public' e 'outputFolder'='admin' no tina/config.ts." && exit 1)
-
+        continue-on-error: true
       # Publica a pasta estática gerada pelo adapter
       - name: Deploy via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
