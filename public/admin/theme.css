@@ -1,0 +1,72 @@
+/* public/admin/theme.css */
+
+/* CLARO */
+:root,
+[data-theme="light"] {
+  /* base */
+  --bg: #ffffff;
+  --bg-soft: #f6f7f8;
+  --text: #111111;
+  --muted: #6b7280;
+  --border: #e5e7eb;
+
+  /* marca/realce */
+  --accent: #111111;
+  --accent-contrast: #ffffff;
+
+  /* mapeamento genérico para UI */
+  --color-background: var(--bg);
+  --color-surface: var(--bg-soft);
+  --color-text: var(--text);
+  --color-muted: var(--muted);
+  --color-border: var(--border);
+  --color-accent: var(--accent);
+  --color-on-accent: var(--accent-contrast);
+
+  /* compat com temas antigos do Tina (fallbacks) */
+  --tina-color-primary: var(--accent);
+  --tina-color-primary-text: var(--accent-contrast);
+  --tina-color-grey-0: var(--bg);
+  --tina-color-grey-1: var(--bg-soft);
+  --tina-color-grey-2: var(--border);
+  --tina-color-grey-9: var(--text);
+}
+
+/* ESCURO */
+[data-theme="dark"] {
+  --bg: #0b0b0c;
+  --bg-soft: #111214;
+  --text: #ededed;
+  --muted: #9ca3af;
+  --border: #1f2937;
+
+  --accent: #ffffff;
+  --accent-contrast: #0b0b0c;
+
+  --color-background: var(--bg);
+  --color-surface: var(--bg-soft);
+  --color-text: var(--text);
+  --color-muted: var(--muted);
+  --color-border: var(--border);
+  --color-accent: var(--accent);
+  --color-on-accent: var(--accent-contrast);
+
+  --tina-color-primary: var(--accent);
+  --tina-color-primary-text: var(--accent-contrast);
+  --tina-color-grey-0: var(--bg);
+  --tina-color-grey-1: var(--bg-soft);
+  --tina-color-grey-2: var(--border);
+  --tina-color-grey-9: var(--text);
+}
+
+/* retoques rápidos */
+html, body {
+  background: var(--color-background);
+  color: var(--color-text);
+}
+a { color: var(--color-accent); }
+button, .btn {
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+  border-radius: 10px;
+}
