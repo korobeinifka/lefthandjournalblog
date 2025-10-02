@@ -223,7 +223,7 @@
 </div>
 
 {#if searchOpen}
-    <div class="fixed inset-0 z-50 flex items-start justify-center px-4 py-24 sm:py-32">
+    <div class="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto px-4 py-6 sm:py-24 md:py-32">
         <div
             class="absolute inset-0 bg-primary-bg/80 backdrop-blur-sm"
             on:click={() => closeSearch({ restoreFocus: false })}
@@ -232,7 +232,7 @@
             role="dialog"
             aria-modal="true"
             aria-labelledby="global-search-title"
-            class="relative z-10 w-full max-w-2xl overflow-hidden rounded-3xl border border-border-ink/80 bg-card-bg shadow-2xl"
+            class="relative z-10 flex w-full max-w-2xl flex-col overflow-hidden rounded-3xl border border-border-ink/80 bg-card-bg shadow-2xl max-h-[calc(100vh-3rem)] md:max-h-[calc(100vh-4rem)]"
         >
             <header class="flex items-center justify-between border-b border-border-ink/70 bg-surface-bg/80 px-6 py-4">
                 <div class="flex flex-col">
@@ -248,7 +248,7 @@
                     <Icon icon="ri:close-line" class="h-4 w-4" />
                 </button>
             </header>
-            <div class="flex flex-col gap-5 px-6 py-6">
+            <div class="flex flex-1 flex-col gap-5 overflow-y-auto px-6 py-6">
                 <div class="flex items-center gap-3 rounded-2xl border border-border-ink/70 bg-card-bg px-4 py-3 shadow-sm">
                     <Icon icon="ri:search-line" class="h-5 w-5 text-secondary-text" />
                     <label class="sr-only" for="global-search-input">Search posts</label>
@@ -279,7 +279,7 @@
                         {trimmedQuery ? 'No posts match your search yet.' : 'Start typing to explore the archive.'}
                     </p>
                 {:else}
-                    <ul class="flex max-h-[22rem] flex-col gap-3 overflow-y-auto pr-1">
+                    <ul class="flex flex-col gap-3 pr-1">
                         {#each filteredResults as result}
                             <li>
                                 <a
