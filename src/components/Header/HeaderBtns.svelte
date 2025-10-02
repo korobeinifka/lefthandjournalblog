@@ -202,7 +202,7 @@
         bind:this={searchButton}
         type="button"
         on:click={handleSearchButtonClick}
-        class="flex h-10 w-10 items-center justify-center rounded-full border border-border-ink/80 bg-card-bg text-primary-text transition-colors duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-text"
+        class="flex h-10 w-10 items-center justify-center rounded-full border border-border-ink/80 bg-card-bg text-primary-text transition-colors nav-transition focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-text"
         aria-label={searchOpen ? 'Close search' : 'Open search'}
         aria-expanded={searchOpen}
         aria-haspopup="dialog"
@@ -211,7 +211,7 @@
     </button>
     <button
         on:click={toggleTheme}
-        class="flex h-10 w-10 items-center justify-center rounded-full border border-border-ink/80 bg-card-bg text-primary-text transition-colors duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-text"
+        class="flex h-10 w-10 items-center justify-center rounded-full border border-border-ink/80 bg-card-bg text-primary-text transition-colors nav-transition focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-text"
         aria-label={`Activate ${theme === 'light' ? 'dark' : 'light'} mode`}
     >
         {#if theme === 'light'}
@@ -241,7 +241,7 @@
                 </div>
                 <button
                     type="button"
-                    class="flex h-9 w-9 items-center justify-center rounded-full border border-border-ink/70 text-secondary-text transition-colors duration-200 hover:text-primary-text focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-text"
+                    class="flex h-9 w-9 items-center justify-center rounded-full border border-border-ink/70 text-secondary-text transition-colors nav-transition hover:text-primary-text focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-text"
                     on:click={() => closeSearch()}
                     aria-label="Close search"
                 >
@@ -284,7 +284,7 @@
                             <li>
                                 <a
                                     href={result.url}
-                                    class="block rounded-2xl border border-transparent px-4 py-3 transition-colors duration-200 hover:border-border-ink/70 hover:bg-surface-bg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-text"
+                                    class="block rounded-2xl border border-transparent px-4 py-3 transition-colors nav-transition hover:border-border-ink/70 hover:bg-surface-bg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-text"
                                     on:click={() => closeSearch({ restoreFocus: false })}
                                 >
                                     <div class="flex flex-wrap items-center gap-2 text-xs font-semibold uppercase tracking-[0.3em] text-muted-text">
