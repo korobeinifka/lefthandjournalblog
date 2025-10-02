@@ -55,7 +55,7 @@ const focusRingClass =
       <div
         id={dropdownId}
         data-category-dropdown
-        class="absolute left-1/2 top-full mt-3 hidden w-48 -translate-x-1/2 translate-y-1 rounded-lg border border-border-ink/80 bg-card-bg py-3 opacity-0 shadow-sm transition-all duration-150 pointer-events-none"
+        class="absolute left-1/2 top-full mt-3 hidden w-48 -translate-x-1/2 translate-y-1 rounded-lg border border-border-ink/80 bg-card-bg py-3 opacity-0 shadow-sm transition-all nav-transition pointer-events-none"
         role="menu"
         aria-labelledby={buttonId}
         tabindex="-1"
@@ -66,7 +66,7 @@ const focusRingClass =
             <li>
               <a
                 href={`/categories/${category.slug}`}
-                class="block px-4 py-1.5 transition-colors duration-300 hover:text-primary-text focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-text"
+                class="block px-4 py-1.5 transition-colors nav-transition hover:text-primary-text focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-text"
                 role="menuitem"
                 data-category-link
               >

@@ -14,14 +14,16 @@
     --primary-text: 30 25 21;
     --secondary-text: 82 72 63;
     --muted-text: 128 118 109;
+    --nav-speed: 300ms;
+    --nav-ease: ease;
     color-scheme: light;
   }
 @layer components {
    /* links e botão de categoria: mesma transição */
   .nav-link {
     transition-property: color, border-color;
-    transition-duration: 300ms;
-    transition-timing-function: ease;
+    transition-duration: var(--nav-speed);
+    transition-timing-function: var(--nav-ease);
     border-bottom-width: 1px;          /* borda SEMPRE presente (evita reflow) */
     border-color: transparent;          /* cor muda só no estado ativo/hover */
     -webkit-font-smoothing: antialiased;
@@ -34,12 +36,12 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
-  
-  
+
+
   #desktop-category-button {
     transition-property: color, border-color;
-    transition-duration: 300ms;
-    transition-timing-function: ease;
+    transition-duration: var(--nav-speed);
+    transition-timing-function: var(--nav-ease);
     -webkit-font-smoothing: antialiased;   /* evita “engrossar” no toggle */
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
@@ -48,8 +50,13 @@
   /* Dropdown: mesma fluidez */
   [data-category-dropdown] {
     transition-property: opacity, transform;
-    transition-duration: 300ms;
-    transition-timing-function: linear;
+    transition-duration: var(--nav-speed);
+    transition-timing-function: var(--nav-ease);
+  }
+
+  .nav-transition {
+    transition-duration: var(--nav-speed);
+    transition-timing-function: var(--nav-ease);
   }
 }
 
