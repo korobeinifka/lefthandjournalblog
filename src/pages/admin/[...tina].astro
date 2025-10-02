@@ -1,8 +1,0 @@
----
-const segments = Astro.params.tina ?? [];
-const targetPath = Array.isArray(segments) && segments.length > 0
-  ? `/admin/${segments.join("/")}`
-  : "/admin/index.html";
-
-return Astro.redirect(targetPath);
----
