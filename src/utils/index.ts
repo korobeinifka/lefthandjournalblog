@@ -1,3 +1,7 @@
+import { slugify } from "./slug";
+
+export { slugify };
+
 export function nameToSlug(name: string): string {
-  return name.replace(/\s/g, "-");
+  return slugify(name);
 }
