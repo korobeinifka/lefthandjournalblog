@@ -3,9 +3,11 @@
   "type": "module",
   "version": "0.0.1",
   "scripts": {
-    "dev": "astro dev",
+    "dev": "tinacms dev -c \"astro dev\"",
     "start": "astro dev",
-    "build": "astro check && astro build",
+    "build:cms": "tinacms build",
+    "build:admin-theme": "node ./scripts/patch-admin-head.js",
+    "build": "npm run build:cms && npm run build:admin-theme && astro check && astro build",
     "preview": "astro preview",
     "astro": "astro",
     "format": "prettier --write ."
