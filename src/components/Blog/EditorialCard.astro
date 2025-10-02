@@ -1,12 +1,14 @@
 ---
 import type { CollectionEntry } from "astro:content";
+import { slugify } from "@/utils/slug";
 
 interface Props {
   post: CollectionEntry<"blogs">;
 }
 
 const { post }: Props = Astro.props;
-const { data, slug } = post;
+const { data } = post;
+const slug = slugify(data.title);
 const formattedDate = data.pubDate.toLocaleDateString("en-US", {
   month: "short",
   day: "2-digit",

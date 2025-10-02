@@ -1,5 +1,6 @@
 import rss from "@astrojs/rss";
 import { getCollection } from "astro:content";
+import { slugify } from "@/utils/slug";
 
 export async function GET(context) {
   const posts = await getCollection("blogs");
@@ -8,11 +9,14 @@ export async function GET(context) {
     description:
       "Minimal editorial essays on chess, geopolitics, philosophy, and technology.",
     site: context.site,
-    items: posts.map((post) => ({
+    items: posts.map((post) => {
+      const slug = slugify(post.data.title);
+      return {
       title: post.data.title,
       description: post.data.description,
       pubDate: post.data.pubDate,
-      link: `/blog/${post.slug}/`,
-    })),
+      link: `/blog/${slug}/`,
+    };
+    }),
   });
 }
