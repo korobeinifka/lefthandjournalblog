@@ -28,6 +28,41 @@ The site runs at `http://localhost:4321` by default.
 - Categories are locked to `Chess`, `Geopolitics`, `Philosophy`, and `Technology`. Update `src/utils/categories.ts` if you need to change or extend them.
 - Add or edit Markdown body copy below the frontmatter to update article pages.
 
+## TinaCMS content editing
+
+TinaCMS is configured to edit the Astro content collection directly. The Tina admin UI is
+exposed at `/admin` (served via `src/pages/admin/[...tina].astro`).
+
+### Environment variables
+
+Add the following variables to your `.env` file or hosting provider:
+
+| Variable | Description |
+| --- | --- |
+| `TINA_CLIENT_ID` | Tina Cloud client ID for the project. |
+| `TINA_TOKEN` | Tina Cloud read/write token. |
+| `TINA_BRANCH` | (Optional) Git branch to source content from. Defaults to `main`. |
+
+### Setup steps
+
+1. Install dependencies (requires access to Tina's public npm packages):
+   ```sh
+   npm install
+   ```
+2. Generate the Tina client output:
+   ```sh
+   npx tina@latest init
+   ```
+   This populates `.tina/__generated__` and builds the `/admin` SPA assets.
+3. Start Astro as normal:
+   ```sh
+   npm run dev
+   ```
+
+> **Note**
+> If your environment blocks access to scoped npm packages (e.g. `@tinacms/cli`), request access
+> or configure an authenticated registry mirror before running the commands above.
+
 ## Customising the look and feel
 
 - Global colours, fonts, and theme tokens are defined in `src/styles/global.css` and `tailwind.config.mjs`.
