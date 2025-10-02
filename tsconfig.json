@@ -3,9 +3,11 @@
   "compilerOptions": {
     "strictNullChecks": true,
     "allowJs": true,
+    "checkJs": false,
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"],
     },
   },
+  "exclude": ["node_modules", "public/**"]
 }

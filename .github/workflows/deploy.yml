@@ -1,4 +1,3 @@
-# .github/workflows/deploy-hostinger.yml
 name: Deploy to Hostinger
 
 on:
@@ -9,13 +8,11 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
 
-    # ✅ Injeta os segredos como variáveis de ambiente no job
     env:
       TINA_CLIENT_ID: ${{ secrets.TINA_CLIENT_ID }}
       TINA_TOKEN: ${{ secrets.TINA_TOKEN }}
-      # opcional: informa o branch atual ao Tina (seu config já suporta)
       TINA_BRANCH: main
-      
+      NODE_OPTIONS: --max-old-space-size=4096
 
     steps:
       - name: Checkout
@@ -25,29 +22,20 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'npm'   # habilita cache para npm
+          cache: 'npm'
 
       - name: Install deps
         run: npm ci
 
-      # ✅ Constrói o /admin do Tina antes do build do site
-      - name: Build Tina Admin
-        run: npx tinacms build
-
-      # (Opcional) se você criou o script de tema do admin
-      - name: Patch admin theme (optional)
-        if: ${{ hashFiles('scripts/patch-admin-head.js') != '' }}
-        run: node ./scripts/patch-admin-head.js
-
-      - name: Build (Astro)
+      # O npm run build já faz: tinacms build + patch-admin-head + astro check + astro build
+      - name: Build (Astro + Tina + Patch)
         run: npm run build
 
-      # Sanity check: admin deve existir dentro da saída estática
+      # Sanity check: garante que o admin foi para a saída estática
       - name: Check admin is in output
         run: |
-          ls -la .vercel/output/static/admin || (echo "Admin não encontrado. Verifique 'build.publicFolder'='public' e 'outputFolder'='admin' no tina/config.ts." && exit 1)
+          ls -la .vercel/output/static/admin || (echo "Admin não encontrado. Verifique 'public/admin' e o script de patch." && exit 1)
 
-      # Publica a pasta estática gerada pelo adapter
       - name: Deploy via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
