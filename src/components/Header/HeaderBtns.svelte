@@ -21,6 +21,10 @@
     let searchQuery = '';
     let searchInput: HTMLInputElement | null = null;
     let searchButton: HTMLButtonElement | null = null;
+    let searchDialog: HTMLElement | null = null;
+    let searchOverlay: HTMLDivElement | null = null;
+    let searchWrapper: HTMLDivElement | null = null;
+    let openedBy: HTMLElement | null = null;
     let shortcutLabel = 'Ctrl K';
     let previousOverflow = '';
     let scrollLocked = false;
@@ -103,9 +107,18 @@
     };
 
     const openSearch = async () => {
+        if (typeof document !== 'undefined') {
+            const active = document.activeElement;
+            if (active instanceof HTMLElement) {
+                openedBy = active;
+            } else {
+                openedBy = null;
+            }
+        }
         searchOpen = true;
         await loadSearchIndex();
         await tick();
+        setupDialogAccessibility();
         searchInput?.focus();
     };
 
@@ -114,10 +127,16 @@
             return;
         }
 
+        teardownDialogAccessibility();
         searchOpen = false;
         if (options.restoreFocus !== false) {
-            searchButton?.focus();
+            if (openedBy && typeof document !== 'undefined' && document.contains(openedBy)) {
+                openedBy.focus();
+            } else {
+                searchButton?.focus();
+            }
         }
+        openedBy = null;
     };
 
     const handleSearchKeydown = (event: KeyboardEvent) => {
@@ -170,6 +189,7 @@
         if (typeof document !== 'undefined') {
             document.removeEventListener('keydown', handleGlobalKeydown);
         }
+        teardownDialogAccessibility();
         unlockScroll();
     });
 
@@ -194,6 +214,87 @@
         } else {
             openSearch();
         }
+    };
+
+    const focusableSelector =
+        'a[href], area[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+
+    const getFocusableElements = () => {
+        if (!searchDialog) {
+            return [] as HTMLElement[];
+        }
+        return Array.from(
+            searchDialog.querySelectorAll<HTMLElement>(focusableSelector)
+        ).filter((element) =>
+            !element.hasAttribute('disabled') && element.getAttribute('aria-hidden') !== 'true'
+        );
+    };
+
+    type InertHTMLElement = HTMLElement & { inert: boolean };
+
+    const setBodyInert = (isInert: boolean) => {
+        if (typeof document === 'undefined') {
+            return;
+        }
+
+        Array.from(document.body.children).forEach((child) => {
+            if (child === searchWrapper) {
+                return;
+            }
+            const element = child as InertHTMLElement;
+            element.inert = isInert;
+            if (isInert) {
+                element.setAttribute('inert', '');
+            } else {
+                element.removeAttribute('inert');
+            }
+        });
+    };
+
+    let dialogKeydownHandler: ((event: KeyboardEvent) => void) | null = null;
+
+    const setupDialogAccessibility = () => {
+        if (!searchDialog) {
+            return;
+        }
+
+        teardownDialogAccessibility();
+
+        dialogKeydownHandler = (event: KeyboardEvent) => {
+            if (event.key !== 'Tab') {
+                return;
+            }
+
+            const focusableElements = getFocusableElements();
+            if (focusableElements.length === 0) {
+                return;
+            }
+
+            const first = focusableElements[0];
+            const last = focusableElements[focusableElements.length - 1];
+            const activeElement = document.activeElement as HTMLElement | null;
+
+            if (event.shiftKey) {
+                if (activeElement === first || !searchDialog.contains(activeElement)) {
+                    event.preventDefault();
+                    last.focus();
+                }
+            } else if (activeElement === last || !searchDialog.contains(activeElement)) {
+                event.preventDefault();
+                first.focus();
+            }
+        };
+
+        searchDialog.addEventListener('keydown', dialogKeydownHandler);
+        setBodyInert(true);
+    };
+
+    const teardownDialogAccessibility = () => {
+        if (dialogKeydownHandler && searchDialog) {
+            searchDialog.removeEventListener('keydown', dialogKeydownHandler);
+        }
+        dialogKeydownHandler = null;
+        setBodyInert(false);
     };
 </script>
 
@@ -223,12 +324,17 @@
 </div>
 
 {#if searchOpen}
-    <div class="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto px-4 py-6 sm:py-24 md:py-32">
+    <div
+        bind:this={searchWrapper}
+        class="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto px-4 py-6 sm:py-24 md:py-32"
+    >
         <div
+            bind:this={searchOverlay}
             class="absolute inset-0 bg-primary-bg/80 backdrop-blur-sm"
             on:click={() => closeSearch({ restoreFocus: false })}
         ></div>
         <section
+            bind:this={searchDialog}
             role="dialog"
             aria-modal="true"
             aria-labelledby="global-search-title"
