@@ -14,7 +14,7 @@
     --primary-text: 30 25 21;
     --secondary-text: 82 72 63;
     --muted-text: 128 118 109;
-    --nav-speed: 300ms;
+    --nav-speed: 200ms;
     --nav-ease: ease;
     color-scheme: light;
   }
@@ -55,6 +55,13 @@
   }
 
   .nav-transition {
+    transition-duration: var(--nav-speed);
+    transition-timing-function: var(--nav-ease);
+  }
+
+  /* Unified transition utility for header controls */
+  .ui-transition {
+    transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
     transition-duration: var(--nav-speed);
     transition-timing-function: var(--nav-ease);
   }

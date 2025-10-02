@@ -9,9 +9,9 @@ const isCategoriesActive = pathname.startsWith("/categories");
 
 // usa .nav-link (definida no global.css) para manter borda fixa e transições idênticas
 const navLinkBaseClass =
-  "nav-link inline-flex items-center px-0 pb-1 pt-0 leading-none font-[inherit] tracking-[inherit]";
+  "nav-link ui-transition inline-flex items-center px-0 pb-1 pt-0 leading-none font-[inherit] tracking-[inherit] focus:outline-none";
 const focusRingClass =
-  "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-text";
+  "focus-visible:ring-2 focus-visible:ring-primary-text";
 ---
 
 <nav class="hidden md:block">
@@ -22,6 +22,7 @@ const focusRingClass =
         href="/"
         class:list={[
           navLinkBaseClass,
+          focusRingClass,
           pathname === "/"
             ? "text-primary-text border-primary-text"
             : "text-secondary-text hover:text-primary-text",
@@ -84,6 +85,7 @@ const focusRingClass =
         href="/about"
         class:list={[
           navLinkBaseClass,
+          focusRingClass,
           pathname.startsWith("/about")
             ? "text-primary-text border-primary-text"
             : "text-secondary-text hover:text-primary-text",

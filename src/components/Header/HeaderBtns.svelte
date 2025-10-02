@@ -1,5 +1,6 @@
 <script lang="ts">
     import Icon from '@iconify/svelte';
+    import { portal } from '@/lib/actions/portal';
     import { onDestroy, onMount, tick } from 'svelte';
 
     type SearchEntry = {
@@ -238,7 +239,10 @@
         }
 
         Array.from(document.body.children).forEach((child) => {
-            if (child === searchWrapper) {
+            // Skip the search wrapper itself AND any ancestor that contains it
+            // (e.g., the fixed <header> where this island renders). Marking an
+            // ancestor inert would also inert the dialog and break interaction.
+            if (searchWrapper && (child === searchWrapper || child.contains(searchWrapper))) {
                 return;
             }
             const element = child as InertHTMLElement;
@@ -303,7 +307,7 @@
         bind:this={searchButton}
         type="button"
         on:click={handleSearchButtonClick}
-        class="flex h-10 w-10 items-center justify-center rounded-full border border-border-ink/80 bg-card-bg text-primary-text transition-colors nav-transition focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-text"
+        class="flex h-10 w-10 items-center justify-center rounded-full border border-border-ink/80 bg-card-bg text-primary-text ui-transition focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-text"
         aria-label={searchOpen ? 'Close search' : 'Open search'}
         aria-expanded={searchOpen}
         aria-haspopup="dialog"
@@ -312,7 +316,7 @@
     </button>
     <button
         on:click={toggleTheme}
-        class="flex h-10 w-10 items-center justify-center rounded-full border border-border-ink/80 bg-card-bg text-primary-text transition-colors nav-transition focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-text"
+        class="flex h-10 w-10 items-center justify-center rounded-full border border-border-ink/80 bg-card-bg text-primary-text ui-transition focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-text"
         aria-label={`Activate ${theme === 'light' ? 'dark' : 'light'} mode`}
     >
         {#if theme === 'light'}
@@ -326,6 +330,7 @@
 {#if searchOpen}
     <div
         bind:this={searchWrapper}
+        use:portal
         class="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto px-4 py-6 sm:py-24 md:py-32"
     >
         <div
@@ -347,7 +352,7 @@
                 </div>
                 <button
                     type="button"
-                    class="flex h-9 w-9 items-center justify-center rounded-full border border-border-ink/70 text-secondary-text transition-colors nav-transition hover:text-primary-text focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-text"
+                    class="flex h-9 w-9 items-center justify-center rounded-full border border-border-ink/70 text-secondary-text ui-transition hover:text-primary-text focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-text"
                     on:click={() => closeSearch()}
                     aria-label="Close search"
                 >
