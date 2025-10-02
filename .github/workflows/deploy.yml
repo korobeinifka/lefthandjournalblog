@@ -31,8 +31,8 @@ jobs:
         run: npm ci
 
       # ✅ Constrói o /admin do Tina antes do build do site
-      - #name: Build Tina Admin
-        #run: npx tinacms build
+      #- name: Build Tina Admin
+      #  run: npx tinacms build
 
       # (Opcional) se você criou o script de tema do admin
       - name: Patch admin theme (optional)
