@@ -7,3 +7,19 @@ author: antonio maluf
 heroImage: /IMG_7629.jpeg
 ---
 
+de pequenos desejos
+
+vagarosas saudades
+
+silenciosas lembranças 
+
+
+entre magoas sombrias, momentâneos lampejos 
+
+vagas felicidades 
+
+inatuais esperanças 
+
+de loucura, de crimes 
+
+de pecados, de glória 
