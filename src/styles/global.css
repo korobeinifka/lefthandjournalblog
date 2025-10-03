@@ -14,58 +14,11 @@
     --primary-text: 30 25 21;
     --secondary-text: 82 72 63;
     --muted-text: 128 118 109;
-    --nav-speed: 200ms;
-    --nav-ease: ease;
+    --nav-speed: 220ms;
+    /* use a single easing everywhere for a “snappier” feel */
+    --nav-ease: cubic-bezier(.2,.8,.2,1);
     color-scheme: light;
   }
-@layer components {
-   /* links e botão de categoria: mesma transição */
-  .nav-link {
-    transition-property: color, border-color;
-    transition-duration: var(--nav-speed);
-    transition-timing-function: var(--nav-ease);
-    border-bottom-width: 1px;          /* borda SEMPRE presente (evita reflow) */
-    border-color: transparent;          /* cor muda só no estado ativo/hover */
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    text-rendering: optimizeLegibility;
-    }
-  .nav-stable {
-    font-kerning: normal;
-    font-variant-ligatures: none;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-  }
-
-
-  #desktop-category-button {
-    transition-property: color, border-color;
-    transition-duration: var(--nav-speed);
-    transition-timing-function: var(--nav-ease);
-    -webkit-font-smoothing: antialiased;   /* evita “engrossar” no toggle */
-    -moz-osx-font-smoothing: grayscale;
-    text-rendering: optimizeLegibility;
-  }
-
-  /* Dropdown: mesma fluidez */
-  [data-category-dropdown] {
-    transition-property: opacity, transform;
-    transition-duration: var(--nav-speed);
-    transition-timing-function: var(--nav-ease);
-  }
-
-  .nav-transition {
-    transition-duration: var(--nav-speed);
-    transition-timing-function: var(--nav-ease);
-  }
-
-  /* Unified transition utility for header controls */
-  .ui-transition {
-    transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
-    transition-duration: var(--nav-speed);
-    transition-timing-function: var(--nav-ease);
-  }
-}
 
   @media (prefers-color-scheme: dark) {
     :root {
@@ -113,7 +66,10 @@
     margin: 0;
     min-height: 100vh;
     line-height: 1.6;
-    transition: background-color 0.2s ease, color 0.2s ease;
+    /* align page color transitions to the same timing/easing token */
+    transition:
+      background-color var(--nav-speed) var(--nav-ease),
+      color var(--nav-speed) var(--nav-ease);
   }
 
   main {
@@ -159,5 +115,37 @@
     padding: 1.5rem;
     overflow-x: auto;
   }
+}
 
+/* ===== Components layer: tokens and header utilities ==================== */
+@layer components {
+  /* nav links: fixed bottom border to avoid layout shift on hover */
+  .nav-link {
+    transition-property: color, border-color;
+    transition-duration: var(--nav-speed);
+    transition-timing-function: var(--nav-ease);
+    border-bottom-width: 1px;
+    border-color: transparent;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* dropdown containers (opacity/transform only) */
+  .nav-transition {
+    transition-duration: var(--nav-speed);
+    transition-timing-function: var(--nav-ease);
+  }
+
+  /* single source of truth for interactive elements (buttons/links/icons) */
+  .ui-transition {
+    transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+    transition-duration: var(--nav-speed);
+    transition-timing-function: var(--nav-ease);
+  }
+
+  /* APG focus pattern – no border width changes (no layout shift) */
+  .ui-focus {
+    @apply focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-text;
+  }
 }

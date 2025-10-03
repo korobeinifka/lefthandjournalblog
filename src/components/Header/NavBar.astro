@@ -7,11 +7,9 @@ const buttonId = "desktop-category-button";
 
 const isCategoriesActive = pathname.startsWith("/categories");
 
-// usa .nav-link (definida no global.css) para manter borda fixa e transições idênticas
+// single base for all header items (links + category button)
 const navLinkBaseClass =
-  "nav-link ui-transition inline-flex items-center px-0 pb-1 pt-0 leading-none font-[inherit] tracking-[inherit] focus:outline-none";
-const focusRingClass =
-  "focus-visible:ring-2 focus-visible:ring-primary-text";
+  "nav-link ui-transition ui-focus inline-flex items-center px-0 pb-1 pt-0 leading-none font-[inherit] tracking-[inherit]";
 ---
 
 <nav class="hidden md:block">
@@ -22,7 +20,6 @@ const focusRingClass =
         href="/"
         class:list={[
           navLinkBaseClass,
-          focusRingClass,
           pathname === "/"
             ? "text-primary-text border-primary-text"
             : "text-secondary-text hover:text-primary-text",
@@ -41,7 +38,6 @@ const focusRingClass =
         data-active={isCategoriesActive}
         class:list={[
           navLinkBaseClass,
-          focusRingClass,
           "appearance-none bg-transparent font-[inherit] text-[inherit] tracking-[inherit] leading-none",
           isCategoriesActive
             ? "text-primary-text border-primary-text"
@@ -85,7 +81,6 @@ const focusRingClass =
         href="/about"
         class:list={[
           navLinkBaseClass,
-          focusRingClass,
           pathname.startsWith("/about")
             ? "text-primary-text border-primary-text"
             : "text-secondary-text hover:text-primary-text",

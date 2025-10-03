@@ -330,17 +330,14 @@
         bind:this={menuButton}
         type="button"
         on:click={toggleMenu}
-        class="relative z-50 flex h-11 w-11 items-center justify-center rounded-full border border-border-ink/80 bg-card-bg text-primary-text transition-colors nav-transition focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-text"
+          class="relative z-50 flex h-10 w-10 items-center justify-center rounded-full border border-border-ink/80 bg-card-bg
+         text-secondary-text hover:text-primary-text ui-transition ui-focus"
         aria-expanded={showMenu}
         aria-controls={mobileMenuId}
         aria-haspopup="true"
         aria-label={showMenu ? 'Close navigation' : 'Open navigation'}
     >
-        {#if showMenu}
-            <Icon icon="ri:close-line" class="pointer-events-none h-5 w-5" />
-        {:else}
-            <Icon icon="ri:menu-line" class="pointer-events-none h-5 w-5" />
-        {/if}
+        <Icon icon={showMenu ? 'ri:close-line' : 'ri:menu-line'} class="pointer-events-none h-5 w-5" />
     </button>
 
     {#if showMenu}
