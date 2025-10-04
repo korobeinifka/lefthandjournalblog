@@ -4,6 +4,11 @@ on:
   push:
     branches: [ main ]
 
+# Cancela execuções anteriores enquanto uma nova começa (evita fila)
+concurrency:
+  group: hostinger-deploy-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
@@ -47,5 +52,4 @@ jobs:
           dangerous-clean-slate: false
           exclude: |
             **/.well-known/**
-            **/mail/** 
- 
+            **/mail/**

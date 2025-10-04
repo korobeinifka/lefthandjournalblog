@@ -1,75 +1,59 @@
-// scripts/patch-admin-head.js
-import fs from "node:fs";
+// scripts/patch-admin-head.mjs
+// Mantém o /admin do Tina estável: injeta só favicon e fontes (nada de CSS/JS da app).
+// Aplica no admin do output final (.vercel/output/static/admin/index.html)
+// e, se não existir (ex.: local), aplica em public/admin/index.html.
 
-const file = "public/admin/index.html"; // ajuste: admin está em public
-let html = fs.readFileSync(file, "utf8");
+import { readFile, writeFile, access } from "node:fs/promises";
+import { constants as FS } from "node:fs";
+import path from "node:path";
 
-/** Injeta <link rel="stylesheet" href="/admin/theme.css" /> */
-if (!html.includes('id="tina-custom-theme"')) {
-  html = html.replace(
-    "</head>",
-    `  <link id="tina-custom-theme" rel="stylesheet" href="/admin/theme.css" />\n</head>`
-  );
+const candidates = [
+  path.join(".vercel", "output", "static", "admin", "index.html"),
+  path.join("public", "admin", "index.html"),
+];
+
+async function firstExisting(paths) {
+  for (const p of paths) {
+    try { await access(p, FS.F_OK); return p; } catch {}
+  }
+  return null;
 }
 
-/** Injeta script de tema + botão flutuante + atalho "T" */
-if (!html.includes('id="tina-theme-script"')) {
-  html = html.replace(
-    "</body>",
-    `<script id="tina-theme-script">
-(function () {
-  var KEY = "tina-theme";
-  var saved = localStorage.getItem(KEY);
-  var prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-  var theme = saved || (prefersDark ? "dark" : "light");
-  document.documentElement.setAttribute("data-theme", theme);
-
-  function setTheme(t) {
-    document.documentElement.setAttribute("data-theme", t);
-    localStorage.setItem(KEY, t);
-    btn && (btn.textContent = t === "dark" ? "☀︎" : "☾");
+async function run() {
+  const target = await firstExisting(candidates);
+  if (!target) {
+    console.log("[patch-admin-head] admin/index.html não encontrado (ok se build ainda não gerou).");
+    return;
   }
 
-  // Toggle com tecla "T"
-  window.addEventListener("keydown", function (e) {
-    if (e.key.toLowerCase() === "t" && !e.metaKey && !e.ctrlKey && !e.altKey) {
-      setTheme(document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark");
-    }
-  });
+  let html = await readFile(target, "utf8");
 
-  // Botão flutuante discreto
-  var btn = document.createElement("button");
-  btn.type = "button";
-  btn.textContent = theme === "dark" ? "☀︎" : "☾";
-  btn.setAttribute("aria-label", "Toggle theme");
-  Object.assign(btn.style, {
-    position: "fixed",
-    zIndex: 9999,
-    right: "1rem",
-    bottom: "1rem",
-    width: "36px",
-    height: "36px",
-    borderRadius: "9999px",
-    border: "1px solid var(--border, #ddd)",
-    background: "var(--background, #fff)",
-    color: "var(--text, #000)",
-    fontSize: "18px",
-    lineHeight: "36px",
-    textAlign: "center",
-    boxShadow: "0 2px 8px rgba(0,0,0,.1)",
-    cursor: "pointer"
-  });
-  btn.addEventListener("click", function () {
-    setTheme(document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark");
-  });
-  document.body.appendChild(btn);
+  // evita duplicação se rodar mais de uma vez
+  if (html.includes("<!-- patched-by: lefthandjournal -->")) {
+    console.log("[patch-admin-head] já estava aplicado.");
+    return;
+  }
 
-  window.__tinaTheme = { set: setTheme, get: () => document.documentElement.getAttribute("data-theme") };
-})();
-</script>
-</body>`
-  );
+  const inject = `
+  <!-- patched-by: lefthandjournal -->
+  <link rel="icon" href="/favicon.ico">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+`;
+
+  if (html.includes("</head>")) {
+    html = html.replace("</head>", `${inject}\n</head>`);
+  } else {
+    // fallback raro
+    html = html + inject;
+  }
+
+  await writeFile(target, html, "utf8");
+  console.log(`[patch-admin-head] aplicado em: ${target}`);
 }
 
-fs.writeFileSync(file, html);
-console.log("✔ Patched admin/index.html with theme CSS & script");
+run().catch((e) => {
+  console.error("[patch-admin-head] erro:", e);
+  process.exit(1);
+});

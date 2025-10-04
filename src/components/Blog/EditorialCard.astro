@@ -1,6 +1,5 @@
 ---
 import type { CollectionEntry } from "astro:content";
-import { slugify } from "@/utils/slug";
 
 interface Props {
   post: CollectionEntry<"blogs">;
@@ -8,7 +7,6 @@ interface Props {
 
 const { post }: Props = Astro.props;
 const { data } = post;
-const slug = slugify(data.title);
 const formattedDate = data.pubDate.toLocaleDateString("en-US", {
   month: "short",
   day: "2-digit",
@@ -18,7 +16,7 @@ const heroImage = data.heroImage ?? "/images/placeholder-card.svg";
 const heroImageAlt = data.heroImageAlt ?? data.title;
 ---
 
-<a href={`/blog/${slug}`} class="group block h-full">
+<a href={`/blog/${post.slug}/`} class="group block h-full">
   <article class="flex h-full flex-col overflow-hidden rounded-xl border border-border-ink/80 bg-card-bg transition-transform duration-200 group-hover:-translate-y-1">
     <div class="relative aspect-[16/9] w-full overflow-hidden border-b border-border-ink/60">
       <img
