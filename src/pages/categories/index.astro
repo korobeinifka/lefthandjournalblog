@@ -21,30 +21,34 @@ const categories = CATEGORY_LINKS.map(({ label, slug }) => ({
 
 <PageLayout title="Categories">
   <section class="flex flex-col space-y-3 md:space-y-4">
-    <!-- apenas o rótulo, sem título gigantesco nem descrição -->
-    <div class="mx-auto w-full max-w-6xl">
+    <!-- rótulo alinhado à mesma régua dos cards -->
+    <div class="mx-auto w-full md:max-w-[46rem] lg:max-w-[50rem] xl:max-w-[52rem]">
       <p class="text-[12px] font-semibold uppercase tracking-[0.16em] text-muted-text">CATEGORIES</p>
     </div>
 
-    <ul class="grid gap-6 md:grid-cols-2">
-      {categories.map((category) => (
-        <li>
-          <a
-            href={`/categories/${category.slug}`}
-            class="flex h-full flex-col justify-between rounded border border-border-ink/70 bg-card-bg px-6 py-6 ui-transition hover:border-border-ink/90 hover:bg-surface-bg"
-          >
-            <div class="flex flex-col gap-2">
-              <p class="text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-text">
-                {category.count} article{category.count === 1 ? "" : "s"}
-              </p>
-              <!-- mesma família/peso usados nos demais títulos -->
-              <h2 class="text-xl font-semibold text-primary-text">{category.label}</h2>
-              <p class="text-sm text-secondary-text">{category.summary}</p>
-            </div>
-            <span class="mt-5 text-xs font-semibold uppercase tracking-[0.16em] text-secondary-text">View stories</span>
-          </a>
-        </li>
-      ))}
-    </ul>
+    <!-- grade alinhada à mesma régua dos cards -->
+    <div class="mx-auto w-full md:max-w-[46rem] lg:max-w-[50rem] xl:max-w-[52rem]">
+      <ul class="grid gap-6 md:grid-cols-2">
+        {categories.map((category) => (
+          <li>
+            <a
+              href={`/categories/${category.slug}`}
+              class="flex h-full flex-col justify-between rounded border border-border-ink/70 bg-card-bg px-6 py-6 ui-transition hover:border-border-ink/90 hover:bg-surface-bg"
+            >
+              <div class="flex flex-col gap-2">
+                <p class="text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-text">
+                  {category.count} article{category.count === 1 ? "" : "s"}
+                </p>
+                <h2 class="text-xl font-semibold text-primary-text">{category.label}</h2>
+                <p class="text-sm text-secondary-text">{category.summary}</p>
+              </div>
+              <span class="mt-5 text-xs font-semibold uppercase tracking-[0.16em] text-secondary-text">
+                View stories
+              </span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
   </section>
 </PageLayout>

@@ -16,29 +16,29 @@ const dateLabel = data.pubDate
 const showThumbnail = !!data.heroImage;
 const thumbnailAlt = data.heroImageAlt ?? data.title;
 
-/* ligeiro ajuste: gap maior e thumb mobile um pouco menor */
+/* ~90% look: menos padding, fontes menores, thumb menor */
 const layoutClass = showThumbnail
-  ? "grid grid-cols-[minmax(0,1fr)_7.5rem] md:grid-cols-[minmax(0,1fr)_10rem] items-center gap-5 p-4 md:p-5"
-  : "grid items-center gap-4 p-4 md:p-5";
+  ? "grid grid-cols-[minmax(0,1fr)_6.5rem] md:grid-cols-[minmax(0,1fr)_9rem] items-center gap-4 p-3 md:p-4"
+  : "grid items-center gap-3 p-3 md:p-4";
 ---
 
 <a
   href={href}
-  class="group block mx-auto md:max-w-[52rem] lg:max-w-[56rem] rounded border border-border-ink/70 bg-card-bg ui-transition hover:border-border-ink/90 hover:bg-surface-bg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-text"
+  class="group block mx-auto md:max-w-[46rem] lg:max-w-[50rem] xl:max-w-[52rem] rounded border border-border-ink/70 bg-card-bg ui-transition hover:border-border-ink/90 hover:bg-surface-bg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-text"
 >
   <div class={layoutClass}>
     <div class="min-w-0">
-      <div class="flex flex-wrap items-center gap-2 text-[11px] md:text-xs font-semibold uppercase tracking-[0.28em] text-muted-text">
+      <div class="flex flex-wrap items-center gap-2 text-[10px] md:text-[11px] font-semibold uppercase tracking-[0.28em] text-muted-text">
         {data.category && <span>{data.category}</span>}
         {dateLabel && (<><span aria-hidden="true">/</span><span>{dateLabel}</span></>)}
       </div>
 
-      <h3 class="mt-0.5 text-lg md:text-xl font-semibold leading-snug text-primary-text ui-transition group-hover:text-primary-text">
+      <h3 class="mt-0.5 text-base md:text-lg font-semibold leading-snug text-primary-text ui-transition group-hover:text-primary-text">
         {data.title}
       </h3>
 
       {data.description && (
-        <p class="mt-1 text-sm leading-snug text-secondary-text">
+        <p class="mt-1 text-[13px] leading-snug text-secondary-text">
           {data.description}
         </p>
       )}
@@ -51,7 +51,7 @@ const layoutClass = showThumbnail
           alt={thumbnailAlt}
           loading="lazy"
           decoding="async"
-          class="h-24 w-24 md:h-28 md:w-40 object-cover rounded"
+          class="h-20 w-20 md:h-24 md:w-36 object-cover rounded"
         />
       </div>
     )}

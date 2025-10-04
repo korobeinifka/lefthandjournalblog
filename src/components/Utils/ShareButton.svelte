@@ -1,90 +1,38 @@
 <script lang="ts">
-    import Icon from '@iconify/svelte';
-    import { onDestroy, onMount } from 'svelte';
+  import Icon from '@iconify/svelte';
+  export let url = '';
+  export let title = 'Share';
 
-    export let url = '';
-    export let title = '';
+  let copied = false;
 
-    let shareSupported = false;
-    let copied = false;
-    let resetTimer: ReturnType<typeof setTimeout> | null = null;
-
-    const getShareUrl = () => {
-        if (url) {
-            return url;
-        }
-
-        if (typeof window !== 'undefined') {
-            return window.location.href;
-        }
-
-        return '';
-    };
-
-    const clearTimer = () => {
-        if (resetTimer) {
-            clearTimeout(resetTimer);
-            resetTimer = null;
-        }
-    };
-
-    const handleCopy = async (shareUrl: string) => {
-        try {
-            if (typeof navigator !== 'undefined' && navigator.clipboard) {
-                await navigator.clipboard.writeText(shareUrl);
-                copied = true;
-                clearTimer();
-                resetTimer = setTimeout(() => {
-                    copied = false;
-                }, 2000);
-            }
-        } catch (error) {
-            copied = false;
-        }
-    };
-
-    const handleShare = async () => {
-        const shareUrl = getShareUrl();
-        const shareTitle = title || 'Read this post on Lefthand Journal';
-
-        if (!shareUrl) {
-            return;
-        }
-
-        try {
-            if (shareSupported && typeof navigator !== 'undefined') {
-                await navigator.share({ url: shareUrl, title: shareTitle });
-                return;
-            }
-        } catch (error) {
-            // fall back to copying when native share fails
-        }
-
-        await handleCopy(shareUrl);
-    };
-
-    onMount(() => {
-        shareSupported = typeof navigator !== 'undefined' && typeof navigator.share === 'function';
-    });
-
-    onDestroy(() => {
-        clearTimer();
-    });
+  async function handleShare() {
+    try {
+      if (navigator.share) {
+        await navigator.share({ url, title });
+      } else {
+        await navigator.clipboard.writeText(url);
+        copied = true;
+        setTimeout(() => (copied = false), 1500);
+      }
+    } catch {
+      /* usuário cancelou/não suportado */
+    }
+  }
 </script>
 
-<div class="relative inline-flex items-center" data-share-button>
-    <button
-        type="button"
-        on:click={handleShare}
-        class="inline-flex items-center gap-1.5 rounded-full border border-border-ink/60 bg-card-bg/80 px-3 py-1.5 text-[0.7rem] font-semibold uppercase tracking-[0.2em] text-secondary-text transition-colors duration-200 hover:border-primary-text hover:text-primary-text focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-text"
-    >
-        <Icon icon={shareSupported ? 'ri:share-forward-line' : 'ri:file-copy-line'} class="h-4 w-4 flex-shrink-0" />
-        <span class="leading-none">Share</span>
-    </button>
-    <span class="sr-only" aria-live="polite">{copied ? 'Link copied to clipboard' : ''}</span>
-    {#if copied}
-        <span class="absolute left-1/2 top-full mt-2 -translate-x-1/2 rounded-lg border border-border-ink/70 bg-card-bg px-3 py-1 text-xs font-semibold uppercase tracking-[0.3em] text-primary-text shadow-sm">
-            Copied
-        </span>
-    {/if}
-</div>
+<button
+  type="button"
+  on:click={handleShare}
+  class="inline-flex items-center rounded
+         gap-2 md:gap-2
+         px-2 py-1.5 md:px-2 md:py-1
+         text-[11px] md:text-xs font-semibold uppercase
+         tracking-[0.16em] md:tracking-[0.20em]
+         text-secondary-text hover:text-primary-text
+         bg-transparent border-0 shadow-none
+         focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-text"
+  aria-label="Share this post"
+>
+  <Icon icon="ri:share-forward-line" class="h-3.5 w-3.5 md:h-4 md:w-4" />
+  <span>{copied ? 'COPIED' : 'SHARE'}</span>
+</button>

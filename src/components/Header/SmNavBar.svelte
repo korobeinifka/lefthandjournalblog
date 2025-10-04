@@ -50,7 +50,8 @@
   onDestroy(() => { removeOutside?.(); removeOutside = null; });
 </script>
 
-<div class="relative">
+<!-- Define var com fallback; pode sobrescrever via CSS/parent se quiser -->
+<div class="relative [--sm-menu-zoom:0.9]">
   <button
     bind:this={menuButton}
     type="button"
@@ -64,11 +65,19 @@
   </button>
 
   {#if showMenu}
-    <div class="fixed inset-0 z-40 bg-primary-bg/70 backdrop-blur-sm transition-opacity duration-300 ease-[var(--nav-ease)]" on:click={() => closeMenu()}></div>
+    <div
+      class="fixed inset-0 z-40 bg-primary-bg/70 backdrop-blur-sm transition-opacity duration-300 ease-[var(--nav-ease)]"
+      on:click={() => closeMenu()}
+    />
 
+    <!-- PAINEL com escala 0.9 -->
     <nav
       bind:this={navPanel}
-      class="fixed right-3 top-14 z-50 w-72 max-w-[85vw] rounded border border-border-ink/80 bg-card-bg shadow-xl transition-transform duration-300 ease-[var(--nav-ease)]"
+      role="dialog"
+      aria-modal="true"
+      data-sm-menu
+      class="fixed right-3 top-14 z-50 w-72 max-w-[85vw] rounded border border-border-ink/80 bg-card-bg shadow-xl transition-transform duration-300 ease-[var(--nav-ease)] md:hidden"
+      style="transform: scale(var(--sm-menu-zoom, 0.9)); transform-origin: top right; will-change: transform;"
     >
       <ul class="p-3 text-secondary-text">
         <li>
@@ -85,6 +94,7 @@
             <span>CATEGORY</span>
             <Icon icon={showCats ? 'ri:arrow-up-s-line' : 'ri:arrow-down-s-line'} class="h-4 w-4" />
           </button>
+
           {#if showCats}
             <ul class="mt-1 space-y-1">
               {#each CATEGORY_LINKS as item}
@@ -94,16 +104,15 @@
                   </a>
                 </li>
               {/each}
-              <!-- NEW: divisor + link final -->
               <li><div class="mx-4 my-1 h-px bg-border-ink/60"></div></li>
               <li>
                 <a
-                    href="/categories"
-                    class="block rounded-[6px] px-4 py-2 text-xs uppercase tracking-[0.24em] hover:text-primary-text ui-transition"
-                    on:click={() => closeMenu({ restoreFocus: false })}
+                  href="/categories"
+                  class="block rounded-[6px] px-4 py-2 text-xs uppercase tracking-[0.24em] hover:text-primary-text ui-transition"
+                  on:click={() => closeMenu({ restoreFocus: false })}
                 >
-                    OUTRAS
-                 </a>
+                  OUTRAS
+                </a>
               </li>
             </ul>
           {/if}
@@ -115,4 +124,4 @@
       </ul>
     </nav>
   {/if}
-</div> 
+</div>
