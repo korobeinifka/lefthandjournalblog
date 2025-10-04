@@ -60,7 +60,8 @@ const blogsCollection: Collection = {
     { type: "string", name: "heroImageAlt", label: "Hero Image Alt Text" },
     { type: "rich-text", name: "body", label: "Body", isBody: true },
   ],
-};
+}; 
 
 const schema = { collections: [blogsCollection] };
 export default schema;
+ 
