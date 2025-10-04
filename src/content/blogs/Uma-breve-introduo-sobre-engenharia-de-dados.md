@@ -2,7 +2,8 @@
 title: Uma breve introdução sobre engenharia de dados
 description: >-
   Àrea que vem ganhando destaque nas notícias, teve um aumento de 390% nas
-  buscas do Google.
+  buscas do Google. Àrea que vem ganhando destaque nas notícias, teve um aumento
+  de 390% nas buscas do Google.
 pubDate: 2025-10-02T00:00:00.000Z
 category: Technology
 author: antonio maluf
