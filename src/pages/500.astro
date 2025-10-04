@@ -1,0 +1,22 @@
+---
+import PageLayout from "@/layouts/PageLayout.astro";
+---
+
+<PageLayout title="Erro interno">
+  <section class="relative isolate min-h-[76vh] sm:min-h-[78vh] overflow-hidden rounded border border-border-ink/70">
+    <!-- Conteúdo -->
+    <div class="relative z-10 mx-auto flex min-h-[76vh] max-w-xl flex-col items-center justify-center gap-6 px-6 text-center">
+      <p class="text-[11px] uppercase tracking-[0.14em] text-muted-text">erro 500 • internal server error</p>
+      <h1 class="text-2xl sm:text-3xl font-semibold text-primary-text">Opa — erro interno :(</h1>
+      <p class="max-w-md text-sm sm:text-base text-secondary-text">
+        Deu algum B.O aqui do nosso lado. Já já o site volta.
+      </p>
+      <a
+        href="/"
+        class="inline-flex items-center justify-center rounded border border-border-ink/70 bg-card-bg px-5 py-2 text-sm font-semibold ui-transition hover:border-border-ink/90 hover:bg-surface-bg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-text"
+      >
+        ← Voltar para a Home
+      </a>
+    </div>
+  </section>
+</PageLayout>

@@ -13,26 +13,23 @@ var CATEGORY_LINKS = CATEGORY_OPTIONS.map((label) => ({
   slug: label.toLowerCase()
 }));
 
+// src/utils/slug.ts
+function slugify(value) {
+  return value.trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").replace(/-{2,}/g, "-");
+}
+
 // tina/schema.ts
 var blogsCollection = {
   name: "blogs",
   label: "Blog Posts",
   path: "src/content/blogs",
   format: "md",
-  // === Ajuste de slug/filename (IMPORTANTE) ===
   ui: {
     filename: {
       slugify: (values) => {
-        const rawTitle = (values?.title || "untitled").trim();
-        let slug = rawTitle.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/-{2,}/g, "-").replace(/^-+|-+$/g, "");
-        if (!slug) slug = "untitled";
-        const d = /* @__PURE__ */ new Date();
-        const yyyy = d.getFullYear();
-        const mm = String(d.getMonth() + 1).padStart(2, "0");
-        const dd = String(d.getDate()).padStart(2, "0");
-        slug = `${yyyy}${mm}${dd}-${slug}`;
-        if (slug.length > 60) slug = slug.slice(0, 60).replace(/-+$/g, "");
-        return slug;
+        const raw = (values?.title || "untitled").trim();
+        const slug = slugify(raw);
+        return slug || "untitled";
       }
     }
   },
