@@ -71,7 +71,7 @@ const blogsCollection: Collection = {
     // corpo do post no editor
     { type: "rich-text", name: "body", label: "Body", isBody: true },
   ],
-};
+}; 
 
 const schema = { collections: [blogsCollection] };
 export default schema;
