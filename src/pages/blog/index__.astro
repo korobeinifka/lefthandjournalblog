@@ -1,0 +1,28 @@
+---
+import PageLayout from "@/layouts/PageLayout.astro";
+import { getCollection, type CollectionEntry } from "astro:content";
+import PostListItem from "@/components/PostListItem.astro";
+
+const posts: CollectionEntry<"blogs">[] = (await getCollection("blogs"))
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+---
+
+<PageLayout>
+  <section class="flex flex-col gap-8">
+    <!-- rótulo alinhado à mesma régua dos cards -->
+    <div class="mx-auto w-full md:max-w-[46rem] lg:max-w-[50rem] xl:max-w-[52rem]">
+      <p class="text-xs font-semibold uppercase tracking-[0.35em] text-muted-text">
+        RASCUNHOS DA MÃO ESQUERDA
+      </p>
+    </div>
+
+    <!-- POSTS -->
+    <ul class="space-y-4 md:space-y-5">
+      {posts.map((post) => (
+        <li class="py-1">
+          <PostListItem post={post} />
+        </li>
+      ))}
+    </ul>
+  </section>
+</PageLayout>
