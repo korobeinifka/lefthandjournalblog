@@ -29,3 +29,21 @@ Conclusão
 Se você está lendo isto, é sinal de que a publicação está funcionando! 🚀
 
 Agora posso começar a me preocupar menos com a estrutura e mais com o conteúdo.
+
+```python
+# This program calculates the sum of two numbers and prints the result.
+num1 = 10
+num2 = 25
+sum_result = num1 + num2
+print(f"The sum of {num1} and {num2} is: {sum_result}")
+```
+
+```mermaid
+%% This won't render without implementing a rendering engine (e.g. mermaid on npm)
+flowchart TD
+    id1(this is an example flow diagram)
+    --> id2(modify me to see changes!)
+    id2
+    --> id3(Click the top button to preview the changes)
+    --> id4(Learn about mermaid diagrams - mermaid.js.org)
+```
