@@ -47,3 +47,12 @@ flowchart TD
     --> id3(Click the top button to preview the changes)
     --> id4(Learn about mermaid diagrams - mermaid.js.org)
 ```
+
+| A | B | C | D | E | F |
+| - | - | - | - | - | - |
+| 1 | 2 | 3 | 4 | 5 | 6 |
+|   |   |   |   |   |   |
+|   |   |   |   |   |   |
+|   |   |   |   |   |   |
+|   |   |   |   |   |   |
+|   |   |   |   |   |   |
