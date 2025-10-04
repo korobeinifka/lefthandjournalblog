@@ -2,7 +2,7 @@
 title: "Pequenos hábitos, grandes resultados"
 description: "O poder de rotinas minúsculas e acumuladas."
 pubDate: 2025-10-04T10:40:00.000Z
-category: Productivity
+category: Geopolitics
 author: "antonio maluf"
 heroImage: /images/placeholder-card.svg
 heroImageAlt: "Relógio e blocos representando hábitos"

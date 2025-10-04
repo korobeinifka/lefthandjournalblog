@@ -2,7 +2,7 @@
 title: "Fotografia com luz natural"
 description: "Três posições de luz que mudam sua foto."
 pubDate: 2025-10-04T11:30:00.000Z
-category: Photography
+category: Chess
 author: "antonio maluf"
 heroImage: /images/placeholder-card.svg
 heroImageAlt: "Câmera e feixe de luz natural"

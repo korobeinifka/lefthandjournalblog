@@ -2,7 +2,7 @@
 title: "Mapa mental de viagens"
 description: "Planejamento leve: um mapa mental resolve 80%."
 pubDate: 2025-10-04T11:00:00.000Z
-category: Travel
+category: Chess
 author: "antonio maluf"
 heroImage: /images/placeholder-card.svg
 heroImageAlt: "Mapa com rotas"

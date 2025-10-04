@@ -2,7 +2,7 @@
 title: "Mapa de referência tipográfica"
 description: "Como escolher fontes e pesos para leitura confortável."
 pubDate: 2025-10-04T10:50:00.000Z
-category: Design
+category: Chess
 author: "antonio maluf"
 heroImage: /images/placeholder-card.svg
 heroImageAlt: "Amostras tipográficas"

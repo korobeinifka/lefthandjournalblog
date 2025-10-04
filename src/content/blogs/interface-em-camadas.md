@@ -2,7 +2,7 @@
 title: "Interface em camadas"
 description: "Como compor UI com camadas visuais e de interação."
 pubDate: 2025-10-04T10:10:00.000Z
-category: Design
+category: Technology
 author: "antonio maluf"
 heroImage: /images/placeholder-card.svg
 heroImageAlt: "Wireframe de interface em camadas"

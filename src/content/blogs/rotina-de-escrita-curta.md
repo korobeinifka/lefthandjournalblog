@@ -2,7 +2,7 @@
 title: "Rotina de escrita curta"
 description: "Cinco blocos de 20 minutos para manter a mão aquecida."
 pubDate: 2025-10-04T10:20:00.000Z
-category: Writing
+category: Technology
 author: "antonio maluf"
 heroImage: /images/placeholder-card.svg
 heroImageAlt: "Caderno com anotações rápidas"

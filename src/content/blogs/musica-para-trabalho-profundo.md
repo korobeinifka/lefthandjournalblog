@@ -2,7 +2,7 @@
 title: "Música para trabalho profundo"
 description: "Faixas sem letra ajudam a manter a atenção estável."
 pubDate: 2025-10-04T11:20:00.000Z
-category: Music
+category: Philosophy
 author: "antonio maluf"
 heroImage: /images/placeholder-card.svg
 heroImageAlt: "Fone de ouvido e ondas sonoras"
