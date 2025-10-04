@@ -8,4 +8,4 @@ export const slugify = (s: string) =>
     .replace(/[^a-z0-9]+/g, "-")      // tudo que não for a-z0-9 vira hífen
     .replace(/-{2,}/g, "-")           // colapsa múltiplos hífens
     .replace(/^-+|-+$/g, "");         // tira hífen das pontas
- 
+  
