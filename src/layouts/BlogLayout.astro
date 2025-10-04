@@ -5,11 +5,13 @@ import ShareButton from "@/components/Utils/ShareButton.svelte";
 
 const { title, description, pubDate, author, heroImage, heroImageAlt, category } =
   Astro.props.data as CollectionEntry<"blogs">["data"];
+
 const formattedDate = pubDate.toLocaleDateString("en-US", {
   year: "numeric",
   month: "long",
   day: "numeric",
 });
+
 const shareUrl = Astro.site
   ? new URL(Astro.url.pathname, Astro.site).toString()
   : Astro.url.href;
@@ -18,13 +20,22 @@ const shareUrl = Astro.site
 <PageLayout title={title} description={description}>
   <article class="mx-auto flex w-full max-w-3xl flex-col gap-12 py-6 sm:py-10">
     <header class="flex flex-col gap-6">
+      <!-- Categoria -->
       <p class="text-xs font-semibold uppercase tracking-[0.35em] text-muted-text">
         {category}
       </p>
-      <h1 class="font-display text-4xl leading-tight text-primary-text sm:text-5xl">
+
+      <!-- TÍTULO: agora igual ao PostListItem, só que maior -->
+      <h1 class="mt-0.5 text-3xl md:text-4xl font-semibold leading-snug text-primary-text">
         {title}
       </h1>
+
+      <!-- SUBTÍTULO REMOVIDO -->
+      {/*
       <p class="text-lg text-secondary-text">{description}</p>
+      */}
+
+      <!-- Autor + data + share -->
       <div class="flex flex-wrap items-center gap-3 max-[360px]:flex-col max-[360px]:items-start">
         <div class="flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-secondary-text">
           <span class="font-semibold text-primary-text">By {author}</span>
@@ -33,12 +44,21 @@ const shareUrl = Astro.site
         </div>
         <ShareButton client:idle url={shareUrl} title={title} />
       </div>
+
+      <!-- Imagem destaque -->
       {heroImage && (
         <figure class="overflow-hidden rounded-xl border border-border-ink/70 bg-surface-bg">
-          <img src={heroImage} alt={heroImageAlt ?? title} class="h-full w-full object-cover" loading="lazy" />
+          <img
+            src={heroImage}
+            alt={heroImageAlt ?? title}
+            class="h-full w-full object-cover"
+            loading="lazy"
+          />
         </figure>
       )}
     </header>
+
+    <!-- Corpo -->
     <section class="flex flex-col gap-10">
       <slot />
     </section>
