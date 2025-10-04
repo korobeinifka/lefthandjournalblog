@@ -47,5 +47,5 @@ jobs:
           dangerous-clean-slate: false
           exclude: |
             **/.well-known/**
-            **/mail/**
+            **/mail/** 
  
