@@ -1,12 +1,13 @@
 ﻿---
 import type { CollectionEntry } from "astro:content";
+import { slugify } from "@/utils/slug";
 
 interface Props { post: CollectionEntry<"blogs">; }
 const { post }: Props = Astro.props;
 const { data } = post;
 
-// use SEMPRE o slug do filesystem (gerado pelo filename criado pelo Tina)
-const href = `/blog/${post.slug}/`;
+const entrySlug = post.slug ?? slugify(data.title);
+const href = `/blog/${entrySlug}`;
 
 const dateLabel = data.pubDate
   ? new Date(data.pubDate).toLocaleDateString("en-US", { month: "short", day: "2-digit", year: "numeric" })

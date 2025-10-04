@@ -5,15 +5,10 @@
   "scripts": {
     "dev": "tinacms dev -c \"astro dev\"",
     "start": "astro dev",
-
     "prebuild": "node scripts/gen-favicons.mjs",
-
     "build:cms": "tinacms build",
-
-    "build:admin-theme": "node scripts/patch-admin-head.mjs",
-
-    "build": "cross-env NODE_OPTIONS=--max-old-space-size=4096 npm run build:cms && astro check && astro build && node scripts/patch-admin-head.mjs",
-
+    "build:admin-theme": "node ./scripts/patch-admin-head.js",
+    "build": "cross-env NODE_OPTIONS=--max-old-space-size=4096 npm run build:cms && npm run build:admin-theme && astro check && astro build",
     "preview": "astro preview",
     "astro": "astro",
     "format": "prettier --write ."
