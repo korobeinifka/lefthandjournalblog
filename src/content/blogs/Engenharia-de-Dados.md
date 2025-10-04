@@ -1,6 +1,11 @@
 ---
 title: Engenharia de Dados
-description: blalblalbalblabl
+description: >-
+  Engenharia de DadosEngenharia de DadosEngenharia de DadosEngenharia de
+  DadosEngenharia de DadosEngenharia de DadosEngenharia de DadosEngenharia de
+  DadosEngenharia de DadosEngenharia de DadosEngenharia de DadosEngenharia de
+  DadosEngenharia de DadosEngenharia de DadosEngenharia de DadosEngenharia de
+  Dados
 pubDate: 2025-10-02T00:00:00.000Z
 category: Technology
 author: antonio maluf
