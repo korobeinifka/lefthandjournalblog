@@ -50,3 +50,4 @@ const blogsCollection: Collection = {
 
 const schema = { collections: [blogsCollection] };
 export default schema;
+
