@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "tinacms dev -c \"astro dev\"",
     "start": "astro dev",
+    "prebuild": "node scripts/gen-favicons.mjs",
     "build:cms": "tinacms build",
     "build:admin-theme": "node ./scripts/patch-admin-head.js",
     "build": "cross-env NODE_OPTIONS=--max-old-space-size=4096 npm run build:cms && npm run build:admin-theme && astro check && astro build",
@@ -31,6 +32,7 @@
     "@tailwindcss/typography": "^0.5.13",
     "@tinacms/cli": "1.11.0",
     "cross-env": "^10.1.0",
+    "favicons": "^7.2.0",
     "prettier": "^3.2.4",
     "prettier-plugin-astro": "^0.13.0"
   }

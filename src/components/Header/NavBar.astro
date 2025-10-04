@@ -1,254 +1,148 @@
 ---
 import { CATEGORY_LINKS } from "@/utils/categories";
-
 const { pathname } = Astro.url;
-const dropdownId = "desktop-category-dropdown";
-const buttonId = "desktop-category-button";
-
 const isCategoriesActive = pathname.startsWith("/categories");
 
-// single base for all header items (links + category button)
-const navLinkBaseClass =
-  "nav-link ui-transition ui-focus inline-flex items-center px-0 pb-1 pt-0 leading-none font-[inherit] tracking-[inherit]";
+const linkBase =
+  "nav-link ui-transition ui-focus inline-flex items-center px-0 pb-[3px] pt-0 leading-none font-[inherit] tracking-[inherit]";
 ---
 
 <nav class="hidden md:block">
   <ul class="flex items-center gap-8 text-sm font-semibold uppercase tracking-[0.2em] leading-none">
-    <!-- HOME -->
+    <!-- ... HOME link unchanged ... -->
     <li>
       <a
         href="/"
-        class:list={[
-          navLinkBaseClass,
-          pathname === "/"
-            ? "text-primary-text border-primary-text"
-            : "text-secondary-text hover:text-primary-text",
-        ]}
+        class={`${linkBase} ${pathname === "/" ? "border-b border-border-ink/80" : "border-b border-transparent"}`}
       >
-        Home
+        HOME
       </a>
     </li>
 
-    <!-- CATEGORY (dropdown) -->
-    <li class="relative" data-category-root>
-      <button
-        id={buttonId}
-        data-category-button
-        type="button"
-        data-active={isCategoriesActive}
-        class:list={[
-          navLinkBaseClass,
-          "appearance-none bg-transparent font-[inherit] text-[inherit] tracking-[inherit] leading-none",
-          isCategoriesActive
-            ? "text-primary-text border-primary-text"
-            : "text-secondary-text hover:text-primary-text",
-        ]}
+
+    <li class="relative" data-nav-dropdown>
+      <a
+        href="/categories"
+        role="button"
+        data-nav-trigger
+        aria-haspopup="true"
         aria-expanded="false"
-        aria-controls={dropdownId}
+        class={`${linkBase} ${isCategoriesActive ? "border-b border-border-ink/80" : "border-b border-transparent"}`}
       >
         CATEGORY
-      </button>
+      </a>
 
       <div
-        id={dropdownId}
-        data-category-dropdown
-        class="absolute left-1/2 top-full mt-3 hidden w-48 -translate-x-1/2 translate-y-1 rounded-lg border border-border-ink/80 bg-card-bg py-3 opacity-0 shadow-sm transition-opacity transition-transform nav-transition pointer-events-none"
-        role="menu"
-        aria-labelledby={buttonId}
-        tabindex="-1"
-        hidden
-      >
-        <ul class="flex flex-col gap-2 text-xs font-semibold uppercase tracking-[0.3em] text-secondary-text">
-          {CATEGORY_LINKS.map((category) => (
+        data-nav-panel
+        class="invisible pointer-events-none absolute left-1/2 top-full z-30 mt-3 w-64 -translate-x-1/2 translate-y-1
+               rounded border border-border-ink/80 bg-card-bg p-2 opacity-0 shadow-xl
+               transition-[opacity,transform] duration-[var(--nav-speed)] ease-[var(--nav-ease)]
+               before:absolute before:-top-3 before:left-0 before:right-0 before:h-3 before:content-['']
+               data-[open='true']:visible data-[open='true']:pointer-events-auto data-[open='true']:opacity-100 data-[open='true']:translate-y-0">
+        <ul class="flex flex-col">
+          {CATEGORY_LINKS.map((c) => (
             <li>
-              <a
-                href={`/categories/${category.slug}`}
-                class="block px-4 py-1.5 transition-colors nav-transition hover:text-primary-text focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-text"
-                role="menuitem"
-                data-category-link
-              >
-                {category.label}
+              <a href={`/categories/${c.slug}`} class="block rounded px-3 py-2 text-xs uppercase tracking-[0.28em] text-secondary-text hover:text-primary-text ui-transition">
+                {c.label}
               </a>
             </li>
           ))}
+          <li class="my-1 h-px bg-border-ink/60"></li>
+          <li>
+            <a href="/categories" class="block rounded px-3 py-2 text-xs uppercase tracking-[0.28em] text-secondary-text hover:text-primary-text ui-transition">
+              OUTRAS
+            </a>
+          </li>
         </ul>
       </div>
     </li>
 
-    <!-- ABOUT -->
     <li>
       <a
         href="/about"
-        class:list={[
-          navLinkBaseClass,
-          pathname.startsWith("/about")
-            ? "text-primary-text border-primary-text"
-            : "text-secondary-text hover:text-primary-text",
-        ]}
+        class={`${linkBase} ${pathname.startsWith("/about") ? "border-b border-border-ink/80" : "border-b border-transparent"}`}
       >
-        About
+        ABOUT
       </a>
     </li>
+
   </ul>
 </nav>
 
 <script is:inline>
   (() => {
-    /** @type {Window & Record<string, { teardown?: () => void } | undefined>} */
-    const globalWindow = window;
-    const STATE_KEY = "__lfjDesktopCategoryDropdown";
+    if (typeof window === 'undefined') return;
 
-    globalWindow[STATE_KEY]?.teardown?.();
+    const ROOT = '[data-nav-dropdown]';
+    const TRIGGER = '[data-nav-trigger]';
+    const PANEL = '[data-nav-panel]';
+    const OPEN_DELAY = 70;   // ms – small head-start so it doesn’t “snap”
+    const CLOSE_DELAY = 120; // ms – linger to avoid jitter
 
-    /** @type {(() => void) | null} */
-    let cleanupDropdown = null;
+    const cleanups = new Map();
 
-    const isHTMLElement = (value) => value instanceof HTMLElement;
-    const isAnchorElement = (value) => value instanceof HTMLAnchorElement;
-    const isNode = (value) => value instanceof Node;
+    const setup = (root) => {
+      const trigger = root.querySelector(TRIGGER);
+      const panel = root.querySelector(PANEL);
+      if (!(trigger && panel)) return () => {};
 
-    const initDropdown = () => {
-      cleanupDropdown?.();
-      cleanupDropdown = null;
+      let open = false;
+      let tIn = 0, tOut = 0;
 
-      const root = document.querySelector("[data-category-root]");
-      if (!isHTMLElement(root)) return;
-
-      const dropdown = root.querySelector("[data-category-dropdown]");
-      const toggleButton = root.querySelector("[data-category-button]");
-
-      if (!isHTMLElement(dropdown) || !isHTMLElement(toggleButton)) return;
-
-      const categoryLinks = Array.from(
-        dropdown.querySelectorAll("[data-category-link]")
-      ).filter(isAnchorElement);
-
-      const isRouteActive = toggleButton.dataset.active === "true";
-      let isOpen = false;
-
-      const setOpen = (open, { restoreFocus = true } = {}) => {
-        if (isOpen === open) return;
-        isOpen = open;
-
-        toggleButton.setAttribute("aria-expanded", String(open));
-        dropdown.hidden = !open;
-        dropdown.classList.toggle("hidden", !open);
-        dropdown.classList.toggle("pointer-events-none", !open);
-        dropdown.classList.toggle("pointer-events-auto", open);
-        dropdown.classList.toggle("opacity-0", !open);
-        dropdown.classList.toggle("opacity-100", open);
-        dropdown.classList.toggle("translate-y-1", !open);
-        dropdown.classList.toggle("translate-y-0", open);
-
-        if (open) {
-          requestAnimationFrame(() => {
-            categoryLinks[0]?.focus?.();
-          });
-        } else if (restoreFocus) {
-          toggleButton.focus();
-        }
+      const setOpen = (v) => {
+        if (open === v) return;
+        open = v;
+        panel.dataset.open = v ? 'true' : 'false';
+        trigger.setAttribute('aria-expanded', v ? 'true' : 'false');
       };
 
-      const openDropdown = () => setOpen(true);
-      const closeDropdown = (options = {}) => setOpen(false, options);
+      const clearTimers = () => { clearTimeout(tIn); clearTimeout(tOut); tIn = tOut = 0; };
 
-      const handleToggleClick = (event) => {
-        event.preventDefault();
-        event.stopPropagation();
-        isOpen ? closeDropdown() : openDropdown();
-      };
+      const scheduleOpen  = () => { clearTimers(); tIn  = setTimeout(() => setOpen(true),  OPEN_DELAY); };
+      const scheduleClose = () => { clearTimers(); tOut = setTimeout(() => setOpen(false), CLOSE_DELAY); };
 
-      const handleButtonKeydown = (event) => {
-        if (event.key === "Escape" && isOpen) {
-          event.stopPropagation();
-          closeDropdown();
-        } else if (
-          (event.key === "ArrowDown" || event.key === "Enter" || event.key === " ") &&
-          !isOpen
-        ) {
-          event.preventDefault();
-          openDropdown();
-        }
-      };
+      // Hover/focus orchestration
+      const onEnter = () => scheduleOpen();
+      const onLeave = () => scheduleClose();
+      const onClick = (e) => { e.preventDefault(); setOpen(!open); };
+      const onKey = (e) => { if (e.key === 'Escape' && open) { e.preventDefault(); setOpen(false); trigger.focus(); } };
 
-      const handleDropdownKeydown = (event) => {
-        if (event.key === "Escape" && isOpen) {
-          event.stopPropagation();
-          closeDropdown();
-        }
-      };
+      trigger.addEventListener('pointerenter', onEnter);
+      trigger.addEventListener('pointerleave', onLeave);
+      trigger.addEventListener('click', onClick);
+      trigger.addEventListener('focus', onEnter);
+      trigger.addEventListener('blur', onLeave);
+      panel.addEventListener('pointerenter', onEnter);
+      panel.addEventListener('pointerleave', onLeave);
+      root.addEventListener('keydown', onKey);
 
-      const handleDocumentClick = (event) => {
-        if (!isOpen) return;
-        const target = event.target;
-        if (!isNode(target)) return;
-        if (!root.contains(target)) closeDropdown({ restoreFocus: false });
-      };
+      setOpen(false);
 
-      const handleDocumentKeydown = (event) => {
-        if (event.key === "Escape" && isOpen) closeDropdown();
-      };
-
-      const linkCleanups = categoryLinks.map((link) => {
-        const handleLinkClick = () => closeDropdown({ restoreFocus: false });
-        link.addEventListener("click", handleLinkClick);
-        return () => link.removeEventListener("click", handleLinkClick);
-      });
-
-      toggleButton.addEventListener("click", handleToggleClick);
-      toggleButton.addEventListener("keydown", handleButtonKeydown);
-      dropdown.addEventListener("keydown", handleDropdownKeydown);
-      document.addEventListener("click", handleDocumentClick);
-      document.addEventListener("keydown", handleDocumentKeydown);
-
-      dropdown.classList.add(
-        "hidden",
-        "opacity-0",
-        "pointer-events-none",
-        "translate-y-1"
-      );
-
-      cleanupDropdown = () => {
-        linkCleanups.forEach((fn) => fn());
-        toggleButton.removeEventListener("click", handleToggleClick);
-        toggleButton.removeEventListener("keydown", handleButtonKeydown);
-        dropdown.removeEventListener("keydown", handleDropdownKeydown);
-        document.removeEventListener("click", handleDocumentClick);
-        document.removeEventListener("keydown", handleDocumentKeydown);
+      return () => {
+        clearTimers();
+        trigger.removeEventListener('pointerenter', onEnter);
+        trigger.removeEventListener('pointerleave', onLeave);
+        trigger.removeEventListener('click', onClick);
+        trigger.removeEventListener('focus', onEnter);
+        trigger.removeEventListener('blur', onLeave);
+        panel.removeEventListener('pointerenter', onEnter);
+        panel.removeEventListener('pointerleave', onLeave);
+        root.removeEventListener('keydown', onKey);
       };
     };
 
-    const setupDropdown = () => initDropdown();
-    const handlePageLoad = () => setupDropdown();
-    const handleAfterSwap = () => setupDropdown();
-    const handleUnload = () => teardown();
-
-    if (document.readyState === "loading") {
-      document.addEventListener("DOMContentLoaded", setupDropdown, { once: true });
-    } else {
-      setupDropdown();
-    }
-
-    document.addEventListener("astro:page-load", handlePageLoad);
-    document.addEventListener("astro:after-swap", handleAfterSwap);
-    document.addEventListener("astro:unload", handleUnload);
-
-    /** @type {{ teardown: () => void }} */
-    const api = { teardown: () => {} };
-
-    const teardown = () => {
-      cleanupDropdown?.();
-      cleanupDropdown = null;
-      document.removeEventListener("DOMContentLoaded", setupDropdown);
-      document.removeEventListener("astro:page-load", handlePageLoad);
-      document.removeEventListener("astro:after-swap", handleAfterSwap);
-      document.removeEventListener("astro:unload", handleUnload);
-      if (globalWindow[STATE_KEY] === api) {
-        globalWindow[STATE_KEY] = undefined;
-      }
+    const init = () => {
+      cleanups.forEach((fn) => fn());
+      cleanups.clear();
+      document.querySelectorAll(ROOT).forEach((root) => cleanups.set(root, setup(root)));
     };
 
-    api.teardown = teardown;
-    globalWindow[STATE_KEY] = api;
+    init();
+    document.addEventListener('astro:after-swap', init);
+    document.addEventListener('astro:unload', () => {
+      cleanups.forEach((fn) => fn());
+      cleanups.clear();
+      document.removeEventListener('astro:after-swap', init);
+    });
   })();
 </script>

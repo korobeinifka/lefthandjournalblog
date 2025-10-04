@@ -1,28 +1,14 @@
 ---
-import { getCollection, type CollectionEntry } from "astro:content";
-import EditorialCard from "@/components/Blog/EditorialCard.astro";
-import CategoryPills from "@/components/Common/CategoryPills.astro";
-
-const posts: CollectionEntry<"blogs">[] = (await getCollection("blogs")).sort(
-  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
-);
+import PostListItem from "@/components/PostListItem.astro";
+const { posts } = Astro.props as { posts: any[] };
 ---
 
-<section class="flex flex-col gap-12">
-  <div class="flex flex-col gap-6">
-    <p class="text-sm uppercase tracking-[0.3em] text-muted-text">Dispatches from the margin</p>
-    <h1 class="max-w-3xl font-display text-4xl leading-tight text-primary-text sm:text-5xl">
-      Essays on chess, geopolitics, philosophy, and technology for the curious strategist.
-    </h1>
-    <p class="max-w-3xl text-lg text-secondary-text">
-      Lefthand Journal is a lean editorial notebook. We publish considered takes that feel like conversations in a quiet study—slow,
-      deliberate, and attentive to consequences.
-    </p>
-    <CategoryPills class="mt-2" />
-  </div>
-  <div class="grid gap-8 md:grid-cols-2 xl:grid-cols-3">
+<section class="flex flex-col gap-6">
+  <ul class="space-y-4 md:space-y-5">
     {posts.map((post) => (
-      <EditorialCard post={post} />
+      <li class="py-1">
+        <PostListItem post={post} />
+      </li>
     ))}
-  </div>
+  </ul>
 </section>

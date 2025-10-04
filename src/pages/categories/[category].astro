@@ -1,51 +1,41 @@
 ---
 import PageLayout from "@/layouts/PageLayout.astro";
-import EditorialCard from "@/components/Blog/EditorialCard.astro";
 import { getCollection, type CollectionEntry } from "astro:content";
 import { CATEGORY_OPTIONS } from "@/utils/categories";
+import PostListItem from "@/components/PostListItem.astro";
 
 export async function getStaticPaths() {
   const posts = await getCollection("blogs");
   return CATEGORY_OPTIONS.map((label) => {
-    const matchingPosts = posts
-      .filter((post) => post.data.category === label)
+    const items = posts
+      .filter((p) => p.data.category === label)
       .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
-
-    return {
-      params: { category: label.toLowerCase() },
-      props: {
-        label,
-        posts: matchingPosts,
-      },
-    };
+    return { params: { category: label.toLowerCase() }, props: { label, items } };
   });
 }
 
-interface Props {
-  label: (typeof CATEGORY_OPTIONS)[number];
-  posts: CollectionEntry<"blogs">[];
-}
-
-const { label, posts }: Props = Astro.props;
+const { label, items }: { label: (typeof CATEGORY_OPTIONS)[number]; items: CollectionEntry<"blogs">[] } = Astro.props;
 ---
 
-<PageLayout title={label}>
-  <section class="flex flex-col gap-12">
-    <div class="flex flex-col gap-4">
-      <p class="text-sm uppercase tracking-[0.3em] text-muted-text">CATEGORY</p>
-      <h1 class="font-display text-4xl leading-tight text-primary-text sm:text-5xl">{label}</h1>
-      <p class="max-w-2xl text-lg text-secondary-text">
-        Curated essays exploring {label.toLowerCase()} through the Lefthand Journal lens—deliberate pacing, generous whitespace, and analysis built for thoughtful readers.
+<PageLayout>
+  <section class="flex flex-col space-y-3 md:space-y-4">
+    <!-- rótulo alinhado à mesma régua dos cards -->
+    <div class="mx-auto w-full md:max-w-[52rem] lg:max-w-[56rem]">
+      <p class="text-[12px] font-semibold uppercase tracking-[0.16em] text-muted-text">
+        CATEGORY @ {label.toUpperCase()}
       </p>
     </div>
-    {posts.length > 0 ? (
-      <div class="grid gap-8 md:grid-cols-2 xl:grid-cols-3">
-        {posts.map((post) => (
-          <EditorialCard post={post} />
+
+    {items.length ? (
+      <ul class="space-y-3 md:space-y-4">
+        {items.map((post) => (
+          <li class="py-0 first:pt-0">
+            <PostListItem post={post} />
+          </li>
         ))}
-      </div>
+      </ul>
     ) : (
-      <p class="text-secondary-text">Articles for this category are in progress. Check back soon.</p>
+      <p class="text-secondary-text">No posts in this category yet.</p>
     )}
   </section>
 </PageLayout>

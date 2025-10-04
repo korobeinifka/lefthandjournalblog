@@ -1,8 +1,27 @@
 ---
-import PageLayout from "../layouts/PageLayout.astro";
-import EditorialGrid from "@/components/Home/EditorialGrid.astro";
+import PageLayout from "@/layouts/PageLayout.astro";
+import { getCollection, type CollectionEntry } from "astro:content";
+import PostListItem from "@/components/PostListItem.astro";
+
+const posts: CollectionEntry<"blogs">[] = (await getCollection("blogs"))
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 ---
 
-<PageLayout title="Home">
-  <EditorialGrid />
+<PageLayout>
+  <section class="flex flex-col space-y-3 md:space-y-4">  <!-- zera o espaçamento entre label e cards -->
+    <!-- rótulo alinhado exatamente com a borda esquerda do card -->
+    <div class="mx-auto w-full md:max-w-[52rem] lg:max-w-[56rem]">
+      <p class="text-[12px] font-semibold uppercase tracking-[0.14em] text-muted-text">
+        RASCUNHOS DA MÃO ESQUERDA
+      </p>
+    </div>
+
+    <ul class="space-y-3 md:space-y-4">
+      {posts.map((post) => (
+        <li class="py-0 first:pt-0">
+          <PostListItem post={post} />
+        </li>
+      ))}
+    </ul>
+  </section>
 </PageLayout>

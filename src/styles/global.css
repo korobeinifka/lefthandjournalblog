@@ -1,5 +1,5 @@
 /* Global primitives */
-@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Source+Sans+3:wght@300;400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;500;600;700&display=swap");
 
 @tailwind base;
 @tailwind components;
@@ -7,6 +7,7 @@
 
 @layer base {
   :root {
+    --radius: 3px; /* <- raio padrão do site */
     --primary-bg: 244 240 232;
     --surface-bg: 250 247 239;
     --card-bg: 255 253 247;
@@ -14,9 +15,8 @@
     --primary-text: 30 25 21;
     --secondary-text: 82 72 63;
     --muted-text: 128 118 109;
-    --nav-speed: 220ms;
-    /* use a single easing everywhere for a “snappier” feel */
-    --nav-ease: cubic-bezier(.2,.8,.2,1);
+    --nav-speed: 200ms;
+    --nav-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
     color-scheme: light;
   }
 
@@ -57,69 +57,51 @@
 
   *,
   *::before,
-  *::after {
-    box-sizing: border-box;
-  }
+  *::after { box-sizing: border-box; }
 
   body {
     @apply bg-primary-bg text-primary-text font-body antialiased;
     margin: 0;
     min-height: 100vh;
     line-height: 1.6;
-    /* align page color transitions to the same timing/easing token */
-    transition:
-      background-color var(--nav-speed) var(--nav-ease),
-      color var(--nav-speed) var(--nav-ease);
+    transition: background-color var(--nav-speed) var(--nav-ease),
+                color var(--nav-speed) var(--nav-ease);
   }
 
-  main {
-    background-color: transparent;
+  main { background-color: transparent; }
+
+  a { color: inherit; }
+  a:hover, a:focus { color: rgb(var(--secondary-text)); }
+
+  h1,h2,h3,h4,h5,h6 {
+    font-family: "Source Sans 3", "Source Sans Pro", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-weight: 700;
+    letter-spacing: 0;
   }
 
-  a {
-    color: inherit;
-  }
+  ::selection { background: rgba(82, 72, 63, 0.2); }
 
-  a:hover,
-  a:focus {
-    color: rgb(var(--secondary-text));
-  }
+  img { max-width: 100%; display: block; }
 
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
-    font-family: "Playfair Display", Georgia, serif;
-    letter-spacing: -0.01em;
-  }
-
-  ::selection {
-    background: rgba(82, 72, 63, 0.2);
-  }
-
-  img {
-    max-width: 100%;
-    display: block;
-  }
-
-  code {
-    font-family: "Fira Code", "SFMono-Regular", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-  }
+  code { font-family: "Fira Code","SFMono-Regular",Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace; }
 
   pre {
     background: rgb(var(--surface-bg));
     border: 1px solid rgb(var(--border-ink));
-    border-radius: 0.5rem;
+    border-radius: var(--radius);
     padding: 1.5rem;
     overflow-x: auto;
   }
+
+  /* --- Força cantos 0.5rem em todo lugar (sem afetar rounded-full) --- */
+  :where(
+    .rounded, .rounded-sm, .rounded-md, .rounded-lg, .rounded-xl, .rounded-2xl, .rounded-3xl,
+    [class*="rounded-"]:not(.rounded-full)
+  ) { border-radius: var(--radius) !important; }
 }
 
-/* ===== Components layer: tokens and header utilities ==================== */
+/* ===== Components layer: tokens e utils do header ==================== */
 @layer components {
-  /* nav links: fixed bottom border to avoid layout shift on hover */
   .nav-link {
     transition-property: color, border-color;
     transition-duration: var(--nav-speed);
@@ -131,21 +113,35 @@
     text-rendering: optimizeLegibility;
   }
 
-  /* dropdown containers (opacity/transform only) */
   .nav-transition {
     transition-duration: var(--nav-speed);
     transition-timing-function: var(--nav-ease);
   }
 
-  /* single source of truth for interactive elements (buttons/links/icons) */
   .ui-transition {
     transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
     transition-duration: var(--nav-speed);
     transition-timing-function: var(--nav-ease);
   }
 
-  /* APG focus pattern – no border width changes (no layout shift) */
-  .ui-focus {
-    @apply focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-text;
+  .ui-focus { @apply focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-text; }
+
+}
+
+@layer utilities {
+  /* Force all Tailwind rounded classes to our --radius */
+  :where(
+    .rounded,
+    .rounded-sm,
+    .rounded-md,
+    .rounded-lg,
+    .rounded-xl,
+    .rounded-2xl,
+    .rounded-3xl,
+    .rounded-full,
+    [class*="rounded-"]
+  ) {
+    border-radius: var(--radius) !important;
   }
+  
 }

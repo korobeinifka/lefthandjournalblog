@@ -20,29 +20,28 @@ const categories = CATEGORY_LINKS.map(({ label, slug }) => ({
 ---
 
 <PageLayout title="Categories">
-  <section class="flex flex-col gap-12">
-    <div class="flex flex-col gap-4">
-      <p class="text-sm uppercase tracking-[0.3em] text-muted-text">The journal's sections</p>
-      <h1 class="font-display text-4xl leading-tight text-primary-text sm:text-5xl">
-        Four perspectives, one Lefthand voice.
-      </h1>
-      <p class="max-w-2xl text-lg text-secondary-text">
-        Each category is a deliberate lens on strategy, existence, and the tools we rely on. Choose a path and you will find the same calm typography and considered pacing as the home grid.
-      </p>
+  <section class="flex flex-col space-y-3 md:space-y-4">
+    <!-- apenas o rótulo, sem título gigantesco nem descrição -->
+    <div class="mx-auto w-full max-w-6xl">
+      <p class="text-[12px] font-semibold uppercase tracking-[0.16em] text-muted-text">CATEGORIES</p>
     </div>
+
     <ul class="grid gap-6 md:grid-cols-2">
       {categories.map((category) => (
         <li>
           <a
             href={`/categories/${category.slug}`}
-            class="flex h-full flex-col justify-between rounded-xl border border-border-ink/70 bg-card-bg px-6 py-8 transition-transform duration-200 hover:-translate-y-1"
+            class="flex h-full flex-col justify-between rounded border border-border-ink/70 bg-card-bg px-6 py-6 ui-transition hover:border-border-ink/90 hover:bg-surface-bg"
           >
-            <div class="flex flex-col gap-3">
-              <p class="text-xs font-semibold uppercase tracking-[0.3em] text-muted-text">{category.count} article{category.count === 1 ? "" : "s"}</p>
-              <h2 class="font-display text-2xl text-primary-text">{category.label}</h2>
+            <div class="flex flex-col gap-2">
+              <p class="text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-text">
+                {category.count} article{category.count === 1 ? "" : "s"}
+              </p>
+              <!-- mesma família/peso usados nos demais títulos -->
+              <h2 class="text-xl font-semibold text-primary-text">{category.label}</h2>
               <p class="text-sm text-secondary-text">{category.summary}</p>
             </div>
-            <span class="mt-6 text-sm font-semibold uppercase tracking-[0.3em] text-secondary-text">View stories</span>
+            <span class="mt-5 text-xs font-semibold uppercase tracking-[0.16em] text-secondary-text">View stories</span>
           </a>
         </li>
       ))}

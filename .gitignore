@@ -20,3 +20,10 @@ pnpm-debug.log*
 
 # macOS-specific files
 .DS_Store
+
+# Favicons build outputs
+/public/favicon-*.png
+/public/favicon.ico
+/public/site.webmanifest
+/public/android-chrome-*.png
+/public/apple-touch-icon.png

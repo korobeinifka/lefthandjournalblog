@@ -2,6 +2,17 @@
 export default {
   content: ["./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}"],
   theme: {
+    borderRadius: {
+      DEFAULT: "var(--radius)", // 0.5rem
+      sm: "var(--radius)",
+      md: "var(--radius)",
+      lg: "var(--radius)",
+      xl: "var(--radius)",
+      "2xl": "var(--radius)",
+      "3xl": "var(--radius)",
+      full: "9999px", // se algum dia usar “pill/circle”
+      none: "0px",
+    },
     extend: {
       colors: {
         "primary-bg": "rgb(var(--primary-bg)/<alpha-value>)",
