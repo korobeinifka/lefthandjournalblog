@@ -6,8 +6,16 @@ description: >-
 pubDate: 2024-03-01T00:00:00.000Z
 category: Philosophy
 author: antonio maluf
-heroImage: >-
-  https://images.unsplash.com/photo-1524135329990-07660cd5bf10?auto=format&fit=crop&w=1200&q=80
+heroImage: /images/chameleon-logo.svg
 heroImageAlt: A fountain pen resting on a stack of cream stationery
 ---
 
+```mermaid
+%% This won't render without implementing a rendering engine (e.g. mermaid on npm)
+flowchart TD
+    id1(this is an example flow diagram)
+    --> id2(modify me to see changes!)
+    id2
+    --> id3(Click the top button to preview the changes)
+    --> id4(Learn about mermaid diagrams - mermaid.js.org)
+```
