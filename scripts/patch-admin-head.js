@@ -57,3 +57,4 @@ run().catch((e) => {
   console.error("[patch-admin-head] erro:", e);
   process.exit(1);
 });
+ 
