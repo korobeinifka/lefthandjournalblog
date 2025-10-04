@@ -54,7 +54,7 @@ num = 10
 if num % 2 == 0:
     print(f"{num} is an even number.")
 else:
-    print(f"{num} is an odd number.")
+    print(f"{num} is an odd number.") 
 ```
 
 ![](/Pasted%20image%2020230224120148.png)
