@@ -4,7 +4,6 @@ on:
   push:
     branches: [ main ]
 
-# Evita fila: se chegar um novo push no mesmo branch, cancela a execução anterior.
 concurrency:
   group: hostinger-deploy-${{ github.ref }}
   cancel-in-progress: true
@@ -16,7 +15,6 @@ jobs:
     env:
       TINA_CLIENT_ID: ${{ secrets.TINA_CLIENT_ID }}
       TINA_TOKEN: ${{ secrets.TINA_TOKEN }}
-      # Garanta que este branch é o mesmo configurado no Tina Cloud (Indexing Branch)
       TINA_BRANCH: main
       NODE_OPTIONS: --max-old-space-size=4096
 
@@ -35,21 +33,20 @@ jobs:
           echo "GITHUB_REF_NAME=${GITHUB_REF_NAME}"
           echo "GITHUB_SHA=${GITHUB_SHA}"
           echo "TINA_BRANCH=${TINA_BRANCH}"
-          node -e "console.log('tina/config.ts resolver sees ->', { TINA_BRANCH: process.env.TINA_BRANCH, VERCEL_GIT_COMMIT_REF: process.env.VERCEL_GIT_COMMIT_REF, HEAD: process.env.HEAD })"
+          node -e "console.log('resolver sees ->', { TINA_BRANCH: process.env.TINA_BRANCH, VERCEL_GIT_COMMIT_REF: process.env.VERCEL_GIT_COMMIT_REF, HEAD: process.env.HEAD })"
 
       - name: Install deps
         run: npm ci
 
-      # Favicons antes do build (como você já tinha)
       - name: Generate favicons
         run: npm run prebuild
 
-      # Retry curto do Tina (absorve delay de reindex no Cloud)
+      # Retry usando o seu script build:cms (que chama `tinacms build`)
       - name: Build CMS (Tina) with retry
         run: |
           set -e
           for i in 1 2 3; do
-            if npx tinacms@1.11.0 build; then
+            if npm run --silent build:cms; then
               echo "Tina build succeeded"
               exit 0
             fi
@@ -68,7 +65,6 @@ jobs:
       - name: Patch admin head (safe)
         run: node scripts/patch-admin-head.mjs
 
-      # Sanity check: garante que o admin foi para a saída estática
       - name: Check admin is in output
         run: |
           ls -la .vercel/output/static/admin || (echo "Admin não encontrado. Verifique 'public/admin' e o script de patch." && exit 1)
