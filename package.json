@@ -10,10 +10,8 @@
 
     "build:cms": "tinacms build",
 
-    // (opcional) deixa aqui se quiser rodar isolado
     "build:admin-theme": "node scripts/patch-admin-head.mjs",
 
-    // build completo: CMS -> typecheck -> build estático -> patch seguro do admin
     "build": "cross-env NODE_OPTIONS=--max-old-space-size=4096 npm run build:cms && astro check && astro build && node scripts/patch-admin-head.mjs",
 
     "preview": "astro preview",
