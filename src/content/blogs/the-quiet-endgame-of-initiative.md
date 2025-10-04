@@ -1,11 +1,13 @@
 ---
-title: "The Quiet Endgame of Initiative"
-description: "When the center clears, initiative becomes a question of tempo, temperament, and patience."
-pubDate: 2024-02-12
-category: "Chess"
-author: "Lefthand Editorial"
-heroImage: "https://images.unsplash.com/photo-1529692236671-f1dc7c7e9ed0?auto=format&fit=crop&w=1200&q=80"
-heroImageAlt: "A chess player considering an endgame position on a wooden board"
+title: The Quiet Endgame of Initiative
+description: >-
+  When the center clears, initiative becomes a question of tempo, temperament,
+  and patience.
+pubDate: 2024-02-12T00:00:00.000Z
+category: Chess
+author: Lefthand Editorial
+heroImage: /IMG_7629.jpeg
+heroImageAlt: A chess player considering an endgame position on a wooden board
 ---
 
 The final phase of a chess game rarely rewards spectacle. It rewards the player who can hold the thread of initiative without forcing it into a knot. We tend to speak about endgames as technical studies, yet the decisive questions are often editorial: which story will the position tell if we simply let it unfold?
