@@ -18,7 +18,9 @@ Quero observar como os títulos, parágrafos e links se comportam dentro da pág
 
 E um trecho em citação:
 
-> “Um blog é como um diário aberto: a cada entrada, registramos não só ideias, mas também estilos, escolhas visuais e a nossa própria voz.”![](/32311905101e13fa52f1f7bf2b22b816.jpg)
+> “Um blog é como um diário aberto: a cada entrada, registramos não só ideias, mas também estilos, escolhas visuais e a nossa própria voz.”
+
+![](/32311905101e13fa52f1f7bf2b22b816.jpg)
 
 Para completar, vou inserir um parágrafo um pouco mais longo, apenas para testar como fica a leitura em blocos contínuos de texto. É importante validar margens, espaçamentos, contraste de cores e experiência de leitura no desktop e no mobile.
 
