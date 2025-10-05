@@ -3,23 +3,29 @@ name: Deploy to Hostinger
 on:
   push:
     branches: [ main ]
-    # (opcional) filtre arquivos que realmente exigem deploy
     paths:
+      # código e conteúdo que exigem rebuild/deploy
       - 'src/**'
+      - 'src/content/**'   # <- posts/MD do Tina entram aqui
       - 'public/**'
       - 'tina/**'
       - 'astro.config.mjs'
-      - 'package*.json'
-      - '!**/*.md'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/deploy.yml'  # mudar o workflow também dispara
+    paths-ignore:
+      - 'README.md'
+      - 'docs/**'
+  workflow_dispatch: {}
 
-# evita duas execuções simultâneas na mesma branch
+# evita filas/duplicados quando vários commits caem em sequência
 concurrency:
   group: deploy-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
   build-and-deploy:
-    # permite pular deploy com [skip deploy] na mensagem do commit
+    # permite pular o deploy com "[skip deploy]" na mensagem do commit
     if: ${{ !contains(github.event.head_commit.message, '[skip deploy]') }}
     runs-on: ubuntu-latest
 
@@ -42,12 +48,14 @@ jobs:
       - name: Install deps
         run: npm ci
 
+      # seu script "build" já executa: build:cms + astro check + astro build
       - name: Build (Astro + Tina)
         run: npm run build
 
+      # Sanity check: garante que o painel /admin foi gerado para o build estático
       - name: Check admin is in output
         run: |
-          ls -la .vercel/output/static/admin || (echo "Admin não encontrado. Verifique 'public/admin' e o script de build." && exit 1)
+          ls -la .vercel/output/static/admin || (echo "Admin não encontrado. Verifique 'public/admin' e o build." && exit 1)
 
       - name: Deploy via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
@@ -61,4 +69,3 @@ jobs:
           exclude: |
             **/.well-known/**
             **/mail/**
- 
