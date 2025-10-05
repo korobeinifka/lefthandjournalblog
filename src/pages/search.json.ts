@@ -26,7 +26,7 @@ export async function GET() {
         title: post.data.title,
         description: post.data.description,
         category: post.data.category,
-        url: `/blog/${slug}`,
+        url: `/blog/${slug}/`,
         excerpt: excerpt ? `${excerpt}${excerptSource.length > excerpt.length ? "…" : ""}` : "",
         pubDate: post.data.pubDate.toISOString(),
         searchField: normalise(
