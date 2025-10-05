@@ -5,7 +5,7 @@ interface Props { post: CollectionEntry<"blogs">; }
 const { post }: Props = Astro.props;
 const { data } = post;
 
-+const href = `/blog/${post.slug}/`;
+const href = `/blog/${post.slug}/`;
 
 
 const dateLabel = data.pubDate
