@@ -65,4 +65,4 @@ const blogsCollection = {
 };
 
 const schema = { collections: [blogsCollection] };
-export default schema;
+export default schema; 
