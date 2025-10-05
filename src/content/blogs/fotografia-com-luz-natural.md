@@ -1,5 +1,5 @@
 ---
-title: Introdução à Engenharia de Dados
+title: 'Introdução à Engenharia de Dados '
 description: Descubra o que é a área de engenharia de dados.
 pubDate: 2025-10-04T11:30:00.000Z
 category: Chess
