@@ -13,23 +13,23 @@ var CATEGORY_LINKS = CATEGORY_OPTIONS.map((label) => ({
   slug: label.toLowerCase()
 }));
 
-// src/utils/slug.ts
-function slugify(value) {
-  return value.trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").replace(/-{2,}/g, "-");
-}
-
 // tina/schema.ts
+function slugifyInline(value) {
+  const s = (value || "").trim();
+  if (!s) return "untitled";
+  return s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").replace(/-{2,}/g, "-") || "untitled";
+}
 var blogsCollection = {
   name: "blogs",
   label: "Blog Posts",
   path: "src/content/blogs",
   format: "md",
+  // 👇 Customização oficial do Tina para filename/slug
   ui: {
     filename: {
       slugify: (values) => {
-        const raw = (values?.title || "untitled").trim();
-        const slug = slugify(raw);
-        return slug || "untitled";
+        const raw = values?.title || "untitled";
+        return slugifyInline(raw);
       }
     }
   },
