@@ -1,6 +1,7 @@
 <script lang="ts">
   import Icon from '@iconify/svelte';
   import { onDestroy, onMount } from 'svelte';
+  import { portal } from '@/lib/actions/portal';
   import { CATEGORY_LINKS } from '@/utils/categories';
 
   const canUseDOM = typeof document !== 'undefined';
@@ -9,6 +10,7 @@
   let showCats = false;
   let menuButton: HTMLButtonElement | null = null;
   let navPanel: HTMLElement | null = null;
+  let menuWrapper: HTMLDivElement | null = null;
 
   let previousOverflow = '';
   let scrollLocked = false;
@@ -34,6 +36,15 @@
   };
 
   $: { if (canUseDOM) (showMenu ? lockScroll() : unlockScroll()); }
+
+  const handleWrapperPointerUp = (event: PointerEvent) => {
+    if (!showMenu) return;
+    const target = event.target as Node | null;
+    if (navPanel?.contains(target)) return;
+    event.preventDefault();
+    event.stopPropagation();
+    closeMenu({ restoreFocus: false });
+  };
 
   onMount(() => {
     if (!canUseDOM) return;
@@ -68,20 +79,26 @@
 
   {#if showMenu}
     <div
-      class="fixed inset-0 z-40 bg-primary-bg/70 backdrop-blur-sm transition-opacity duration-300 ease-[var(--nav-ease)]"
-      on:click={() => closeMenu()}
-    />
-
-    <!-- PAINEL com escala 0.9 -->
-    <nav
-      bind:this={navPanel}
-      role="dialog"
-      aria-modal="true"
-      data-sm-menu
-      class="fixed right-3 top-14 z-50 w-72 max-w-[85vw] rounded border border-border-ink/80 bg-card-bg shadow-xl transition-transform duration-300 ease-[var(--nav-ease)] md:hidden"
-      style="transform: scale(var(--sm-menu-zoom, 0.9)); transform-origin: top right; will-change: transform;"
+      bind:this={menuWrapper}
+      use:portal
+      class="fixed inset-0 z-50 md:hidden"
+      on:pointerup={handleWrapperPointerUp}
     >
-      <ul class="p-3 text-secondary-text">
+      <div
+        class="absolute inset-0 bg-primary-bg/80 backdrop-blur-sm transition-opacity duration-300 ease-[var(--nav-ease)]"
+        on:click={() => closeMenu()}
+      />
+
+      <!-- PAINEL com escala 0.9 -->
+      <nav
+        bind:this={navPanel}
+        role="dialog"
+        aria-modal="true"
+        data-sm-menu
+        class="absolute right-3 top-14 z-10 w-72 max-w-[85vw] rounded border border-border-ink/80 bg-card-bg shadow-xl transition-transform duration-300 ease-[var(--nav-ease)]"
+        style="transform: scale(var(--sm-menu-zoom, 0.9)); transform-origin: top right; will-change: transform;"
+      >
+        <ul class="p-3 text-secondary-text">
         <li>
           <a href="/" class="block rounded px-4 py-3 text-sm font-semibold uppercase tracking-[0.28em] hover:text-primary-text ui-transition" on:click={() => closeMenu({ restoreFocus: false })}>HOME</a>
         </li>
@@ -124,6 +141,7 @@
           <a href="/about" class="block rounded px-4 py-3 text-sm font-semibold uppercase tracking-[0.28em] hover:text-primary-text ui-transition" on:click={() => closeMenu({ restoreFocus: false })}>ABOUT</a>
         </li>
       </ul>
-    </nav>
+      </nav>
+    </div>
   {/if}
 </div>
