@@ -24,7 +24,7 @@ var blogsCollection = {
   label: "Blog Posts",
   path: "src/content/blogs",
   format: "md",
-  // 👇 Customização oficial do Tina para filename/slug
+  // Customização oficial de filename no Tina (determinística)
   ui: {
     filename: {
       slugify: (values) => {
@@ -59,7 +59,7 @@ var blogsCollection = {
     { type: "string", name: "author", label: "Author", required: true },
     { type: "image", name: "heroImage", label: "Hero Image" },
     { type: "string", name: "heroImageAlt", label: "Hero Image Alt Text" },
-    // corpo do post no editor
+    // Corpo do post no editor
     { type: "rich-text", name: "body", label: "Body", isBody: true }
   ]
 };

@@ -1,7 +1,7 @@
 // tina/schema.ts
 import { CATEGORY_OPTIONS } from "../src/utils/categories";
 
-// Função inline para gerar filenames/URLs limpos (sem acentos, hífen único, sem bordas)
+// ⚠️ Função determinística de slug: sem datas, envs ou imports externos
 function slugifyInline(value: string): string {
   const s = (value || "").trim();
   if (!s) return "untitled";
@@ -10,19 +10,20 @@ function slugifyInline(value: string): string {
       .normalize("NFD")
       .replace(/[\u0300-\u036f]/g, "") // remove acentos
       .toLowerCase()
-      .replace(/[^a-z0-9]+/g, "-")     // grupos não-alfanuméricos -> "-"
-      .replace(/^-+|-+$/g, "")         // remove hífens das pontas
+      .replace(/[^a-z0-9]+/g, "-")     // qualquer grupo não-alfanumérico -> "-"
+      .replace(/^-+|-+$/g, "")         // remove hífens nas pontas
       .replace(/-{2,}/g, "-") || "untitled" // colapsa múltiplos hífens
   );
 }
 
+// ⚠️ Sem anotar como Collection p/ evitar confusão de tipos (FieldCollection vs ui.filename)
 const blogsCollection = {
   name: "blogs",
   label: "Blog Posts",
   path: "src/content/blogs",
   format: "md",
 
-  // 👇 Customização oficial do Tina para filename/slug
+  // Customização oficial de filename no Tina (determinística)
   ui: {
     filename: {
       slugify: (values: Record<string, unknown>) => {
@@ -59,7 +60,7 @@ const blogsCollection = {
     { type: "image", name: "heroImage", label: "Hero Image" },
     { type: "string", name: "heroImageAlt", label: "Hero Image Alt Text" },
 
-    // corpo do post no editor
+    // Corpo do post no editor
     { type: "rich-text", name: "body", label: "Body", isBody: true },
   ],
 };
