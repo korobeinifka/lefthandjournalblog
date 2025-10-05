@@ -1,6 +1,5 @@
 <script lang="ts">
   import Icon from '@iconify/svelte';
-  import { onDestroy, onMount } from 'svelte';
   import { CATEGORY_LINKS } from '@/utils/categories';
 
   const canUseDOM = typeof document !== 'undefined';
@@ -12,7 +11,6 @@
 
   let previousOverflow = '';
   let scrollLocked = false;
-  let removeOutside: (() => void) | null = null;
 
   const lockScroll = () => {
     if (!canUseDOM || scrollLocked) return;
@@ -33,21 +31,38 @@
     if (restoreFocus) menuButton?.focus();
   };
 
-  $: { if (canUseDOM) (showMenu ? lockScroll() : unlockScroll()); }
+  const handleOverlayPointerDown = (event: PointerEvent) => {
+    event.preventDefault();
+    event.stopPropagation();
 
-  onMount(() => {
-    if (!canUseDOM) return;
-    const handlePointerDown = (event: PointerEvent) => {
-      if (!showMenu) return;
-      const target = event.target as Node | null;
-      if (navPanel?.contains(target) || menuButton?.contains(target)) return;
+    const target = event.currentTarget as HTMLDivElement | null;
+    if (!target) return;
+
+    try {
+      target.setPointerCapture(event.pointerId);
+    } catch (error) {
+      /* noop */
+    }
+
+    const finalize = (finalEvent: PointerEvent) => {
+      finalEvent.preventDefault();
+      finalEvent.stopPropagation();
+
+      if (typeof target.hasPointerCapture === 'function' && target.hasPointerCapture(finalEvent.pointerId)) {
+        target.releasePointerCapture(finalEvent.pointerId);
+      }
+
+      target.removeEventListener('pointercancel', finalize);
+      target.removeEventListener('pointerup', finalize);
+
       closeMenu();
     };
-    document.addEventListener('pointerdown', handlePointerDown, { capture: true });
-    removeOutside = () => document.removeEventListener('pointerdown', handlePointerDown, { capture: true } as any);
-  });
 
-  onDestroy(() => { removeOutside?.(); removeOutside = null; });
+    target.addEventListener('pointerup', finalize, { once: true });
+    target.addEventListener('pointercancel', finalize, { once: true });
+  };
+
+  $: { if (canUseDOM) (showMenu ? lockScroll() : unlockScroll()); }
 </script>
 
 <!-- Define var com fallback; pode sobrescrever via CSS/parent se quiser -->
@@ -67,7 +82,8 @@
   {#if showMenu}
     <div
       class="fixed inset-0 z-40 bg-primary-bg/70 backdrop-blur-sm transition-opacity duration-300 ease-[var(--nav-ease)]"
-      on:click={() => closeMenu()}
+      on:pointerdown={handleOverlayPointerDown}
+      role="presentation"
     />
 
     <!-- PAINEL com escala 0.9 -->
