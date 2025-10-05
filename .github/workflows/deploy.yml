@@ -3,9 +3,24 @@ name: Deploy to Hostinger
 on:
   push:
     branches: [ main ]
+    # (opcional) filtre arquivos que realmente exigem deploy
+    paths:
+      - 'src/**'
+      - 'public/**'
+      - 'tina/**'
+      - 'astro.config.mjs'
+      - 'package*.json'
+      - '!**/*.md'
+
+# evita duas execuções simultâneas na mesma branch
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   build-and-deploy:
+    # permite pular deploy com [skip deploy] na mensagem do commit
+    if: ${{ !contains(github.event.head_commit.message, '[skip deploy]') }}
     runs-on: ubuntu-latest
 
     env:
@@ -21,20 +36,18 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: 20
           cache: 'npm'
 
       - name: Install deps
         run: npm ci
 
-      # O npm run build já faz: tinacms build + patch-admin-head + astro check + astro build
-      - name: Build (Astro + Tina + Patch)
+      - name: Build (Astro + Tina)
         run: npm run build
 
-      # Sanity check: garante que o admin foi para a saída estática
       - name: Check admin is in output
         run: |
-          ls -la .vercel/output/static/admin || (echo "Admin não encontrado. Verifique 'public/admin' e o script de patch." && exit 1)
+          ls -la .vercel/output/static/admin || (echo "Admin não encontrado. Verifique 'public/admin' e o script de build." && exit 1)
 
       - name: Deploy via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
@@ -47,5 +60,5 @@ jobs:
           dangerous-clean-slate: false
           exclude: |
             **/.well-known/**
-            **/mail/** 
+            **/mail/**
  
