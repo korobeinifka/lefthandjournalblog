@@ -30,7 +30,7 @@
   let shortcutLabel = 'Ctrl K';
   let isMobile = false;
 
-  let removeOutside: (() => void) | null = null;
+  // 🔧 FALTAVA esta declaração
   let removeMediaListener: (() => void) | null = null;
 
   let previousOverflow = '';
@@ -86,21 +86,18 @@
     return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
   };
 
-  // remove reticências artificiais no fim do snippet
   const cleanSnippet = (s = '') => s.replace(/\s*(?:\.{3}|…)\s*$/,'');
 
-  const addOutsideListener = () => {
+  // Bloqueia o próximo "click" global após um pointerdown (evita click-through)
+  function squelchNextClick() {
     if (!canUseDOM) return;
-    const handlePointerUp = (event: Event) => {
-      const target = event.target as Node | null;
-      if (target && (searchDialog?.contains(target) || searchButton?.contains(target))) return;
-      event.preventDefault();
-      event.stopPropagation();
-      closeSearch({ restoreFocus: false });
+    const block = (e: MouseEvent) => {
+      e.stopPropagation();
+      e.preventDefault();
+      window.removeEventListener('click', block, true);
     };
-    document.addEventListener('pointerup', handlePointerUp, { capture: true });
-    removeOutside = () => document.removeEventListener('pointerup', handlePointerUp, { capture: true } as any);
-  };
+    window.addEventListener('click', block, true);
+  }
 
   const openSearch = async () => {
     if (canUseDOM) {
@@ -111,14 +108,12 @@
     await loadSearchIndex();
     await tick();
     setupA11y();
-    addOutsideListener();
     searchInput?.focus();
   };
 
   const closeSearch = (options: { restoreFocus?: boolean } = { restoreFocus: true }) => {
     if (!searchOpen) return;
     teardownA11y();
-    removeOutside?.(); removeOutside = null;
     searchOpen = false;
     if (options.restoreFocus !== false && canUseDOM) {
       if (openedBy && document.contains(openedBy)) openedBy.focus();
@@ -138,12 +133,14 @@
     if (event.key === 'Escape') { event.preventDefault(); event.stopPropagation(); closeSearch(); }
   };
 
-  const handleWrapperPointerUp = (event: PointerEvent) => {
+  // Fecha ao clicar FORA do diálogo no pointerdown e bloqueia o próximo click
+  const handleWrapperPointerDown = (event: PointerEvent) => {
     if (!searchDialog) return;
     const target = event.target as Node | null;
-    if (target && searchDialog.contains(target)) return;
+    if (target && searchDialog.contains(target)) return; // clique dentro do dialog -> ignora
     event.preventDefault();
     event.stopPropagation();
+    squelchNextClick();
     closeSearch({ restoreFocus: false });
   };
 
@@ -152,18 +149,19 @@
     if (!canUseDOM) return;
 
     document.addEventListener('keydown', handleGlobalKeydown);
+
     try { shortcutLabel = navigator.platform?.includes('Mac') ? '⌘ K' : 'Ctrl K'; } catch {}
 
     const mediaQuery = window.matchMedia('(max-width: 640px)');
     const applyMatch = () => { isMobile = mediaQuery.matches; };
-    applyMatch(); mediaQuery.addEventListener('change', applyMatch);
+    applyMatch();
+    mediaQuery.addEventListener('change', applyMatch);
     removeMediaListener = () => mediaQuery.removeEventListener('change', applyMatch);
   });
 
   onDestroy(() => {
     if (canUseDOM) document.removeEventListener('keydown', handleGlobalKeydown);
     teardownA11y(); unlockScroll();
-    removeOutside?.(); removeOutside = null;
     removeMediaListener?.(); removeMediaListener = null;
   });
 
@@ -246,12 +244,28 @@
 </div>
 
 {#if searchOpen}
-  <div bind:this={searchWrapper} use:portal class="fixed inset-0 z-50 flex items-start justify-center px-4 pt-20 md:pt-24 pb-6" on:pointerup={handleWrapperPointerUp}>
-    <div class="absolute inset-0 bg-primary-bg/80 backdrop-blur-sm" on:click={() => closeSearch()}></div>
+  <div
+    bind:this={searchWrapper}
+    use:portal
+    class="fixed inset-0 z-50 flex items-start justify-center px-4 pt-20 md:pt-24 pb-6"
+    on:pointerdown={handleWrapperPointerDown}
+  >
+    <!-- BACKDROP (mesma lógica do hambúrguer): bloqueia pointer e faz blur -->
+    <div
+      class="absolute inset-0 bg-primary-bg/70 backdrop-blur-sm"
+      on:pointerdown|preventDefault|stopPropagation={() => { squelchNextClick(); closeSearch({ restoreFocus: false }); }}
+      on:click|preventDefault|stopPropagation
+    ></div>
 
-    <section bind:this={searchDialog} role="dialog" aria-modal="true" aria-labelledby="global-search-title"
+    <section
+      bind:this={searchDialog}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="global-search-title"
       class="relative z-10 w-full max-w-xl lg:max-w-[40rem] overflow-hidden rounded border border-border-ink/80 bg-card-bg shadow-xl"
-      on:keydown={handleInputKeydown}>
+      on:keydown={handleInputKeydown}
+      on:click|stopPropagation
+    >
       <h2 id="global-search-title" class="sr-only">Global search</h2>
 
       <div class="flex flex-col gap-4 p-4">
