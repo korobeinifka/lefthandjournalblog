@@ -108,7 +108,9 @@
     await loadSearchIndex();
     await tick();
     setupA11y();
-    searchInput?.focus();
+    if (!isMobile) {
+      searchInput?.focus();
+    }
   };
 
   const closeSearch = (options: { restoreFocus?: boolean } = { restoreFocus: true }) => {
@@ -273,9 +275,18 @@
           <Icon icon="ri:search-line" class="h-5 w-5 text-secondary-text" />
           <label class="sr-only" for="global-search-input">Search posts</label>
           <input id="global-search-input" bind:this={searchInput} bind:value={searchQuery} type="search" inputmode="search"
-            placeholder="Search topics, words, or posts"
+            placeholder="Pesquise por tópicos, palavras ou postagens"
             class="flex-1 bg-transparent text-base text-primary-text placeholder:text-muted-text focus:outline-none"
-            autocomplete="off" spellcheck="false" />
+            autocomplete="off" spellcheck="false" {...(isMobile ? { readonly: true } : {})}
+            on:pointerdown={() => {
+              // No primeiro toque, libera e foca
+              if (isMobile && searchInput?.hasAttribute('readonly')) {
+                searchInput.removeAttribute('readonly');
+                // Foca depois de liberar o readonly
+                requestAnimationFrame(() => searchInput?.focus());
+               }
+             }} 
+             />
         </div>
 
         {#if searchError}
