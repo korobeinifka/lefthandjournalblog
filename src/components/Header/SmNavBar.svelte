@@ -37,14 +37,16 @@
 
   onMount(() => {
     if (!canUseDOM) return;
-    const handlePointerDown = (event: PointerEvent) => {
+    const handlePointerUp = (event: PointerEvent) => {
       if (!showMenu) return;
       const target = event.target as Node | null;
       if (navPanel?.contains(target) || menuButton?.contains(target)) return;
-      closeMenu();
+      event.preventDefault();
+      event.stopPropagation();
+      closeMenu({ restoreFocus: false });
     };
-    document.addEventListener('pointerdown', handlePointerDown, { capture: true });
-    removeOutside = () => document.removeEventListener('pointerdown', handlePointerDown, { capture: true } as any);
+    document.addEventListener('pointerup', handlePointerUp, { capture: true });
+    removeOutside = () => document.removeEventListener('pointerup', handlePointerUp, { capture: true } as any);
   });
 
   onDestroy(() => { removeOutside?.(); removeOutside = null; });

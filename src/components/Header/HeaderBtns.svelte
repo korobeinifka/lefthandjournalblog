@@ -91,13 +91,15 @@
 
   const addOutsideListener = () => {
     if (!canUseDOM) return;
-    const handlePointerDown = (event: Event) => {
+    const handlePointerUp = (event: Event) => {
       const target = event.target as Node | null;
       if (target && (searchDialog?.contains(target) || searchButton?.contains(target))) return;
-      closeSearch();
+      event.preventDefault();
+      event.stopPropagation();
+      closeSearch({ restoreFocus: false });
     };
-    document.addEventListener('pointerdown', handlePointerDown, { capture: true });
-    removeOutside = () => document.removeEventListener('pointerdown', handlePointerDown, { capture: true } as any);
+    document.addEventListener('pointerup', handlePointerUp, { capture: true });
+    removeOutside = () => document.removeEventListener('pointerup', handlePointerUp, { capture: true } as any);
   };
 
   const openSearch = async () => {
@@ -136,11 +138,13 @@
     if (event.key === 'Escape') { event.preventDefault(); event.stopPropagation(); closeSearch(); }
   };
 
-  const handleWrapperPointerDown = (event: PointerEvent) => {
+  const handleWrapperPointerUp = (event: PointerEvent) => {
     if (!searchDialog) return;
     const target = event.target as Node | null;
     if (target && searchDialog.contains(target)) return;
-    closeSearch();
+    event.preventDefault();
+    event.stopPropagation();
+    closeSearch({ restoreFocus: false });
   };
 
   onMount(() => {
@@ -242,7 +246,7 @@
 </div>
 
 {#if searchOpen}
-  <div bind:this={searchWrapper} use:portal class="fixed inset-0 z-50 flex items-start justify-center px-4 pt-20 md:pt-24 pb-6" on:pointerdown={handleWrapperPointerDown}>
+  <div bind:this={searchWrapper} use:portal class="fixed inset-0 z-50 flex items-start justify-center px-4 pt-20 md:pt-24 pb-6" on:pointerup={handleWrapperPointerUp}>
     <div class="absolute inset-0 bg-primary-bg/80 backdrop-blur-sm" on:click={() => closeSearch()}></div>
 
     <section bind:this={searchDialog} role="dialog" aria-modal="true" aria-labelledby="global-search-title"
