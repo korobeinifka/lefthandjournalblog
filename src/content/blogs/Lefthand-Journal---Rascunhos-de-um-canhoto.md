@@ -1,5 +1,5 @@
 ---
-title: Lefthand Journal - Rascunhos de um canhoto
+title: Rascunhos de um canhoto
 description: 'Sejam bem-vindos ao Lefthand Journal :)'
 pubDate: 2025-10-04T00:00:00.000Z
 category: Philosophy
