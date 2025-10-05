@@ -1,6 +1,7 @@
 <script lang="ts">
   import Icon from '@iconify/svelte';
-  import { onDestroy, onMount } from 'svelte';
+  import { onDestroy, onMount, tick } from 'svelte';
+
   import { CATEGORY_LINKS } from '@/utils/categories';
 
   const canUseDOM = typeof document !== 'undefined';
@@ -9,10 +10,11 @@
   let showCats = false;
   let menuButton: HTMLButtonElement | null = null;
   let navPanel: HTMLElement | null = null;
+  let triggerBeforeOpen: HTMLElement | null = null;
+  let keydownHandler: ((event: KeyboardEvent) => void) | null = null;
 
   let previousOverflow = '';
   let scrollLocked = false;
-  let removeOutside: (() => void) | null = null;
 
   const lockScroll = () => {
     if (!canUseDOM || scrollLocked) return;
@@ -26,14 +28,118 @@
     scrollLocked = false;
   };
 
-  const toggleMenu = () => { showMenu = !showMenu; if (!showMenu) showCats = false; };
+  const focusableSelectors =
+    'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"]), input:not([disabled]), select:not([disabled]), textarea:not([disabled])';
+
+  const getFocusableElements = () => {
+    if (!navPanel) return [] as HTMLElement[];
+    return Array.from(navPanel.querySelectorAll<HTMLElement>(focusableSelectors)).filter(
+      (element) => !element.hasAttribute('disabled') && element.getAttribute('aria-hidden') !== 'true'
+    );
+  };
+
+  const attachKeydown = () => {
+    if (!canUseDOM || keydownHandler) return;
+    keydownHandler = (event: KeyboardEvent) => {
+      if (!showMenu) return;
+
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        closeMenu();
+        return;
+      }
+
+      if (event.key !== 'Tab') return;
+
+      const focusable = getFocusableElements();
+      const total = focusable.length;
+      if (!total) {
+        event.preventDefault();
+        navPanel?.focus();
+        return;
+      }
+
+      const first = focusable[0];
+      const last = focusable[total - 1];
+      const active = document.activeElement as HTMLElement | null;
+
+      if (event.shiftKey) {
+        if (!active || !navPanel?.contains(active) || active === first) {
+          event.preventDefault();
+          last.focus();
+        }
+        return;
+      }
+
+      if (!active || !navPanel?.contains(active) || active === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+
+    document.addEventListener('keydown', keydownHandler, true);
+  };
+
+  const detachKeydown = () => {
+    if (!keydownHandler) return;
+    document.removeEventListener('keydown', keydownHandler, true);
+    keydownHandler = null;
+  };
+
+  const focusFirstElement = () => {
+    const focusable = getFocusableElements();
+    const target = focusable[0] ?? navPanel;
+    target?.focus();
+  };
+
+  const toggleMenu = () => {
+    if (showMenu) {
+      closeMenu();
+    } else {
+      showMenu = true;
+    }
+  };
   const closeMenu = ({ restoreFocus = true } = {}) => {
     if (!showMenu) return;
     showMenu = false; showCats = false;
-    if (restoreFocus) menuButton?.focus();
+    detachKeydown();
+    if (restoreFocus) (triggerBeforeOpen ?? menuButton)?.focus();
+    triggerBeforeOpen = null;
   };
 
-  $: { if (canUseDOM) (showMenu ? lockScroll() : unlockScroll()); }
+  const handleOverlayPointerDown = (event: PointerEvent) => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    const target = event.currentTarget as HTMLDivElement | null;
+    if (!target) return;
+
+    try {
+      target.setPointerCapture(event.pointerId);
+    } catch (error) {
+      /* noop */
+    }
+
+    const finalize = (finalEvent: PointerEvent) => {
+      finalEvent.preventDefault();
+      finalEvent.stopPropagation();
+
+      if (typeof target.hasPointerCapture === 'function' && target.hasPointerCapture(finalEvent.pointerId)) {
+        target.releasePointerCapture(finalEvent.pointerId);
+      }
+
+      target.removeEventListener('pointercancel', finalize);
+      target.removeEventListener('pointerup', finalize);
+
+  $: if (canUseDOM && showMenu) {
+    triggerBeforeOpen = (document.activeElement as HTMLElement | null) ?? menuButton;
+    tick().then(() => {
+      if (!showMenu) return;
+      if (navPanel) navPanel.tabIndex = -1;
+      focusFirstElement();
+      attachKeydown();
+    });
+  }
 
   onMount(() => {
     if (!canUseDOM) return;
@@ -41,13 +147,18 @@
       if (!showMenu) return;
       const target = event.target as Node | null;
       if (navPanel?.contains(target) || menuButton?.contains(target)) return;
+
       closeMenu();
     };
-    document.addEventListener('pointerdown', handlePointerDown, { capture: true });
-    removeOutside = () => document.removeEventListener('pointerdown', handlePointerDown, { capture: true } as any);
-  });
 
-  onDestroy(() => { removeOutside?.(); removeOutside = null; });
+
+  onDestroy(() => { detachKeydown(); removeOutside?.(); removeOutside = null; });
+
+    target.addEventListener('pointerup', finalize, { once: true });
+    target.addEventListener('pointercancel', finalize, { once: true });
+  };
+
+  $: { if (canUseDOM) (showMenu ? lockScroll() : unlockScroll()); }
 </script>
 
 <!-- Define var com fallback; pode sobrescrever via CSS/parent se quiser -->
@@ -67,7 +178,8 @@
   {#if showMenu}
     <div
       class="fixed inset-0 z-40 bg-primary-bg/70 backdrop-blur-sm transition-opacity duration-300 ease-[var(--nav-ease)]"
-      on:click={() => closeMenu()}
+      on:pointerdown={handleOverlayPointerDown}
+      role="presentation"
     />
 
     <!-- PAINEL com escala 0.9 -->
@@ -76,6 +188,7 @@
       role="dialog"
       aria-modal="true"
       data-sm-menu
+      tabindex="-1"
       class="fixed right-3 top-14 z-50 w-72 max-w-[85vw] rounded border border-border-ink/80 bg-card-bg shadow-xl transition-transform duration-300 ease-[var(--nav-ease)] md:hidden"
       style="transform: scale(var(--sm-menu-zoom, 0.9)); transform-origin: top right; will-change: transform;"
     >
