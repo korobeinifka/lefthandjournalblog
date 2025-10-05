@@ -1,5 +1,5 @@
 ---
-title: Uma breve introdução sobre modelos de Machine Learning.
+title: Uma breve introdução sobre modelos de Machine Learning. a
 description: Pauta tem estado em alta.
 pubDate: 2025-10-03T00:00:00.000Z
 category: Technology
