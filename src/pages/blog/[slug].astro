@@ -16,7 +16,25 @@ const { Content } = await post.render();
 ---
 
 <BlogLayout {...post}>
-  <Prose>
-    <Content />
-  </Prose>
+  <div data-post-content>
+    <Prose>
+      <Content />
+    </Prose>
+  </div>
 </BlogLayout>
+
+<style is:scoped>
+  [data-post-content] img {
+    width: 100%;
+    height: auto;
+    margin-inline: auto;
+    display: block;
+  }
+
+  @media (min-width: 768px) {
+    [data-post-content] img {
+      max-width: 720px;
+      max-height: 720px;
+    }
+  }
+</style>
