@@ -125,7 +125,9 @@
   }
 
   .ui-focus { @apply focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-text; }
-
+  
+  .site-container { @apply mx-auto w-full px-4 sm:px-6 lg:px-8; }
+  .site-narrow    { @apply md:max-w-[46rem] lg:max-w-[50rem] xl:max-w-[52rem]; }
 }
 
 @layer utilities {
@@ -143,5 +145,27 @@
   ) {
     border-radius: var(--radius) !important;
   }
-  
+  /* ===== Mobile tuning: code blocks & Mermaid dentro do corpo ===== */
+@media (max-width: 767.98px) {
+  /* Blocos de código */
+  .prose pre,
+  .prose pre code {
+    font-size: 0.8rem;     /* ~12.8px */
+    line-height: 1.5;
+  }
+  .prose pre {
+    padding: 0.85rem 1rem; /* um pouco menos de padding no mobile */
+  }
+
+  /* Código inline no texto */
+  .prose :not(pre) > code {
+    font-size: 0.8rem;     /* mantém coerência com o bloco */
+  }
+
+  /* Mermaid (diagramas) — controla o tamanho das labels */
+  .prose .mermaid {
+    font-size: 0.85rem;    /* ~13.6px */
+  }
+}
+
 }

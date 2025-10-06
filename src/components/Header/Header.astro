@@ -8,23 +8,34 @@ import SmNavBar from "./SmNavBar.svelte";
 <header
   class="fixed top-0 left-0 w-full border-b border-border-ink/60 bg-primary-bg/90 backdrop-blur supports-[backdrop-filter]:bg-primary-bg/80 z-40"
 >
+  <!-- Mesmo container do restante do site -->
   <div
-    class="mx-auto flex min-h-[5rem] max-w-6xl items-center justify-between gap-6 px-4 py-3 sm:px-6 lg:px-8"
+    class="mx-auto w-full md:max-w-[46rem] lg:max-w-[50rem] xl:max-w-[52rem]
+           grid grid-cols-[auto_1fr] md:grid-cols-[1fr_auto_1fr]
+           items-center min-h-[4.75rem] md:min-h-[5rem] gap-6 px-4 sm:px-6 lg:px-8"
   >
-    <a href="/" class="flex items-center gap-3 text-primary-text no-underline">
+    <!-- ESQUERDA: logo (nudge -2px para alinhar o DESENHO com a régua esquerda) -->
+    <a
+      href="/"
+      aria-label="Lefthand Journal – Home"
+      class="justify-self-start block leading-none ui-focus text-primary-text no-underline ml-[-2px]"
+    >
       <ChameleonLogo
-        class="h-10 w-10 flex-shrink-0 md:h-12 md:w-12"
-        width="48"
-        height="48"
+        class="h-14 w-14 md:h-16 md:w-16"
+        width="56"
+        height="56"
+        frameless
       />
-      <span class="text-2xl font-body font-semibold leading-tight">Lefthand Journal</span>
+      <span class="sr-only">Lefthand Journal</span>
     </a>
 
-    <div class="hidden md:block">
+    <!-- CENTRO: navbar sempre centralizada -->
+    <div class="hidden md:block justify-self-center">
       <NavBar />
     </div>
 
-    <div class="flex items-center gap-3">
+    <!-- DIREITA: utilitários; nudge + flush na régua direita -->
+    <div class="flex items-center gap-3 justify-self-end mr-[-2px]">
       <div class="md:hidden">
         <SmNavBar client:load />
       </div>

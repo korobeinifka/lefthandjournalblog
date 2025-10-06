@@ -1,11 +1,11 @@
 ---
-title: teste123
+title: Quem foi a banda The Cure
 description: aloalo
-pubDate: 2025-10-17T00:00:00.000Z
+pubDate: 2025-10-16T00:00:00.000Z
 category: Geopolitics
-author: aaa
+author: antonio maluf
 heroImage: /3.jpg
 heroImageAlt: aaa
 ---
 
-aaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaa![](/images/2.jpg)

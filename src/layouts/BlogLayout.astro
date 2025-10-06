@@ -1,10 +1,18 @@
 ---
+// src/layouts/BlogLayout.astro
 import type { CollectionEntry } from "astro:content";
 import PageLayout from "./PageLayout.astro";
 import ShareButton from "@/components/Utils/ShareButton.svelte";
 
-const { title, description, pubDate, author, heroImage, heroImageAlt, category } =
-  Astro.props.data as CollectionEntry<"blogs">["data"];
+const {
+  title,
+  description,
+  pubDate,
+  author,
+  heroImage,     // mantidos para futuro
+  heroImageAlt,
+  category,
+} = Astro.props.data as CollectionEntry<"blogs">["data"];
 
 const formattedDate = pubDate.toLocaleDateString("en-US", {
   year: "numeric",
@@ -18,49 +26,35 @@ const shareUrl = Astro.site
 ---
 
 <PageLayout title={title} description={description}>
-  <article class="mx-auto flex w-full max-w-3xl flex-col gap-12 py-6 sm:py-10">
-    <header class="flex flex-col gap-6">
-      <!-- Categoria -->
-      <p class="text-xs font-semibold uppercase tracking-[0.35em] text-muted-text">
+  <!-- Mesmas larguras da home + menos espaçamento vertical -->
+  <article class="mx-auto w-full md:max-w-[46rem] lg:max-w-[50rem] xl:max-w-[52rem] flex flex-col gap-6 md:gap-8 pt-0 pb-0">
+    <header class="flex flex-col gap-2 md:gap-3">
+      <!-- Categoria com as mesmas classes da home -->
+      <p class="text-[12px] font-semibold uppercase tracking-[0.14em] text-muted-text">
         {category}
       </p>
 
-      <!-- TÍTULO: agora igual ao PostListItem, só que maior -->
-      <h1 class="mt-0.5 text-3xl md:text-4xl font-semibold leading-snug text-primary-text">
+      <!-- Título centralizado -->
+      <h1 class="mt-0.5 text-3xl md:text-5xl font-bold leading-snug text-primary-text text-balance text-center">
         {title}
       </h1>
-
-      <!-- SUBTÍTULO REMOVIDO -->
-      {/*
-      <p class="text-lg text-secondary-text">{description}</p>
-      */}
-
-      <!-- Autor + data + share -->
-      <div class="flex flex-wrap items-center gap-3 max-[360px]:flex-col max-[360px]:items-start">
-        <div class="flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-secondary-text">
-          <span class="font-semibold text-primary-text">By {author}</span>
-          <span aria-hidden="true">•</span>
-          <time datetime={pubDate.toISOString()}>{formattedDate}</time>
-        </div>
-        <ShareButton client:idle url={shareUrl} title={title} />
-      </div>
-
-      <!-- Imagem destaque -->
-      {heroImage && (
-        <figure class="overflow-hidden rounded-xl border border-border-ink/70 bg-surface-bg">
-          <img
-            src={heroImage}
-            alt={heroImageAlt ?? title}
-            class="h-full w-full object-cover"
-            loading="lazy"
-          />
-        </figure>
-      )}
     </header>
 
-    <!-- Corpo -->
-    <section class="flex flex-col gap-10">
+    <!-- Corpo: remove margem do último nó da .prose -->
+    <section class="mt-6 md:mt-8 flex flex-col [&_.prose>:last-child]:mb-0">
       <slot />
     </section>
+
+    <!-- Meta no rodapé: menos espaço acima/abaixo e itens mais próximos -->
+    <footer aria-label="Post meta" class="-mt-10 md:-mt-12 mb-0 flex justify-end">
+      <div class="flex flex-wrap items-center gap-x-1 gap-y-1 text-sm text-secondary-text">
+        <span class="font-semibold text-primary-text">By {author}</span>
+        <span class="mx-1" aria-hidden="true">•</span>
+        <time datetime={pubDate.toISOString()}>{formattedDate}</time>
+        <span class="-ml-1 sm:-ml-2">
+          <ShareButton client:idle url={shareUrl} title={title} />
+        </span>
+      </div>
+    </footer>
   </article>
 </PageLayout>

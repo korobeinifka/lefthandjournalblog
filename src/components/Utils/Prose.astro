@@ -1,9 +1,37 @@
 ---
-
+/* (sem script) */
 ---
 
 <div
-  class="prose prose-lg max-w-none text-primary-text prose-headings:font-display prose-headings:text-primary-text prose-h1:text-primary-text prose-h2:text-primary-text prose-h3:text-primary-text prose-h4:text-primary-text prose-strong:text-primary-text prose-em:text-primary-text prose-p:text-primary-text prose-a:text-primary-text prose-a:underline-offset-4 prose-a:decoration-border-ink/60 hover:prose-a:text-secondary-text prose-blockquote:border-l-4 prose-blockquote:border-border-ink/80 prose-blockquote:text-secondary-text prose-blockquote:italic prose-li:marker:text-muted-text prose-code:bg-surface-bg prose-code:px-1.5 prose-code:py-1 prose-code:rounded-md prose-code:text-primary-text prose-pre:bg-surface-bg prose-pre:text-primary-text prose-pre:border prose-pre:border-border-ink/70 prose-hr:border-border-ink/60"
+  class="prose prose-lg max-w-none text-primary-text
+         /* títulos e tipografia base */
+         prose-headings:font-display prose-headings:text-primary-text
+         prose-h1:text-primary-text prose-h2:text-primary-text prose-h3:text-primary-text prose-h4:text-primary-text
+         prose-strong:text-primary-text prose-em:text-primary-text
+         prose-p:text-primary-text
+         /* links */
+         prose-a:text-primary-text prose-a:underline-offset-4 prose-a:decoration-border-ink/60 hover:prose-a:text-secondary-text
+         /* citações */
+         prose-blockquote:border-l-4 prose-blockquote:border-border-ink/80 prose-blockquote:text-secondary-text prose-blockquote:italic
+         /* listas */
+         prose-li:marker:text-muted-text
+         /* inline code */
+         prose-code:bg-surface-bg prose-code:px-1.5 prose-code:py-1 prose-code:rounded-md prose-code:text-primary-text
+         /* code blocks (pre) – menor no mobile, confortável no desktop */
+         prose-pre:bg-surface-bg prose-pre:text-primary-text prose-pre:border prose-pre:border-border-ink/70 prose-pre:leading-6
+         prose-pre:text-xs sm:prose-pre:text-sm md:prose-pre:text-base
+         /* hr */
+         prose-hr:border-border-ink/60
+
+         /* === imagens do corpo ===
+            - centralizadas sempre
+            - mantêm responsividade
+            - no desktop ficam menores (prioriza o texto)
+         */
+         prose-img:block prose-img:mx-auto prose-img:w-auto prose-img:object-contain
+         md:prose-img:max-h-[22rem] lg:prose-img:max-h-[26rem] xl:prose-img:max-h-[30rem]
+         /* figures e legendas centralizadas */
+         prose-figure:mx-auto prose-figcaption:text-center"
 >
   <slot />
 </div>
