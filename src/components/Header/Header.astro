@@ -10,15 +10,15 @@ import SmNavBar from "./SmNavBar.svelte";
 >
   <!-- Mesmo container do restante do site -->
   <div
-    class="mx-auto w-full md:max-w-[46rem] lg:max-w-[50rem] xl:max-w-[52rem]
+    class="mx-auto w-full px-4 sm:px-6 md:px-0 md:max-w-[46rem] lg:max-w-[50rem] xl:max-w-[52rem]
            grid grid-cols-[auto_1fr] md:grid-cols-[1fr_auto_1fr]
-           items-center min-h-[4.75rem] md:min-h-[5rem] gap-6 px-4 sm:px-6 lg:px-8"
+           items-center min-h-[4.75rem] md:min-h-[5rem] gap-6"
   >
     <!-- ESQUERDA: logo (nudge -2px para alinhar o DESENHO com a régua esquerda) -->
     <a
       href="/"
       aria-label="Lefthand Journal – Home"
-      class="justify-self-start block leading-none ui-focus text-primary-text no-underline ml-[-2px]"
+      class="justify-self-start block leading-none ui-focus text-primary-text no-underline"
     >
       <ChameleonLogo
         class="h-14 w-14 md:h-16 md:w-16"
@@ -35,7 +35,7 @@ import SmNavBar from "./SmNavBar.svelte";
     </div>
 
     <!-- DIREITA: utilitários; nudge + flush na régua direita -->
-    <div class="flex items-center gap-3 justify-self-end mr-[-2px]">
+    <div class="flex items-center gap-3 justify-self-end">
       <div class="md:hidden">
         <SmNavBar client:load />
       </div>
