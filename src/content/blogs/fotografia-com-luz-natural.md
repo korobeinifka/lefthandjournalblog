@@ -2,7 +2,7 @@
 title: Será que a Inteligência Artificial dominará o mundo?
 description: Descubra o que é a área de engenharia de dados.
 pubDate: 2025-10-04T11:30:00.000Z
-category: Chess
+category: Xadrez
 author: antonio maluf
 heroImage: ''
 heroImageAlt: Camaleão deprimido.
