@@ -157,7 +157,11 @@
                     href="/categories"
                     class="block rounded-[6px] px-4 py-2 text-xs uppercase tracking-[0.24em] hover:text-primary-text ui-transition"
                     on:click={() => closeMenu({ restoreFocus: false })}
+<<<<<<< HEAD
                   >VER TODAS</a>
+=======
+                  >OFF-TOPIC</a>
+>>>>>>> main
                 </li>
               </ul>
             {/if}

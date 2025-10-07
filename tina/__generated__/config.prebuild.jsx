@@ -17,6 +17,12 @@ var CATEGORY_OPTIONS = [
   "ARTE & CULTURA",
   "MUSICALIDADE",
   "OFF-TOPIC"
+<<<<<<< HEAD
+=======
+  "Tecnologia",
+  "Geopol\xEDtica",
+  "Xadrez"
+>>>>>>> main
 ];
 var toCategorySlug = (label) => slugify(label.replace(/&/g, " e "));
 var CATEGORY_LINKS = CATEGORY_OPTIONS.map((label) => ({

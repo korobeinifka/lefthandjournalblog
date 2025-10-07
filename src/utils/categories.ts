@@ -7,6 +7,12 @@ export const CATEGORY_OPTIONS = [
   "ARTE & CULTURA",
   "MUSICALIDADE",
   "OFF-TOPIC",
+<<<<<<< HEAD
+=======
+  "Tecnologia",
+  "Geopolítica",
+  "Xadrez",
+>>>>>>> main
 ] as const;
 
 export type Category = (typeof CATEGORY_OPTIONS)[number];
