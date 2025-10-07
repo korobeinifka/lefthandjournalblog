@@ -126,7 +126,7 @@
               href="/"
               class="block rounded px-4 py-3 text-sm font-semibold uppercase tracking-[0.28em] hover:text-primary-text ui-transition"
               on:click={() => closeMenu({ restoreFocus: false })}
-            >HOME</a>
+            >INÍCIO</a>
           </li>
 
           <li class="mt-1">
@@ -168,7 +168,7 @@
               href="/about"
               class="block rounded px-4 py-3 text-sm font-semibold uppercase tracking-[0.28em] hover:text-primary-text ui-transition"
               on:click={() => closeMenu({ restoreFocus: false })}
-            >ABOUT</a>
+            >SOBRE</a>
           </li>
         </ul>
       </nav>

@@ -38,7 +38,7 @@ if (!label || !items) {
     <!-- rótulo alinhado à mesma régua dos cards -->
     <div class="mx-auto w-full md:max-w-[46rem] lg:max-w-[50rem] xl:max-w-[52rem]">
       <p class="text-[12px] font-semibold uppercase tracking-[0.16em] text-muted-text">
-        CATEGORY @ {(label?.toUpperCase() ?? "")}
+        CATEGORIA # {(label?.toUpperCase() ?? "")}
       </p>
     </div>
 
@@ -51,7 +51,9 @@ if (!label || !items) {
         ))}
       </ul>
     ) : (
-      <p class="text-secondary-text">No posts in this category yet.</p>
+      <div class="mx-auto w-full md:max-w-[46rem] lg:max-w-[50rem] xl:max-w-[52rem]">
+        <p class="text-secondary-text">No posts in this category yet.</p>
+      </div>
     )}
   </section>
 </PageLayout>

@@ -1,14 +1,39 @@
 ---
 import PageLayout from "@/layouts/PageLayout.astro";
+
+const title = "About";
+const description =
+  "Levogiro — um caderno editorial sobre tecnologia, sistemas e outras voltas do pensamento, criado por Antonio Maluf.";
 ---
 
-<PageLayout title="About">
-  <section class="mx-auto flex max-w-3xl flex-col gap-8">
-    <p class="text-lg text-secondary-text">
-      Lefthand Journal publishes dispatches at the intersection of existential inquiry and practical strategy. We follow the threads that weave through chessboards, negotiating tables, research labs, and quiet studies. The tone is minimal, the pacing deliberate, the goal always to leave you thinking longer than the read itself.
-    </p>
-    <p class="text-lg text-secondary-text">
-      Expect essays on chess as a language of decision-making, on geopolitics as the choreography of supply and trust, on philosophy as a daily discipline, and on technology as the infrastructure of our shared attention. Every piece is edited for clarity, calm, and intellectual warmth.
-    </p>
-  </section>
+<PageLayout title={title} description={description}>
+  <article class="mx-auto w-full md:max-w-[46rem] lg:max-w-[50rem] xl:max-w-[52rem]">
+    <header class="mb-6 md:mb-8">
+      <p class="text-[12px] font-semibold uppercase tracking-[0.14em] text-muted-text">ABOUT</p>
+      <h1 class="mt-2 text-3xl md:text-5xl font-bold leading-snug text-primary-text">Levogiro</h1>
+    </header>
+
+    <section class="flex flex-col gap-4 text-secondary-text leading-relaxed">
+      <p>
+        <strong>Levogiro</strong> — <em>[que desvia o plano da luz polarizada no sentido contrário ao dos ponteiros do relógio]</em>.
+        <p> Aqui escrevo sobre tecnologia e outras coisas que me fazem ser eu :)</p>
+        
+      </p>
+
+      <p> 
+        por <strong>Antonio Maluf</strong> — engenheiro de dados, canhoto, vegetariano e adorador de chihuahuas ₍^. .^₎⟆
+
+      </p>
+
+      <div class="pt-2 text-sm">
+        <ul class="space-y-1">
+          <li>📧 <a class="underline-offset-4 hover:underline" href="mailto:antonio@levogiro.com">antonio@levogiro.com</a></li>
+          <li>📸 <a class="underline-offset-4 hover:underline" href="https://instagram.com/lomaluf" rel="noopener">instagram.com/lomaluf</a></li>
+          <li>🔗 <a class="underline-offset-4 hover:underline" href="https://linkedin.com/in/maluf-antonio" rel="noopener">linkedin.com/in/maluf-antonio</a></li>
+          
+        </ul>
+      </div>
+    </section>
+
+  </article>
 </PageLayout>
