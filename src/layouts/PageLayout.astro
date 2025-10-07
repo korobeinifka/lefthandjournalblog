@@ -10,14 +10,14 @@ interface Props {
 }
 
 const { title = "", description }: Props = Astro.props;
-const pageTitle = title ? `${title} | Lefthand Journal` : "Lefthand Journal";
+const pageTitle = title ? `${title} | Levogiro` : "Levogiro";
 const metaDescription =
   description ??
-  "Lefthand Journal is a minimal editorial space exploring chess strategy, geopolitical shifts, technology, and philosophy.";
+  "Levogiro é uma revista digital em português sobre tecnologia, arte, cultura, geopolítica e xadrez.";
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
     <meta name="description" content={metaDescription} />

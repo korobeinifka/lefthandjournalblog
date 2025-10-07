@@ -1,6 +1,6 @@
-# Lefthand Journal
+# Levogiro
 
-Minimal editorial blog built with [Astro](https://astro.build) and Tailwind CSS. The project reimagines the original template as a calm magazine-inspired layout with light/dark themes, responsive editorial cards, and focused typography.
+Revista digital minimalista construída com [Astro](https://astro.build) e Tailwind CSS. O projeto apresenta um layout inspirado em revistas, com temas claro/escuro, cards editoriais responsivos e tipografia focada na leitura.
 
 ## Getting started
 
@@ -19,14 +19,19 @@ The site runs at `http://localhost:4321` by default.
   title: "Article title"
   description: "One-sentence dek that appears in cards."
   pubDate: 2024-02-12
-  category: "Chess" # Chess | Geopolitics | Philosophy | Technology
-  author: "Lefthand Editorial"
+  category: "TECNOLOGIA" # TECNOLOGIA | ARTE & CULTURA | GEOPOLÍTICA | XADREZ | OUTROS
+  author: "Levogiro"
   heroImage: "https://..." # optional 16:9 image
   heroImageAlt: "Accessible alt text"
   ---
   ```
-- Categories are locked to `Chess`, `Geopolitics`, `Philosophy`, and `Technology`. Update `src/utils/categories.ts` if you need to change or extend them.
+- Categories are locked to `TECNOLOGIA`, `ARTE & CULTURA`, `GEOPOLÍTICA`, `XADREZ`, e `OUTROS`. Atualize `src/utils/categories.ts` se precisar alterar ou ampliar a lista.
 - Add or edit Markdown body copy below the frontmatter to update article pages.
+- After editing category definitions or the Tina schema, run:
+
+  ```sh
+  npm run build:cms
+  ```
 
 ## TinaCMS content editing
 

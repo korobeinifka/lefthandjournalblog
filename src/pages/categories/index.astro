@@ -1,29 +1,23 @@
 ---
 import PageLayout from "@/layouts/PageLayout.astro";
 import { getCollection } from "astro:content";
-import { CATEGORY_LINKS, CATEGORY_OPTIONS } from "@/utils/categories";
+import { CATEGORY_LINKS } from "@/utils/categories";
 
 const posts = await getCollection("blogs");
-const summaries: Record<(typeof CATEGORY_OPTIONS)[number], string> = {
-  Chess: "Strategy, tempo, and the quiet mind required to end a game well.",
-  Geopolitics: "Supply lines, influence maps, and the narratives states publish.",
-  Philosophy: "Meaning-making for those who annotate their own interior lives.",
-  Technology: "Tools, protocols, and the systems shaping our collective attention.",
-};
 
-const categories = CATEGORY_LINKS.map(({ label, slug }) => ({
+const categories = CATEGORY_LINKS.map(({ label, slug, description }) => ({
   label,
   slug,
-  summary: summaries[label],
+  summary: description,
   count: posts.filter((post) => post.data.category === label).length,
 }));
 ---
 
-<PageLayout title="Categories">
+<PageLayout title="Tópicos">
   <section class="flex flex-col space-y-3 md:space-y-4">
     <!-- rótulo alinhado à mesma régua dos cards -->
     <div class="mx-auto w-full md:max-w-[46rem] lg:max-w-[50rem] xl:max-w-[52rem]">
-      <p class="text-[12px] font-semibold uppercase tracking-[0.16em] text-muted-text">CATEGORIES</p>
+      <p class="text-[12px] font-semibold uppercase tracking-[0.16em] text-muted-text">TÓPICOS</p>
     </div>
 
     <!-- grade alinhada à mesma régua dos cards -->
@@ -37,13 +31,13 @@ const categories = CATEGORY_LINKS.map(({ label, slug }) => ({
             >
               <div class="flex flex-col gap-2">
                 <p class="text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-text">
-                  {category.count} article{category.count === 1 ? "" : "s"}
+                  {category.count} artigo{category.count === 1 ? "" : "s"}
                 </p>
                 <h2 class="text-xl font-semibold text-primary-text">{category.label}</h2>
                 <p class="text-sm text-secondary-text">{category.summary}</p>
               </div>
               <span class="mt-5 text-xs font-semibold uppercase tracking-[0.16em] text-secondary-text">
-                View stories
+                Ver publicações
               </span>
             </a>
           </li>

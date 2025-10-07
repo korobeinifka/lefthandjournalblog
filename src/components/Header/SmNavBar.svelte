@@ -86,7 +86,7 @@
     aria-controls="mobile-nav"
     on:click={toggleMenu}
     class="relative z-50 flex h-10 w-10 items-center justify-center rounded bg-transparent text-secondary-text hover:text-primary-text ui-transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-text"
-    aria-label={open ? 'Close navigation' : 'Open navigation'}
+    aria-label={open ? 'Fechar navegação' : 'Abrir navegação'}
   >
     <Icon icon={open ? 'ri:close-line' : 'ri:menu-line'} class="pointer-events-none h-5 w-5" />
   </button>
@@ -136,7 +136,7 @@
               on:click={() => (showCats = !showCats)}
               aria-expanded={showCats}
             >
-              <span>CATEGORY</span>
+              <span>TÓPICOS</span>
               <Icon icon={showCats ? 'ri:arrow-up-s-line' : 'ri:arrow-down-s-line'} class="h-4 w-4" />
             </button>
 
@@ -157,7 +157,7 @@
                     href="/categories"
                     class="block rounded-[6px] px-4 py-2 text-xs uppercase tracking-[0.24em] hover:text-primary-text ui-transition"
                     on:click={() => closeMenu({ restoreFocus: false })}
-                  >OUTRAS</a>
+                  >TODOS OS TÓPICOS</a>
                 </li>
               </ul>
             {/if}
