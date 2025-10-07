@@ -5,10 +5,9 @@ import { CATEGORY_LINKS, CATEGORY_OPTIONS } from "@/utils/categories";
 
 const posts = await getCollection("blogs");
 const summaries: Record<(typeof CATEGORY_OPTIONS)[number], string> = {
-  Chess: "Strategy, tempo, and the quiet mind required to end a game well.",
-  Geopolitics: "Supply lines, influence maps, and the narratives states publish.",
-  Philosophy: "Meaning-making for those who annotate their own interior lives.",
-  Technology: "Tools, protocols, and the systems shaping our collective attention.",
+  Tecnologia: "Ferramentas, protocolos e sistemas que moldam nossa atenção coletiva.",
+  Geopolítica: "Linhas de suprimento, mapas de influência e as narrativas dos estados.",
+  Xadrez: "Estratégia, ritmo e a mente tranquila necessária para fechar a partida.",
 };
 
 const categories = CATEGORY_LINKS.map(({ label, slug }) => ({
