@@ -12,7 +12,7 @@ const isSSR = process.env.ASTRO_SSR === "true";
 // https://astro.build/config
 export default defineConfig({
   integrations: [tailwind(), icon(), svelte(), react(), sitemap()],
-  site: "https://lefthandjournal.com",
+  site: "https://levogiro.com",
   // base: "/blog2.0",
   output: isSSR ? "server" : "static",
   adapter: isSSR ? undefined : vercel(), // evita conflito no modo server (dev)
