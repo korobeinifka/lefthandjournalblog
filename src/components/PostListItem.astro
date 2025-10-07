@@ -9,7 +9,7 @@ const href = `/blog/${post.slug}/`;
 
 
 const dateLabel = data.pubDate
-  ? new Date(data.pubDate).toLocaleDateString("en-US", { month: "short", day: "2-digit", year: "numeric" })
+  ? new Date(data.pubDate).toLocaleDateString("pt-BR", { day: "2-digit", month: "short", year: "numeric" })
   : "";
 
 const showThumbnail = !!data.heroImage;

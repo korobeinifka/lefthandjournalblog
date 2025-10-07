@@ -5,10 +5,12 @@ import { CATEGORY_LINKS, CATEGORY_OPTIONS } from "@/utils/categories";
 
 const posts = await getCollection("blogs");
 const summaries: Record<(typeof CATEGORY_OPTIONS)[number], string> = {
-  Chess: "Strategy, tempo, and the quiet mind required to end a game well.",
-  Geopolitics: "Supply lines, influence maps, and the narratives states publish.",
-  Philosophy: "Meaning-making for those who annotate their own interior lives.",
-  Technology: "Tools, protocols, and the systems shaping our collective attention.",
+  "TECNOLOGIA": "Ferramentas, protocolos e sistemas que moldam nossa atenção coletiva.",
+  "GEOPOLÍTICA": "Fluxos de poder, cadeias globais e as narrativas entre estados.",
+  "XADREZ & HOBBIES": "Estratégia, ritmo e a mente tranquila necessária para fechar a partida (e além).",
+  "ARTE & CULTURA": "Estéticas, referências e repertórios que nos puxam para fora do óbvio.",
+  "MUSICALIDADE": "Ritmos, melodias e experimentos sonoros para expandir os ouvidos.",
+  "OFF-TOPIC": "Reflexões soltas, bastidores e tudo que não cabe nas outras categorias.",
 };
 
 const categories = CATEGORY_LINKS.map(({ label, slug }) => ({
@@ -19,11 +21,11 @@ const categories = CATEGORY_LINKS.map(({ label, slug }) => ({
 }));
 ---
 
-<PageLayout title="Categories">
+<PageLayout title="Categorias">
   <section class="flex flex-col space-y-3 md:space-y-4">
     <!-- rótulo alinhado à mesma régua dos cards -->
     <div class="mx-auto w-full md:max-w-[46rem] lg:max-w-[50rem] xl:max-w-[52rem]">
-      <p class="text-[12px] font-semibold uppercase tracking-[0.16em] text-muted-text">CATEGORIES</p>
+      <p class="text-[12px] font-semibold uppercase tracking-[0.16em] text-muted-text">CATEGORIAS</p>
     </div>
 
     <!-- grade alinhada à mesma régua dos cards -->
@@ -37,13 +39,13 @@ const categories = CATEGORY_LINKS.map(({ label, slug }) => ({
             >
               <div class="flex flex-col gap-2">
                 <p class="text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-text">
-                  {category.count} article{category.count === 1 ? "" : "s"}
+                  {category.count} {category.count === 1 ? "artigo" : "artigos"}
                 </p>
                 <h2 class="text-xl font-semibold text-primary-text">{category.label}</h2>
                 <p class="text-sm text-secondary-text">{category.summary}</p>
               </div>
               <span class="mt-5 text-xs font-semibold uppercase tracking-[0.16em] text-secondary-text">
-                View stories
+                Ver publicações
               </span>
             </a>
           </li>

@@ -1,9 +1,9 @@
 {
-  "name": "Lefthand Journal",
-  "short_name": "Lefthand Journal",
-  "description": null,
+  "name": "levogiro",
+  "short_name": "levogiro",
+  "description": "Caderno editorial sobre tecnologia, geopolítica, xadrez, arte, cultura e musicalidade.",
   "dir": "auto",
-  "lang": "en-US",
+  "lang": "pt-BR",
   "display": "standalone",
   "orientation": "any",
   "start_url": "/?homescreen=1",

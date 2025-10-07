@@ -136,7 +136,7 @@
               on:click={() => (showCats = !showCats)}
               aria-expanded={showCats}
             >
-              <span>CATEGORY</span>
+              <span>CATEGORIAS</span>
               <Icon icon={showCats ? 'ri:arrow-up-s-line' : 'ri:arrow-down-s-line'} class="h-4 w-4" />
             </button>
 
@@ -157,7 +157,7 @@
                     href="/categories"
                     class="block rounded-[6px] px-4 py-2 text-xs uppercase tracking-[0.24em] hover:text-primary-text ui-transition"
                     on:click={() => closeMenu({ restoreFocus: false })}
-                  >OUTRAS</a>
+                  >OFF-TOPIC</a>
                 </li>
               </ul>
             {/if}

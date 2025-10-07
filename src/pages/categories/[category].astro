@@ -1,19 +1,19 @@
 ---
 import PageLayout from "@/layouts/PageLayout.astro";
 import { getCollection, type CollectionEntry } from "astro:content";
-import { CATEGORY_OPTIONS } from "@/utils/categories";
+import { CATEGORY_BY_SLUG, CATEGORY_LINKS, CATEGORY_OPTIONS } from "@/utils/categories";
 import PostListItem from "@/components/PostListItem.astro";
 
 // Gera rotas estáticas a partir das opções
 export async function getStaticPaths() {
   const posts = await getCollection("blogs");
 
-  return CATEGORY_OPTIONS.map((label) => {
+  return CATEGORY_LINKS.map(({ label, slug }) => {
     const items = posts
-      .filter((p) => (p.data.category ?? "").toLowerCase() === label.toLowerCase())
+      .filter((p) => (p.data.category ?? "") === label)
       .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 
-    return { params: { category: label.toLowerCase() }, props: { label, items } };
+    return { params: { category: slug }, props: { label, items } };
   });
 }
 
@@ -25,20 +25,26 @@ if (!label || !items) {
   const slug = (Astro.params?.category ?? "").toString().toLowerCase();
   const allPosts = await getCollection("blogs");
 
-  // tenta achar o label canônico nas opções, senão usa o próprio slug
-  label = CATEGORY_OPTIONS.find((opt) => opt.toLowerCase() === slug) ?? slug;
+  // tenta achar o label canônico nas opções, senão usa o próprio slug normalizado
+  label = CATEGORY_BY_SLUG[slug] ?? slug;
 
   items = allPosts
-    .filter((p) => (p.data.category ?? "").toLowerCase() === slug)
+    .filter((p) =>
+      CATEGORY_OPTIONS.includes((p.data.category ?? "") as (typeof CATEGORY_OPTIONS)[number])
+        ? p.data.category === label
+        : (p.data.category ?? "").toLowerCase() === slug,
+    )
     .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 }
+
+const pageTitle = label ? `Categoria: ${label}` : "Categoria";
 ---
-<PageLayout>
+<PageLayout title={pageTitle}>
   <section class="flex flex-col space-y-3 md:space-y-4">
     <!-- rótulo alinhado à mesma régua dos cards -->
     <div class="mx-auto w-full md:max-w-[46rem] lg:max-w-[50rem] xl:max-w-[52rem]">
       <p class="text-[12px] font-semibold uppercase tracking-[0.16em] text-muted-text">
-        CATEGORIA # {(label?.toUpperCase() ?? "")}
+        CATEGORIA • {(label?.toUpperCase() ?? "")}
       </p>
     </div>
 
@@ -52,7 +58,7 @@ if (!label || !items) {
       </ul>
     ) : (
       <div class="mx-auto w-full md:max-w-[46rem] lg:max-w-[50rem] xl:max-w-[52rem]">
-        <p class="text-secondary-text">No posts in this category yet.</p>
+        <p class="text-secondary-text">Ainda não há publicações nesta categoria.</p>
       </div>
     )}
   </section>
