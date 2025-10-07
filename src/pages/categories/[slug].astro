@@ -1,0 +1,49 @@
+import PageLayout from "@/layouts/PageLayout.astro";
+import { getCollection, type CollectionEntry } from "astro:content";
+import { CATEGORY_LINKS } from "@/utils/categories";
+import PostListItem from "@/components/PostListItem.astro";
+
+export async function getStaticPaths() {
+  const posts = await getCollection("blogs");
+  return CATEGORY_LINKS.map(({ label, slug }) => {
+    const items = posts
+      .filter((p) => (p.data.category ?? "") === label)
+      .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+    return { params: { slug }, props: { label, items } };
+  });
+}
+
+type P = { label?: string; items?: CollectionEntry<"blogs">[] };
+let { label, items } = Astro.props as P;
+
+if (!label || !items) {
+  const slug = (Astro.params?.slug ?? "").toString();
+  const allPosts = await getCollection("blogs");
+  label = CATEGORY_LINKS.find((c) => c.slug === slug)?.label ?? slug;
+  items = allPosts
+    .filter((p) => (p.data.category ?? "") === label)
+    .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+}
+
+---
+<PageLayout>
+  <section class="flex flex-col space-y-3 md:space-y-4">
+    <div class="mx-auto w-full md:max-w-[46rem]">
+      <p class="text-[12px] font-semibold uppercase tracking-[0.16em] text-muted-text">
+        CATEGORIA # {(label?.toUpperCase() ?? "")}
+      </p>
+    </div>
+
+    {items && items.length ? (
+      <ul class="space-y-3 md:space-y-4">
+        {items.map((post) => (
+          <li><PostListItem post={post} /></li>
+        ))}
+      </ul>
+    ) : (
+      <div class="mx-auto w-full md:max-w-[46rem]">
+        <p class="text-secondary-text">Nenhum post nesta categoria ainda.</p>
+      </div>
+    )}
+  </section>
+</PageLayout>

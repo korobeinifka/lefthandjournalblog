@@ -5,18 +5,17 @@ import { slugify } from "@/utils/slug";
 export async function GET(context) {
   const posts = await getCollection("blogs");
   return rss({
-    title: "Lefthand Journal",
-    description:
-      "Minimal editorial essays on chess, geopolitics, philosophy, and technology.",
+    title: "Levogiro",
+    description: "Ensaios editoriais sobre sociedade, filosofia, tecnologia, arte e hábitos.",
     site: context.site,
     items: posts.map((post) => {
       const slug = slugify(post.data.title);
       return {
-      title: post.data.title,
-      description: post.data.description,
-      pubDate: post.data.pubDate,
-      link: `/blog/${slug}/`,
-    };
+        title: post.data.title,
+        description: post.data.description,
+        pubDate: post.data.pubDate,
+        link: `/blog/${slug}/`,
+      };
     }),
   });
 }

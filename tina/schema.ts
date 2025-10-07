@@ -1,7 +1,6 @@
 import type { Collection, Schema } from "tinacms";
 import { CATEGORY_OPTIONS } from "../src/utils/categories";
 
-// slugify determinístico
 function slugifyInline(value: string): string {
   const s = (value || "").trim();
   if (!s) return "untitled";
@@ -18,10 +17,9 @@ function slugifyInline(value: string): string {
 
 const blogsCollection: Collection = {
   name: "blogs",
-  label: "Blog Posts",
+  label: "Posts",
   path: "src/content/blogs",
   format: "md",
-
   ui: {
     filename: {
       slugify: (values: Record<string, unknown>) => {
@@ -30,36 +28,21 @@ const blogsCollection: Collection = {
       },
     },
   },
-
   fields: [
-    { type: "string", name: "title", label: "Title", required: true, isTitle: true },
-    {
-      type: "string",
-      name: "description",
-      label: "Description",
-      required: true,
-      ui: { component: "textarea" },
-    },
-    {
-      type: "datetime",
-      name: "pubDate",
-      label: "Published Date",
-      required: true,
-      ui: { dateFormat: "YYYY-MM-DD" },
-    },
+    { type: "string", name: "title", label: "Título", required: true, isTitle: true },
+    { type: "string", name: "description", label: "Descrição", required: true, ui: { component: "textarea" } },
+    { type: "datetime", name: "pubDate", label: "Publicado em", required: true, ui: { dateFormat: "YYYY-MM-DD" } },
     {
       type: "string",
       name: "category",
-      label: "Category",
+      label: "Tópico",
       required: true,
       options: CATEGORY_OPTIONS.map((option) => ({ label: option, value: option })),
     },
-    { type: "string", name: "author", label: "Author", required: true },
-    { type: "image", name: "heroImage", label: "Hero Image" },
-    { type: "string", name: "heroImageAlt", label: "Hero Image Alt Text" },
-
-    // corpo do post
-    { type: "rich-text", name: "body", label: "Body", isBody: true },
+    { type: "string", name: "author", label: "Autor", required: true },
+    { type: "image", name: "heroImage", label: "Imagem de capa" },
+    { type: "string", name: "heroImageAlt", label: "Alt da capa" },
+    { type: "rich-text", name: "body", label: "Conteúdo", isBody: true },
   ],
 };
 
