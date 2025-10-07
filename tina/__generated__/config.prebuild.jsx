@@ -3,10 +3,9 @@ import { defineConfig } from "tinacms";
 
 // src/utils/categories.ts
 var CATEGORY_OPTIONS = [
-  "Chess",
-  "Geopolitics",
-  "Philosophy",
-  "Technology"
+  "Tecnologia",
+  "Geopol\xEDtica",
+  "Xadrez"
 ];
 var CATEGORY_LINKS = CATEGORY_OPTIONS.map((label) => ({
   label,

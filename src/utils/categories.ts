@@ -1,8 +1,7 @@
 export const CATEGORY_OPTIONS = [
-  "Chess",
-  "Geopolitics",
-  "Philosophy",
-  "Technology",
+  "Tecnologia",
+  "Geopolítica",
+  "Xadrez",
 ] as const;
 
 export type Category = (typeof CATEGORY_OPTIONS)[number];
