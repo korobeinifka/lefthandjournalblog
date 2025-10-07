@@ -1,7 +1,7 @@
 <script lang="ts">
   import Icon from '@iconify/svelte';
   export let url = '';
-  export let title = 'Share';
+  export let title = 'Compartilhar';
 
   let copied = false;
 
@@ -31,8 +31,8 @@
          text-secondary-text hover:text-primary-text
          bg-transparent border-0 shadow-none
          focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-text"
-  aria-label="Share this post"
+  aria-label="Compartilhar esta publicação"
 >
   <Icon icon="ri:share-forward-line" class="h-3.5 w-3.5 md:h-4 md:w-4" />
-  <span>{copied ? 'COPIED' : 'SHARE'}</span>
+  <span>{copied ? 'COPIADO' : 'COMPARTILHAR'}</span>
 </button>

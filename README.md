@@ -1,6 +1,6 @@
-# Lefthand Journal
+# levogiro
 
-Minimal editorial blog built with [Astro](https://astro.build) and Tailwind CSS. The project reimagines the original template as a calm magazine-inspired layout with light/dark themes, responsive editorial cards, and focused typography.
+Publicação editorial minimalista construída com [Astro](https://astro.build), Tailwind CSS, Svelte e TinaCMS. O projeto mantém um layout inspirado em revistas, com temas claro/escuro, cartões editoriais responsivos e tipografia focada na leitura — agora totalmente em português.
 
 ## Getting started
 
@@ -16,16 +16,16 @@ The site runs at `http://localhost:4321` by default.
 - Articles live in `src/content/blogs`. Each Markdown file uses the following frontmatter:
   ```yaml
   ---
-  title: "Article title"
-  description: "One-sentence dek that appears in cards."
+  title: "Título do artigo"
+  description: "Linha fina exibida nos cartões."
   pubDate: 2024-02-12
-  category: "Chess" # Chess | Geopolitics | Philosophy | Technology
-  author: "Lefthand Editorial"
-  heroImage: "https://..." # optional 16:9 image
-  heroImageAlt: "Accessible alt text"
+  category: "TECNOLOGIA" # TECNOLOGIA | GEOPOLÍTICA | XADREZ & HOBBIES | ARTE & CULTURA | MUSICALIDADE | OFF-TOPIC
+  author: "Antonio Maluf"
+  heroImage: "https://..." # opcional, imagem 16:9
+  heroImageAlt: "Texto alternativo acessível"
   ---
   ```
-- Categories are locked to `Chess`, `Geopolitics`, `Philosophy`, and `Technology`. Update `src/utils/categories.ts` if you need to change or extend them.
+- As categorias válidas são `TECNOLOGIA`, `GEOPOLÍTICA`, `XADREZ & HOBBIES`, `ARTE & CULTURA`, `MUSICALIDADE` e `OFF-TOPIC`. Atualize `src/utils/categories.ts` se precisar alterar ou estender essa lista.
 - Add or edit Markdown body copy below the frontmatter to update article pages.
 
 ## TinaCMS content editing

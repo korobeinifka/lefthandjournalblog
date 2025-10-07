@@ -14,10 +14,10 @@ const {
   category,
 } = Astro.props.data as CollectionEntry<"blogs">["data"];
 
-const formattedDate = pubDate.toLocaleDateString("en-US", {
-  year: "numeric",
+const formattedDate = pubDate.toLocaleDateString("pt-BR", {
+  day: "2-digit",
   month: "long",
-  day: "numeric",
+  year: "numeric",
 });
 
 const shareUrl = Astro.site
@@ -46,9 +46,9 @@ const shareUrl = Astro.site
     </section>
 
     <!-- Meta no rodapé: menos espaço acima/abaixo e itens mais próximos -->
-    <footer aria-label="Post meta" class="-mt-10 md:-mt-12 mb-0 flex justify-end">
+    <footer aria-label="Metadados da publicação" class="-mt-10 md:-mt-12 mb-0 flex justify-end">
       <div class="flex flex-wrap items-center gap-x-1 gap-y-1 text-sm text-secondary-text">
-        <span class="font-semibold text-primary-text">By {author}</span>
+        <span class="font-semibold text-primary-text">Por {author}</span>
         <span class="mx-1" aria-hidden="true">•</span>
         <time datetime={pubDate.toISOString()}>{formattedDate}</time>
         <span class="-ml-1 sm:-ml-2">
