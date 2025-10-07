@@ -1,7 +1,7 @@
 import type { Collection, Schema } from "tinacms";
 import { CATEGORY_OPTIONS } from "../src/utils/categories";
 
-// slugify determinístico
+// slugify determinístico (espelha src/utils/slug.ts)
 function slugifyInline(value: string): string {
   const s = (value || "").trim();
   if (!s) return "untitled";
@@ -9,6 +9,7 @@ function slugifyInline(value: string): string {
     s
       .normalize("NFD")
       .replace(/[\u0300-\u036f]/g, "")
+      .replace(/&/g, " e ")
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, "-")
       .replace(/^-+|-+$/g, "")
@@ -18,7 +19,7 @@ function slugifyInline(value: string): string {
 
 const blogsCollection: Collection = {
   name: "blogs",
-  label: "Blog Posts",
+  label: "Publicações",
   path: "src/content/blogs",
   format: "md",
 
@@ -32,34 +33,34 @@ const blogsCollection: Collection = {
   },
 
   fields: [
-    { type: "string", name: "title", label: "Title", required: true, isTitle: true },
+    { type: "string", name: "title", label: "Título", required: true, isTitle: true },
     {
       type: "string",
       name: "description",
-      label: "Description",
+      label: "Descrição",
       required: true,
       ui: { component: "textarea" },
     },
     {
       type: "datetime",
       name: "pubDate",
-      label: "Published Date",
+      label: "Data de publicação",
       required: true,
       ui: { dateFormat: "YYYY-MM-DD" },
     },
     {
       type: "string",
       name: "category",
-      label: "Category",
+      label: "Categoria",
       required: true,
       options: CATEGORY_OPTIONS.map((option) => ({ label: option, value: option })),
     },
-    { type: "string", name: "author", label: "Author", required: true },
-    { type: "image", name: "heroImage", label: "Hero Image" },
-    { type: "string", name: "heroImageAlt", label: "Hero Image Alt Text" },
+    { type: "string", name: "author", label: "Autor", required: true },
+    { type: "image", name: "heroImage", label: "Imagem destaque" },
+    { type: "string", name: "heroImageAlt", label: "Texto alternativo da imagem" },
 
     // corpo do post
-    { type: "rich-text", name: "body", label: "Body", isBody: true },
+    { type: "rich-text", name: "body", label: "Conteúdo", isBody: true },
   ],
 };
 

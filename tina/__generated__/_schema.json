@@ -1,1 +1,167 @@
-{"version":{"fullVersion":"1.6.1","major":"1","minor":"6","patch":"1"},"meta":{"flags":["experimentalData"]},"collections":[{"name":"blogs","label":"Blog Posts","path":"src/content/blogs","format":"md","ui":{"filename":{}},"fields":[{"type":"string","name":"title","label":"Title","required":true,"isTitle":true,"namespace":["blogs","title"],"searchable":true,"uid":false},{"type":"string","name":"description","label":"Description","required":true,"ui":{"component":"textarea"},"namespace":["blogs","description"],"searchable":true,"uid":false},{"type":"datetime","name":"pubDate","label":"Published Date","required":true,"ui":{"dateFormat":"YYYY-MM-DD"},"namespace":["blogs","pubDate"],"searchable":true,"uid":false},{"type":"string","name":"category","label":"Category","required":true,"options":[{"label":"Chess","value":"Chess"},{"label":"Geopolitics","value":"Geopolitics"},{"label":"Philosophy","value":"Philosophy"},{"label":"Technology","value":"Technology"}],"namespace":["blogs","category"],"searchable":true,"uid":false},{"type":"string","name":"author","label":"Author","required":true,"namespace":["blogs","author"],"searchable":true,"uid":false},{"type":"image","name":"heroImage","label":"Hero Image","namespace":["blogs","heroImage"],"searchable":false,"uid":false},{"type":"string","name":"heroImageAlt","label":"Hero Image Alt Text","namespace":["blogs","heroImageAlt"],"searchable":true,"uid":false},{"type":"rich-text","name":"body","label":"Body","isBody":true,"namespace":["blogs","body"],"searchable":true,"parser":{"type":"markdown"},"uid":false}],"namespace":["blogs"]}],"config":{"media":{"tina":{"publicFolder":"public","mediaRoot":""}}}}
+{
+  "version": {
+    "fullVersion": "1.6.1",
+    "major": "1",
+    "minor": "6",
+    "patch": "1"
+  },
+  "meta": {
+    "flags": [
+      "experimentalData"
+    ]
+  },
+  "collections": [
+    {
+      "name": "blogs",
+      "label": "Publicações",
+      "path": "src/content/blogs",
+      "format": "md",
+      "ui": {
+        "filename": {}
+      },
+      "fields": [
+        {
+          "type": "string",
+          "name": "title",
+          "label": "Título",
+          "required": true,
+          "isTitle": true,
+          "namespace": [
+            "blogs",
+            "title"
+          ],
+          "searchable": true,
+          "uid": false
+        },
+        {
+          "type": "string",
+          "name": "description",
+          "label": "Descrição",
+          "required": true,
+          "ui": {
+            "component": "textarea"
+          },
+          "namespace": [
+            "blogs",
+            "description"
+          ],
+          "searchable": true,
+          "uid": false
+        },
+        {
+          "type": "datetime",
+          "name": "pubDate",
+          "label": "Data de publicação",
+          "required": true,
+          "ui": {
+            "dateFormat": "YYYY-MM-DD"
+          },
+          "namespace": [
+            "blogs",
+            "pubDate"
+          ],
+          "searchable": true,
+          "uid": false
+        },
+        {
+          "type": "string",
+          "name": "category",
+          "label": "Categoria",
+          "required": true,
+          "options": [
+            {
+              "label": "TECNOLOGIA",
+              "value": "TECNOLOGIA"
+            },
+            {
+              "label": "GEOPOLÍTICA",
+              "value": "GEOPOLÍTICA"
+            },
+            {
+              "label": "XADREZ & HOBBIES",
+              "value": "XADREZ & HOBBIES"
+            },
+            {
+              "label": "ARTE & CULTURA",
+              "value": "ARTE & CULTURA"
+            },
+            {
+              "label": "MUSICALIDADE",
+              "value": "MUSICALIDADE"
+            },
+            {
+              "label": "OFF-TOPIC",
+              "value": "OFF-TOPIC"
+            }
+          ],
+          "namespace": [
+            "blogs",
+            "category"
+          ],
+          "searchable": true,
+          "uid": false
+        },
+        {
+          "type": "string",
+          "name": "author",
+          "label": "Autor",
+          "required": true,
+          "namespace": [
+            "blogs",
+            "author"
+          ],
+          "searchable": true,
+          "uid": false
+        },
+        {
+          "type": "image",
+          "name": "heroImage",
+          "label": "Imagem destaque",
+          "namespace": [
+            "blogs",
+            "heroImage"
+          ],
+          "searchable": false,
+          "uid": false
+        },
+        {
+          "type": "string",
+          "name": "heroImageAlt",
+          "label": "Texto alternativo da imagem",
+          "namespace": [
+            "blogs",
+            "heroImageAlt"
+          ],
+          "searchable": true,
+          "uid": false
+        },
+        {
+          "type": "rich-text",
+          "name": "body",
+          "label": "Conteúdo",
+          "isBody": true,
+          "namespace": [
+            "blogs",
+            "body"
+          ],
+          "searchable": true,
+          "parser": {
+            "type": "markdown"
+          },
+          "uid": false
+        }
+      ],
+      "namespace": [
+        "blogs"
+      ]
+    }
+  ],
+  "config": {
+    "media": {
+      "tina": {
+        "publicFolder": "public",
+        "mediaRoot": ""
+      }
+    }
+  }
+}

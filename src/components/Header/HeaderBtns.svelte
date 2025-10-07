@@ -73,17 +73,17 @@
     isLoadingSearch = true; searchError = '';
     try {
       const response = await fetch('/search.json', { headers: { Accept: 'application/json' } });
-      if (!response.ok) throw new Error('Unable to fetch search index');
+      if (!response.ok) throw new Error('Não foi possível carregar o índice de busca');
       searchEntries = await response.json();
       hasLoadedSearch = true;
-    } catch { searchError = 'Search is unavailable right now. Please try again later.'; }
+    } catch { searchError = 'A busca está indisponível agora. Tente novamente em instantes.'; }
     finally { isLoadingSearch = false; }
   };
 
   const formatDate = (value: string) => {
     const date = new Date(value);
     if (Number.isNaN(date.valueOf())) return '';
-    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    return date.toLocaleDateString('pt-BR', { day: '2-digit', month: 'short', year: 'numeric' });
   };
 
   const cleanSnippet = (s = '') => s.replace(/\s*(?:\.{3}|…)\s*$/,'');
@@ -226,7 +226,7 @@
     type="button"
     on:click={() => (searchOpen ? closeSearch() : openSearch())}
     class="flex h-10 w-10 items-center justify-center rounded bg-transparent text-secondary-text hover:text-primary-text ui-transition ui-focus"
-    aria-label={searchOpen ? 'Close search' : 'Open search'}
+    aria-label={searchOpen ? 'Fechar busca' : 'Abrir busca'}
     aria-expanded={searchOpen}
     aria-haspopup="dialog"
   >
@@ -238,7 +238,7 @@
     on:click={toggleTheme}
     class="flex h-10 w-10 items-center justify-center rounded bg-transparent text-secondary-text hover:text-primary-text ui-transition ui-focus"
     aria-pressed={theme === 'dark' ? 'true' : 'false'}
-    aria-label={`Activate ${theme === 'light' ? 'dark' : 'light'} mode`}
+    aria-label={`Ativar modo ${theme === 'light' ? 'escuro' : 'claro'}`}
   >
     {#if theme === 'light'} <Icon icon="solar:sun-2-bold" class="h-5 w-5" />
     {:else}                <Icon icon="solar:moon-bold" class="h-5 w-5" /> {/if}
@@ -268,12 +268,12 @@
       on:keydown={handleInputKeydown}
       on:click|stopPropagation
     >
-      <h2 id="global-search-title" class="sr-only">Global search</h2>
+      <h2 id="global-search-title" class="sr-only">Busca global</h2>
 
       <div class="flex flex-col gap-4 p-4">
         <div class="flex items-center gap-3 rounded border border-border-ink/70 bg-card-bg px-3 py-2.5 shadow-sm">
           <Icon icon="ri:search-line" class="h-5 w-5 text-secondary-text" />
-          <label class="sr-only" for="global-search-input">Search posts</label>
+          <label class="sr-only" for="global-search-input">Buscar publicações</label>
           <input id="global-search-input" bind:this={searchInput} bind:value={searchQuery} type="search" inputmode="search"
             placeholder="Pesquise por tópicos, palavras ou postagens"
             class="flex-1 bg-transparent text-base text-primary-text placeholder:text-muted-text focus:outline-none"
@@ -292,7 +292,7 @@
         {#if searchError}
           <p class="rounded border border-red-500/40 bg-red-500/10 px-4 py-3 text-sm text-red-200">{searchError}</p>
         {:else if isLoadingSearch}
-          <p class="px-1 text-sm text-secondary-text">Loading search index...</p>
+          <p class="px-1 text-sm text-secondary-text">Carregando índice de busca…</p>
         {:else if (isMobile ? mobileVisible.length : desktopVisible.length)}
           <div class={isMobile ? 'max-h-[60vh] overflow-y-auto' : ''}>
             <ul class="flex flex-col gap-3 pr-1">
@@ -312,7 +312,7 @@
           </div>
         {:else}
           <p class="px-1 text-sm text-secondary-text">
-            {trimmedQuery ? 'No posts match your search yet.' : 'Start typing to search.'}
+            {trimmedQuery ? 'Nenhuma publicação corresponde à sua busca ainda.' : 'Comece a digitar para buscar.'}
           </p>
         {/if}
       </div>
