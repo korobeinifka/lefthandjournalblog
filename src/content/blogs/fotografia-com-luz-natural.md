@@ -4,7 +4,7 @@ description: Descubra o que é a área de engenharia de dados.
 pubDate: 2025-10-04T11:30:00.000Z
 category: Chess
 author: antonio maluf
-heroImage: /images/chameleon-sad.png
+heroImage: ''
 heroImageAlt: Camaleão deprimido.
 ---
 
