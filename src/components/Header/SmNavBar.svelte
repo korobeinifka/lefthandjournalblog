@@ -85,10 +85,10 @@
     aria-haspopup="true"
     aria-controls="mobile-nav"
     on:click={toggleMenu}
-    class="relative z-50 flex h-10 w-10 items-center justify-center rounded bg-transparent text-secondary-text hover:text-primary-text ui-transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-text"
+    class="relative z-50 flex h-12 w-12 md:h-10 md:w-10 items-center justify-center rounded bg-transparent text-secondary-text hover:text-primary-text ui-transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-text"
     aria-label={open ? 'Close navigation' : 'Open navigation'}
   >
-    <Icon icon={open ? 'ri:close-line' : 'ri:menu-line'} class="pointer-events-none h-5 w-5" />
+    <Icon icon={open ? 'ri:close-line' : 'ri:menu-line'} class="pointer-events-none h-6 w-6 md:h-5 md:w-5" />
   </button>
 
   {#if open}
