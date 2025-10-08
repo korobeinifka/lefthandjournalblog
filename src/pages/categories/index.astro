@@ -1,41 +1,40 @@
 ---
 import PageLayout from "@/layouts/PageLayout.astro";
 import { getCollection } from "astro:content";
-import { CATEGORY_LINKS } from "@/utils/categories";
 
+// Normalizador básico: deixa tudo comparável por "slug"
+const toSlug = (s: string) =>
+  (s || "")
+    .toLowerCase()
+    .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+
+// Carrega docs de categorias e posts
+const cats = await getCollection("categories");
 const posts = await getCollection("blogs");
 
-// 🔑 normaliza chaves (remove acentos, espaços e símbolos)
-const toKey = (s: string) =>
-  s
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "") // remove diacríticos
-    .replace(/[^a-z0-9]+/g, "");     // tira separadores
-
-// ✅ uma única imagem fixa por categoria (use chaves já normalizadas)
-const CATEGORY_THUMBS: Record<string, { src: string; alt?: string }> = {
-  tecnologia:  { src: "/images/categories/tecnologia.jpg",  alt: "Tecnologia" },
-  geopolitica: { src: "/images/categories/geopolitica.jpg", alt: "Geopolítica" },
-  xadrez:      { src: "/images/categories/xadrez.jpg",      alt: "Xadrez" },
-};
-
-// só para contar posts por categoria (opcional)
-const counts = new Map<string, number>();
-for (const p of posts) {
-  const label = (p.data.category ?? "").toString();
-  if (!label) continue;
-  counts.set(label, (counts.get(label) ?? 0) + 1);
+// Monta mapa {slug -> {label, slug, heroImage, count}}
+const catMap = new Map<string, { label: string; slug: string; heroImage?: string; count: number }>();
+for (const c of cats) {
+  const { label, slug, heroImage } = c.data;
+  if (!label || !slug) continue;
+  catMap.set(slug, { label, slug, heroImage, count: 0 });
 }
 
-const categories = CATEGORY_LINKS.map(({ label, slug }) => {
-  const count = counts.get(label) ?? 0;
-  // 🔒 consulta robusta: tenta slug e, se falhar, usa o label
-  const fixed = CATEGORY_THUMBS[toKey(slug)] ?? CATEGORY_THUMBS[toKey(label)];
-  const heroImage = fixed?.src;
-  const heroAlt = fixed?.alt ?? label;
-  return { label, slug, count, heroImage, heroAlt };
-});
+// Conta posts por slug de categoria (comparando por slug do label do post)
+for (const p of posts) {
+  const raw = p.data.category ?? "";
+  const s = toSlug(raw);
+  if (!s) continue;
+  // Se a categoria do post não existir nos docs, ignora (ou inclua dinâmica se quiser)
+  if (catMap.has(s)) {
+    const entry = catMap.get(s)!;
+    entry.count += 1;
+  }
+}
+
+const categories = Array.from(catMap.values());
 ---
 
 <PageLayout title="Categories">
@@ -47,7 +46,7 @@ const categories = CATEGORY_LINKS.map(({ label, slug }) => {
       </p>
     </div>
 
-    <!-- Lista com o mesmo layout dos cards de posts -->
+    <!-- Cards no mesmo layout dos posts -->
     <ul class="space-y-3 md:space-y-4">
       {categories.map((cat) => {
         const showThumb = !!cat.heroImage;
@@ -75,7 +74,7 @@ const categories = CATEGORY_LINKS.map(({ label, slug }) => {
                   <div class="shrink-0 ml-2">
                     <img
                       src={cat.heroImage!}
-                      alt={cat.heroAlt}
+                      alt={cat.label}
                       loading="lazy"
                       decoding="async"
                       class="h-20 w-20 md:h-24 md:w-36 object-cover rounded"

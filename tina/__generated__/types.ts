@@ -84,6 +84,8 @@ export type Query = {
   document: DocumentNode;
   blogs: Blogs;
   blogsConnection: BlogsConnection;
+  categories: Categories;
+  categoriesConnection: CategoriesConnection;
 };
 
 
@@ -122,8 +124,24 @@ export type QueryBlogsConnectionArgs = {
   filter?: InputMaybe<BlogsFilter>;
 };
 
+
+export type QueryCategoriesArgs = {
+  relativePath?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QueryCategoriesConnectionArgs = {
+  before?: InputMaybe<Scalars['String']['input']>;
+  after?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Float']['input']>;
+  last?: InputMaybe<Scalars['Float']['input']>;
+  sort?: InputMaybe<Scalars['String']['input']>;
+  filter?: InputMaybe<CategoriesFilter>;
+};
+
 export type DocumentFilter = {
   blogs?: InputMaybe<BlogsFilter>;
+  categories?: InputMaybe<CategoriesFilter>;
 };
 
 export type DocumentConnectionEdges = {
@@ -163,14 +181,14 @@ export type CollectionDocumentsArgs = {
   folder?: InputMaybe<Scalars['String']['input']>;
 };
 
-export type DocumentNode = Blogs | Folder;
+export type DocumentNode = Blogs | Categories | Folder;
 
 export type Blogs = Node & Document & {
   __typename?: 'Blogs';
   title: Scalars['String']['output'];
-  description: Scalars['String']['output'];
+  description?: Maybe<Scalars['String']['output']>;
   pubDate: Scalars['String']['output'];
-  category: Scalars['String']['output'];
+  category?: Maybe<Scalars['String']['output']>;
   author: Scalars['String']['output'];
   heroImage?: Maybe<Scalars['String']['output']>;
   heroImageAlt?: Maybe<Scalars['String']['output']>;
@@ -232,6 +250,35 @@ export type BlogsConnection = Connection & {
   edges?: Maybe<Array<Maybe<BlogsConnectionEdges>>>;
 };
 
+export type Categories = Node & Document & {
+  __typename?: 'Categories';
+  label: Scalars['String']['output'];
+  slug: Scalars['String']['output'];
+  heroImage?: Maybe<Scalars['String']['output']>;
+  id: Scalars['ID']['output'];
+  _sys: SystemInfo;
+  _values: Scalars['JSON']['output'];
+};
+
+export type CategoriesFilter = {
+  label?: InputMaybe<StringFilter>;
+  slug?: InputMaybe<StringFilter>;
+  heroImage?: InputMaybe<ImageFilter>;
+};
+
+export type CategoriesConnectionEdges = {
+  __typename?: 'CategoriesConnectionEdges';
+  cursor: Scalars['String']['output'];
+  node?: Maybe<Categories>;
+};
+
+export type CategoriesConnection = Connection & {
+  __typename?: 'CategoriesConnection';
+  pageInfo: PageInfo;
+  totalCount: Scalars['Float']['output'];
+  edges?: Maybe<Array<Maybe<CategoriesConnectionEdges>>>;
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   addPendingDocument: DocumentNode;
@@ -241,6 +288,8 @@ export type Mutation = {
   createFolder: DocumentNode;
   updateBlogs: Blogs;
   createBlogs: Blogs;
+  updateCategories: Categories;
+  createCategories: Categories;
 };
 
 
@@ -288,13 +337,27 @@ export type MutationCreateBlogsArgs = {
   params: BlogsMutation;
 };
 
+
+export type MutationUpdateCategoriesArgs = {
+  relativePath: Scalars['String']['input'];
+  params: CategoriesMutation;
+};
+
+
+export type MutationCreateCategoriesArgs = {
+  relativePath: Scalars['String']['input'];
+  params: CategoriesMutation;
+};
+
 export type DocumentUpdateMutation = {
   blogs?: InputMaybe<BlogsMutation>;
+  categories?: InputMaybe<CategoriesMutation>;
   relativePath?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type DocumentMutation = {
   blogs?: InputMaybe<BlogsMutation>;
+  categories?: InputMaybe<CategoriesMutation>;
 };
 
 export type BlogsMutation = {
@@ -308,14 +371,22 @@ export type BlogsMutation = {
   body?: InputMaybe<Scalars['JSON']['input']>;
 };
 
-export type BlogsPartsFragment = { __typename: 'Blogs', title: string, description: string, pubDate: string, category: string, author: string, heroImage?: string | null, heroImageAlt?: string | null, body?: any | null };
+export type CategoriesMutation = {
+  label?: InputMaybe<Scalars['String']['input']>;
+  slug?: InputMaybe<Scalars['String']['input']>;
+  heroImage?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type BlogsPartsFragment = { __typename: 'Blogs', title: string, description?: string | null, pubDate: string, category?: string | null, author: string, heroImage?: string | null, heroImageAlt?: string | null, body?: any | null };
+
+export type CategoriesPartsFragment = { __typename: 'Categories', label: string, slug: string, heroImage?: string | null };
 
 export type BlogsQueryVariables = Exact<{
   relativePath: Scalars['String']['input'];
 }>;
 
 
-export type BlogsQuery = { __typename?: 'Query', blogs: { __typename: 'Blogs', id: string, title: string, description: string, pubDate: string, category: string, author: string, heroImage?: string | null, heroImageAlt?: string | null, body?: any | null, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, hasReferences?: boolean | null, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string } } };
+export type BlogsQuery = { __typename?: 'Query', blogs: { __typename: 'Blogs', id: string, title: string, description?: string | null, pubDate: string, category?: string | null, author: string, heroImage?: string | null, heroImageAlt?: string | null, body?: any | null, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, hasReferences?: boolean | null, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string } } };
 
 export type BlogsConnectionQueryVariables = Exact<{
   before?: InputMaybe<Scalars['String']['input']>;
@@ -327,7 +398,26 @@ export type BlogsConnectionQueryVariables = Exact<{
 }>;
 
 
-export type BlogsConnectionQuery = { __typename?: 'Query', blogsConnection: { __typename?: 'BlogsConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasPreviousPage: boolean, hasNextPage: boolean, startCursor: string, endCursor: string }, edges?: Array<{ __typename?: 'BlogsConnectionEdges', cursor: string, node?: { __typename: 'Blogs', id: string, title: string, description: string, pubDate: string, category: string, author: string, heroImage?: string | null, heroImageAlt?: string | null, body?: any | null, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, hasReferences?: boolean | null, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string } } | null } | null> | null } };
+export type BlogsConnectionQuery = { __typename?: 'Query', blogsConnection: { __typename?: 'BlogsConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasPreviousPage: boolean, hasNextPage: boolean, startCursor: string, endCursor: string }, edges?: Array<{ __typename?: 'BlogsConnectionEdges', cursor: string, node?: { __typename: 'Blogs', id: string, title: string, description?: string | null, pubDate: string, category?: string | null, author: string, heroImage?: string | null, heroImageAlt?: string | null, body?: any | null, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, hasReferences?: boolean | null, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string } } | null } | null> | null } };
+
+export type CategoriesQueryVariables = Exact<{
+  relativePath: Scalars['String']['input'];
+}>;
+
+
+export type CategoriesQuery = { __typename?: 'Query', categories: { __typename: 'Categories', id: string, label: string, slug: string, heroImage?: string | null, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, hasReferences?: boolean | null, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string } } };
+
+export type CategoriesConnectionQueryVariables = Exact<{
+  before?: InputMaybe<Scalars['String']['input']>;
+  after?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Float']['input']>;
+  last?: InputMaybe<Scalars['Float']['input']>;
+  sort?: InputMaybe<Scalars['String']['input']>;
+  filter?: InputMaybe<CategoriesFilter>;
+}>;
+
+
+export type CategoriesConnectionQuery = { __typename?: 'Query', categoriesConnection: { __typename?: 'CategoriesConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasPreviousPage: boolean, hasNextPage: boolean, startCursor: string, endCursor: string }, edges?: Array<{ __typename?: 'CategoriesConnectionEdges', cursor: string, node?: { __typename: 'Categories', id: string, label: string, slug: string, heroImage?: string | null, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, hasReferences?: boolean | null, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string } } | null } | null> | null } };
 
 export const BlogsPartsFragmentDoc = gql`
     fragment BlogsParts on Blogs {
@@ -340,6 +430,14 @@ export const BlogsPartsFragmentDoc = gql`
   heroImage
   heroImageAlt
   body
+}
+    `;
+export const CategoriesPartsFragmentDoc = gql`
+    fragment CategoriesParts on Categories {
+  __typename
+  label
+  slug
+  heroImage
 }
     `;
 export const BlogsDocument = gql`
@@ -399,6 +497,63 @@ export const BlogsConnectionDocument = gql`
   }
 }
     ${BlogsPartsFragmentDoc}`;
+export const CategoriesDocument = gql`
+    query categories($relativePath: String!) {
+  categories(relativePath: $relativePath) {
+    ... on Document {
+      _sys {
+        filename
+        basename
+        hasReferences
+        breadcrumbs
+        path
+        relativePath
+        extension
+      }
+      id
+    }
+    ...CategoriesParts
+  }
+}
+    ${CategoriesPartsFragmentDoc}`;
+export const CategoriesConnectionDocument = gql`
+    query categoriesConnection($before: String, $after: String, $first: Float, $last: Float, $sort: String, $filter: CategoriesFilter) {
+  categoriesConnection(
+    before: $before
+    after: $after
+    first: $first
+    last: $last
+    sort: $sort
+    filter: $filter
+  ) {
+    pageInfo {
+      hasPreviousPage
+      hasNextPage
+      startCursor
+      endCursor
+    }
+    totalCount
+    edges {
+      cursor
+      node {
+        ... on Document {
+          _sys {
+            filename
+            basename
+            hasReferences
+            breadcrumbs
+            path
+            relativePath
+            extension
+          }
+          id
+        }
+        ...CategoriesParts
+      }
+    }
+  }
+}
+    ${CategoriesPartsFragmentDoc}`;
 export type Requester<C= {}> = <R, V>(doc: DocumentNode, vars?: V, options?: C) => Promise<R>
   export function getSdk<C>(requester: Requester<C>) {
     return {
@@ -407,6 +562,12 @@ export type Requester<C= {}> = <R, V>(doc: DocumentNode, vars?: V, options?: C) 
       },
     blogsConnection(variables?: BlogsConnectionQueryVariables, options?: C): Promise<{data: BlogsConnectionQuery, errors?: { message: string, locations: { line: number, column: number }[], path: string[] }[], variables: BlogsConnectionQueryVariables, query: string}> {
         return requester<{data: BlogsConnectionQuery, errors?: { message: string, locations: { line: number, column: number }[], path: string[] }[], variables: BlogsConnectionQueryVariables, query: string}, BlogsConnectionQueryVariables>(BlogsConnectionDocument, variables, options);
+      },
+    categories(variables: CategoriesQueryVariables, options?: C): Promise<{data: CategoriesQuery, errors?: { message: string, locations: { line: number, column: number }[], path: string[] }[], variables: CategoriesQueryVariables, query: string}> {
+        return requester<{data: CategoriesQuery, errors?: { message: string, locations: { line: number, column: number }[], path: string[] }[], variables: CategoriesQueryVariables, query: string}, CategoriesQueryVariables>(CategoriesDocument, variables, options);
+      },
+    categoriesConnection(variables?: CategoriesConnectionQueryVariables, options?: C): Promise<{data: CategoriesConnectionQuery, errors?: { message: string, locations: { line: number, column: number }[], path: string[] }[], variables: CategoriesConnectionQueryVariables, query: string}> {
+        return requester<{data: CategoriesConnectionQuery, errors?: { message: string, locations: { line: number, column: number }[], path: string[] }[], variables: CategoriesConnectionQueryVariables, query: string}, CategoriesConnectionQueryVariables>(CategoriesConnectionDocument, variables, options);
       }
     };
   }
@@ -455,7 +616,7 @@ export const ExperimentalGetTinaClient = () =>
   getSdk(
     generateRequester(
       createClient({
-        url: "http://localhost:4001/graphql",
+        url: "https://content.tinajs.io/1.6/content/d82149ea-77c3-4c8a-bbf9-76bdf9fe647c/github/main",
         queries,
       })
     )

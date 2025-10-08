@@ -9,3 +9,10 @@ fragment BlogsParts on Blogs {
   heroImageAlt
   body
 }
+
+fragment CategoriesParts on Categories {
+  __typename
+  label
+  slug
+  heroImage
+}

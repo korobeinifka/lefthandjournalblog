@@ -56,10 +56,13 @@ type Query {
   document(collection: String, relativePath: String): DocumentNode!
   blogs(relativePath: String): Blogs!
   blogsConnection(before: String, after: String, first: Float, last: Float, sort: String, filter: BlogsFilter): BlogsConnection!
+  categories(relativePath: String): Categories!
+  categoriesConnection(before: String, after: String, first: Float, last: Float, sort: String, filter: CategoriesFilter): CategoriesConnection!
 }
 
 input DocumentFilter {
   blogs: BlogsFilter
+  categories: CategoriesFilter
 }
 
 type DocumentConnectionEdges {
@@ -85,13 +88,13 @@ type Collection {
   documents(before: String, after: String, first: Float, last: Float, sort: String, filter: DocumentFilter, folder: String): DocumentConnection!
 }
 
-union DocumentNode = Blogs | Folder
+union DocumentNode = Blogs | Categories | Folder
 
 type Blogs implements Node & Document {
   title: String!
-  description: String!
+  description: String
   pubDate: String!
-  category: String!
+  category: String
   author: String!
   heroImage: String
   heroImageAlt: String
@@ -151,6 +154,32 @@ type BlogsConnection implements Connection {
   edges: [BlogsConnectionEdges]
 }
 
+type Categories implements Node & Document {
+  label: String!
+  slug: String!
+  heroImage: String
+  id: ID!
+  _sys: SystemInfo!
+  _values: JSON!
+}
+
+input CategoriesFilter {
+  label: StringFilter
+  slug: StringFilter
+  heroImage: ImageFilter
+}
+
+type CategoriesConnectionEdges {
+  cursor: String!
+  node: Categories
+}
+
+type CategoriesConnection implements Connection {
+  pageInfo: PageInfo!
+  totalCount: Float!
+  edges: [CategoriesConnectionEdges]
+}
+
 type Mutation {
   addPendingDocument(collection: String!, relativePath: String!, template: String): DocumentNode!
   updateDocument(collection: String, relativePath: String!, params: DocumentUpdateMutation!): DocumentNode!
@@ -159,15 +188,19 @@ type Mutation {
   createFolder(collection: String, relativePath: String!): DocumentNode!
   updateBlogs(relativePath: String!, params: BlogsMutation!): Blogs!
   createBlogs(relativePath: String!, params: BlogsMutation!): Blogs!
+  updateCategories(relativePath: String!, params: CategoriesMutation!): Categories!
+  createCategories(relativePath: String!, params: CategoriesMutation!): Categories!
 }
 
 input DocumentUpdateMutation {
   blogs: BlogsMutation
+  categories: CategoriesMutation
   relativePath: String
 }
 
 input DocumentMutation {
   blogs: BlogsMutation
+  categories: CategoriesMutation
 }
 
 input BlogsMutation {
@@ -179,6 +212,12 @@ input BlogsMutation {
   heroImage: String
   heroImageAlt: String
   body: JSON
+}
+
+input CategoriesMutation {
+  label: String
+  slug: String
+  heroImage: String
 }
 
 schema {

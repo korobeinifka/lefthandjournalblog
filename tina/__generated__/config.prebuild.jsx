@@ -1,68 +1,44 @@
 // tina/config.ts
 import { defineConfig } from "tinacms";
 
-// src/utils/categories.ts
-var CATEGORY_OPTIONS = [
-  "Tecnologia",
-  "Geopol\xEDtica",
-  "Xadrez"
-];
-var CATEGORY_LINKS = CATEGORY_OPTIONS.map((label) => ({
-  label,
-  slug: label.toLowerCase()
-}));
-
 // tina/schema.ts
-function slugifyInline(value) {
-  const s = (value || "").trim();
-  if (!s) return "untitled";
-  return s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").replace(/-{2,}/g, "-") || "untitled";
-}
-var blogsCollection = {
-  name: "blogs",
-  label: "Blog Posts",
-  path: "src/content/blogs",
-  format: "md",
-  ui: {
-    filename: {
-      slugify: (values) => {
-        const raw = values?.title || "untitled";
-        return slugifyInline(raw);
-      }
+import { defineSchema } from "tinacms";
+var schema_default = defineSchema({
+  collections: [
+    {
+      name: "blogs",
+      label: "Posts",
+      path: "src/content/blogs",
+      format: "md",
+      // use "mdx" se seus posts forem .mdx
+      ui: { filename: { slugify: (values) => (values?.title || "post").toLowerCase().replace(/\s+/g, "-") } },
+      fields: [
+        { name: "title", label: "T\xEDtulo", type: "string", required: true },
+        { name: "description", label: "Descri\xE7\xE3o", type: "string" },
+        { name: "pubDate", label: "Data", type: "datetime", required: true },
+        // Mantemos "category" como STRING para evitar schema drift.
+        // Você pode digitar livremente ou (depois) adicionar um UI helper.
+        { name: "category", label: "Categoria", type: "string" },
+        { name: "author", label: "Autor", type: "string", required: true },
+        { name: "heroImage", label: "Hero image", type: "image" },
+        { name: "heroImageAlt", label: "Hero alt", type: "string" },
+        { name: "body", label: "Conte\xFAdo", type: "rich-text", isBody: true }
+      ]
+    },
+    {
+      name: "categories",
+      label: "Categories",
+      path: "src/content/categories",
+      format: "json",
+      ui: { filename: { slugify: (values) => (values?.slug || values?.label || "categoria").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-") } },
+      fields: [
+        { name: "label", label: "Label", type: "string", required: true },
+        { name: "slug", label: "Slug (sem acento/espA\xE7os)", type: "string", required: true },
+        { name: "heroImage", label: "Thumb fixa (opcional)", type: "image" }
+      ]
     }
-  },
-  fields: [
-    { type: "string", name: "title", label: "Title", required: true, isTitle: true },
-    {
-      type: "string",
-      name: "description",
-      label: "Description",
-      required: true,
-      ui: { component: "textarea" }
-    },
-    {
-      type: "datetime",
-      name: "pubDate",
-      label: "Published Date",
-      required: true,
-      ui: { dateFormat: "YYYY-MM-DD" }
-    },
-    {
-      type: "string",
-      name: "category",
-      label: "Category",
-      required: true,
-      options: CATEGORY_OPTIONS.map((option) => ({ label: option, value: option }))
-    },
-    { type: "string", name: "author", label: "Author", required: true },
-    { type: "image", name: "heroImage", label: "Hero Image" },
-    { type: "string", name: "heroImageAlt", label: "Hero Image Alt Text" },
-    // corpo do post
-    { type: "rich-text", name: "body", label: "Body", isBody: true }
   ]
-};
-var schema = { collections: [blogsCollection] };
-var schema_default = schema;
+});
 
 // tina/config.ts
 var branch = process.env.TINA_BRANCH || process.env.VERCEL_GIT_COMMIT_REF || process.env.HEAD || "main";

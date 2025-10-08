@@ -1,4 +1,5 @@
 ---
+// src/components/Header/Header.astro
 import ChameleonLogo from "./ChameleonLogo.astro";
 import HeaderBtns from "./HeaderBtns.svelte";
 import NavBar from "./NavBar.astro";
@@ -6,16 +7,21 @@ import SmNavBar from "./SmNavBar.svelte";
 ---
 
 <header class="fixed top-0 left-0 w-full bg-primary-bg/90 backdrop-blur supports-[backdrop-filter]:bg-primary-bg/80 z-40">
-  <!-- mesma régua do site -->
-  <div class="site-container site-narrow grid grid-cols-[auto_1fr_auto] items-center min-h-[4.75rem] md:min-h-[5rem] gap-6">
-    <!-- ESQUERDA: logo com micro-nudge -->
+  <!-- mesma régua do site (mesmos paddings dos cards) -->
+  <div
+    class="site-container site-narrow
+           grid grid-cols-[auto_1fr_auto] items-center
+           min-h-[4.75rem] md:min-h-[5rem]
+           gap-7 md:gap-8"   
+  >
+    <!-- ESQUERDA: logo (sem translate) -->
     <a
       href="/"
       aria-label="Levogiro — Home"
       class="justify-self-start block leading-none ui-focus text-primary-text no-underline"
     >
       <ChameleonLogo
-        class="h-16 w-16 md:h-16 md:w-16 -translate-x-[18px] md:-translate-x-3 transform"
+        class="h-16 w-16 md:h-16 md:w-16"
         width="56"
         height="56"
       />
@@ -27,8 +33,8 @@ import SmNavBar from "./SmNavBar.svelte";
       <NavBar />
     </div>
 
-    <!-- DIREITA: utilitários -->
-    <div class="flex items-center gap-3 justify-self-end mr-0 pr-0 -mr-[33px] md:-mr-[10px] lg:-mr-[3px]">
+    <!-- DIREITA: utilitários (sem margens negativas) -->
+    <div class="flex items-center gap-3 justify-self-end">
       <div class="md:hidden">
         <SmNavBar client:load />
       </div>
