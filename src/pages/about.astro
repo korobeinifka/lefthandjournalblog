@@ -7,22 +7,20 @@ const description =
 ---
 
 <PageLayout title={title} description={description}>
-  <article class="mx-auto w-full md:max-w-[46rem] lg:max-w-[50rem] xl:max-w-[52rem]">
-    <header class="mb-6 md:mb-8">
+  <article class="w-full">
+    <header class="mb-3 md:mb-4">
       <p class="text-[12px] font-semibold uppercase tracking-[0.14em] text-muted-text">ABOUT</p>
-      <h1 class="mt-2 text-3xl md:text-5xl font-bold leading-snug text-primary-text">Levogiro</h1>
     </header>
 
-    <section class="flex flex-col gap-4 text-secondary-text leading-relaxed">
-      <p>
+    <section class="flex flex-col gap-4 text-secondary-text leading-relaxed [&>p:first-child]:mt-0">
+      <p class="mt-0">
         <strong>Levogiro</strong> — <em>[que desvia o plano da luz polarizada no sentido contrário ao dos ponteiros do relógio]</em>.
-        <p> Aqui escrevo sobre tecnologia e outras coisas que me fazem ser eu :)</p>
-        
       </p>
 
-      <p> 
-        por <strong>Antonio Maluf</strong> — engenheiro de dados, canhoto, vegetariano e adorador de chihuahuas ₍^. .^₎⟆
+      <p>Falo sobre tecnologia y outras coisas</p>
 
+      <p>
+        por <strong>Antonio Maluf</strong> — engenheiro de dados, canhoto, vegetariano e filho de Xangô
       </p>
 
       <div class="pt-2 text-sm">
@@ -30,10 +28,14 @@ const description =
           <li>📧 <a class="underline-offset-4 hover:underline" href="mailto:antonio@levogiro.com">antonio@levogiro.com</a></li>
           <li>📸 <a class="underline-offset-4 hover:underline" href="https://instagram.com/lomaluf" rel="noopener">instagram.com/lomaluf</a></li>
           <li>🔗 <a class="underline-offset-4 hover:underline" href="https://linkedin.com/in/maluf-antonio" rel="noopener">linkedin.com/in/maluf-antonio</a></li>
-          
         </ul>
       </div>
-    </section>
 
+      <!-- complemento discreto sobre o site (linguagens + frameworks) -->
+      <p class="text-xs md:text-sm text-muted-text">
+        *Este site foi feito com <a href="https://astro.build" class="underline-offset-4 hover:underline" rel="noopener">Astro</a> — um framework <em>open-source</em> baseado em
+        <strong>JavaScript/TypeScript</strong>
+      </p>
+    </section>
   </article>
 </PageLayout>

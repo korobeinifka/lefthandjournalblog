@@ -4,6 +4,8 @@ import { getCollection } from "astro:content";
 import { CATEGORY_LINKS, CATEGORY_OPTIONS } from "@/utils/categories";
 
 const posts = await getCollection("blogs");
+
+// Mantemos o mapa caso volte a usar no futuro, mas não renderizamos o summary.
 const summaries: Record<(typeof CATEGORY_OPTIONS)[number], string> = {
   Tecnologia: "Ferramentas, protocolos e sistemas que moldam nossa atenção coletiva.",
   Geopolítica: "Linhas de suprimento, mapas de influência e as narrativas dos estados.",
@@ -13,7 +15,6 @@ const summaries: Record<(typeof CATEGORY_OPTIONS)[number], string> = {
 const categories = CATEGORY_LINKS.map(({ label, slug }) => ({
   label,
   slug,
-  summary: summaries[label],
   count: posts.filter((post) => post.data.category === label).length,
 }));
 ---
@@ -32,18 +33,14 @@ const categories = CATEGORY_LINKS.map(({ label, slug }) => ({
           <li>
             <a
               href={`/categories/${category.slug}`}
-              class="flex h-full flex-col justify-between rounded border border-border-ink/70 bg-card-bg px-6 py-6 ui-transition hover:border-border-ink/90 hover:bg-surface-bg"
+              class="flex h-full flex-col gap-2 rounded border border-border-ink/70 bg-card-bg px-6 py-6 ui-transition hover:border-border-ink/90 hover:bg-surface-bg"
             >
-              <div class="flex flex-col gap-2">
-                <p class="text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-text">
-                  {category.count} article{category.count === 1 ? "" : "s"}
-                </p>
-                <h2 class="text-xl font-semibold text-primary-text">{category.label}</h2>
-                <p class="text-sm text-secondary-text">{category.summary}</p>
-              </div>
-              <span class="mt-5 text-xs font-semibold uppercase tracking-[0.16em] text-secondary-text">
-                View stories
-              </span>
+              <p class="text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-text">
+                {category.count} article{category.count === 1 ? "" : "s"}
+              </p>
+              <h2 class="text-xl font-semibold text-primary-text">{category.label}</h2>
+              {/* descrição removida */}
+              {/* “View stories” removido */}
             </a>
           </li>
         ))}

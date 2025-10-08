@@ -20,6 +20,12 @@
     color-scheme: light;
   }
 
+  /* 🔧 Mantém a régua estável entre páginas com/sem scroll vertical */
+  html { scrollbar-gutter: stable both-edges; }
+  @supports not (scrollbar-gutter: stable) {
+    html { overflow-y: scroll; } /* fallback amplo: reserva a barra sempre */
+  }
+
   @media (prefers-color-scheme: dark) {
     :root {
       --primary-bg: 16 15 14;

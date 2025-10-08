@@ -4,16 +4,10 @@ import { ViewTransitions } from "astro:transitions";
 import Header from "@/components/Header/Header.astro";
 import Footer from "@/components/Footer/Footer.astro";
 
-interface Props {
-  title?: string;
-  description?: string;
-}
-
+interface Props { title?: string; description?: string; }
 const { title = "", description }: Props = Astro.props;
 const pageTitle = title ? `${title} | Lefthand Journal` : "Lefthand Journal";
-const metaDescription =
-  description ??
-  "Lefthand Journal is a minimal editorial space exploring chess strategy, geopolitical shifts, technology, and philosophy.";
+const metaDescription = description ?? "Lefthand Journal is a minimal editorial space exploring chess strategy, geopolitical shifts, technology, and philosophy.";
 ---
 
 <!doctype html>
@@ -34,10 +28,9 @@ const metaDescription =
     <ViewTransitions />
   </head>
   <body class="bg-primary-bg text-primary-text font-body transition-colors duration-200">
-    <div>
-      <Header />
-    </div>
-    <main class="mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8 pt-28 pb-16 min-h-[70vh]">
+    <div><Header /></div>
+    <!-- única régua do conteúdo -->
+    <main class="site-container site-narrow pt-28 pb-16 min-h-[70vh]">
       <slot />
     </main>
     <Footer />
@@ -48,9 +41,7 @@ const metaDescription =
           const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
           const theme = stored === "light" || stored === "dark" ? stored : prefersDark ? "dark" : "light";
           document.documentElement.setAttribute("data-theme", theme);
-        } catch (error) {
-          document.documentElement.setAttribute("data-theme", "light");
-        }
+        } catch { document.documentElement.setAttribute("data-theme", "light"); }
       };
       applyTheme();
       document.addEventListener("astro:after-swap", applyTheme);

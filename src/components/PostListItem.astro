@@ -7,23 +7,31 @@ const { data } = post;
 
 const href = `/blog/${post.slug}/`;
 
-
+// Data
 const dateLabel = data.pubDate
   ? new Date(data.pubDate).toLocaleDateString("en-US", { month: "short", day: "2-digit", year: "numeric" })
   : "";
 
-const showThumbnail = !!data.heroImage;
+// Thumbnail só na listagem
+const hero: any = (data as any).heroImage;
+const heroSrc: string | undefined =
+  typeof hero === "string" ? (hero?.trim() ? hero : undefined) : (hero?.src ?? undefined);
+
+const showThumbnail = Boolean(heroSrc);
 const thumbnailAlt = data.heroImageAlt ?? data.title;
 
-/* ~90% look: menos padding, fontes menores, thumb menor */
+/* layout
+   - mobile: coluna 6.5rem
+   - desktop: coluna 6rem (estreita para não sair da régua)
+*/
 const layoutClass = showThumbnail
-  ? "grid grid-cols-[minmax(0,1fr)_6.5rem] md:grid-cols-[minmax(0,1fr)_9rem] items-center gap-4 p-3 md:p-4"
+  ? "grid grid-cols-[minmax(0,1fr)_6.5rem] md:grid-cols-[minmax(0,1fr)_6rem] items-center gap-4 p-3 md:p-4"
   : "grid items-center gap-3 p-3 md:p-4";
 ---
 
 <a
   href={href}
-  class="group block mx-auto md:max-w-[46rem] lg:max-w-[50rem] xl:max-w-[52rem] rounded border border-border-ink/70 bg-card-bg ui-transition hover:border-border-ink/90 hover:bg-surface-bg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-text"
+  class="group block w-full rounded border border-border-ink/70 bg-card-bg ui-transition hover:border-border-ink/90 hover:bg-surface-bg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-text"
 >
   <div class={layoutClass}>
     <div class="min-w-0">
@@ -43,14 +51,14 @@ const layoutClass = showThumbnail
       )}
     </div>
 
-    {showThumbnail && (
+    {showThumbnail && heroSrc && (
       <div class="shrink-0 ml-2">
         <img
-          src={data.heroImage as string}
+          src={heroSrc}
           alt={thumbnailAlt}
           loading="lazy"
           decoding="async"
-          class="h-20 w-20 md:h-24 md:w-36 object-cover rounded"
+          class="h-20 w-20 md:h-20 md:w-24 object-cover rounded"
         />
       </div>
     )}

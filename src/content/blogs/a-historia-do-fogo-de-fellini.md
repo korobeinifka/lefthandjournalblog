@@ -4,7 +4,10 @@ description: Isso não é exatamente uma referência.
 pubDate: 2025-10-08T00:00:00.000Z
 category: Tecnologia
 author: antonio maluf
+heroImage: /images/1112.jpg
 ---
+
+![](/images/1112.jpg)
 
 No rain, no rain, no rain
 

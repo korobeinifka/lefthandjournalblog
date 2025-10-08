@@ -5,23 +5,13 @@ import NavBar from "./NavBar.astro";
 import SmNavBar from "./SmNavBar.svelte";
 ---
 
-<header
-  class="fixed top-0 left-0 w-full border-b border-border-ink/60 bg-primary-bg/90 backdrop-blur supports-[backdrop-filter]:bg-primary-bg/80 z-40"
->
-  <!-- Mesmo container do restante do site -->
-  <div
-    class="mx-auto w-full px-4 sm:px-6 md:px-0 md:max-w-[46rem] lg:max-w-[50rem] xl:max-w-[52rem]
-           grid grid-cols-[auto_1fr] md:grid-cols-[1fr_auto_1fr]
-           items-center min-h-[4.75rem] md:min-h-[5rem] gap-6"
-  >
-    <!-- ESQUERDA: logo (nudge -2px para alinhar o DESENHO com a régua esquerda) -->
-    <a
-      href="/"
-      aria-label="Lefthand Journal – Home"
-      class="justify-self-start block leading-none ui-focus text-primary-text no-underline"
-    >
+<header class="fixed top-0 left-0 w-full border-b border-border-ink/60 bg-primary-bg/90 backdrop-blur supports-[backdrop-filter]:bg-primary-bg/80 z-40">
+  <!-- mesma régua do site -->
+  <div class="site-container site-narrow grid grid-cols-[auto_1fr_auto] items-center min-h-[4.75rem] md:min-h-[5rem] gap-6">
+    <!-- ESQUERDA: logo com micro-nudge para a esquerda (-2px) -->
+    <a href="/" aria-label="Lefthand Journal – Home" class="justify-self-start block leading-none ui-focus text-primary-text no-underline">
       <ChameleonLogo
-        class="h-14 w-14 md:h-16 md:w-16"
+        class="h-12 w-12 md:h-16 md:w-16 -translate-x-0.5 md:-translate-x-3 transform"
         width="56"
         height="56"
         frameless
@@ -29,16 +19,14 @@ import SmNavBar from "./SmNavBar.svelte";
       <span class="sr-only">Lefthand Journal</span>
     </a>
 
-    <!-- CENTRO: navbar sempre centralizada -->
+    <!-- CENTRO: navbar -->
     <div class="hidden md:block justify-self-center">
       <NavBar />
     </div>
 
-    <!-- DIREITA: utilitários; nudge + flush na régua direita -->
-    <div class="flex items-center gap-3 justify-self-end">
-      <div class="md:hidden">
-        <SmNavBar client:load />
-      </div>
+    <!-- DIREITA: utilitários -->
+    <div class="flex items-center gap-3 justify-self-end md:-mr-[6px] lg:-mr-[9.5px]">
+      <div class="md:hidden"><SmNavBar client:load /></div>
       <HeaderBtns client:load />
     </div>
   </div>

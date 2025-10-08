@@ -1,5 +1,4 @@
 ---
-// src/layouts/BlogLayout.astro
 import type { CollectionEntry } from "astro:content";
 import PageLayout from "./PageLayout.astro";
 import ShareButton from "@/components/Utils/ShareButton.svelte";
@@ -9,7 +8,7 @@ const {
   description,
   pubDate,
   author,
-  heroImage,     // mantidos para futuro
+  heroImage,
   heroImageAlt,
   category,
 } = Astro.props.data as CollectionEntry<"blogs">["data"];
@@ -26,27 +25,30 @@ const shareUrl = Astro.site
 ---
 
 <PageLayout title={title} description={description}>
-  <!-- Mesmas larguras da home + menos espaçamento vertical -->
-  <article class="mx-auto w-full md:max-w-[46rem] lg:max-w-[50rem] xl:max-w-[52rem] flex flex-col gap-6 md:gap-8 pt-0 pb-0">
+  <article class="w-full flex flex-col gap-6 md:gap-8 pt-0 pb-0">
     <header class="flex flex-col gap-2 md:gap-3">
-      <!-- Categoria com as mesmas classes da home -->
       <p class="text-[12px] font-semibold uppercase tracking-[0.14em] text-muted-text">
         {category}
       </p>
 
-      <!-- Título centralizado -->
       <h1 class="mt-0.5 text-3xl md:text-5xl font-bold leading-snug text-primary-text text-balance text-center">
         {title}
       </h1>
     </header>
 
-    <!-- Corpo: remove margem do último nó da .prose -->
-    <section class="mt-6 md:mt-8 flex flex-col [&_.prose>:last-child]:mb-0">
+    <!-- Espaço um pouco menor entre título e conteúdo (texto ou imagem) -->
+    <section
+      class="mt-1 md:mt-2 flex flex-col
+             [&_.prose>:first-child]:mt-0
+             [&_.prose>p:first-child]:mt-0
+             [&_.prose>figure:first-child]:mt-0
+             [&_.prose>img:first-child]:mt-0
+             [&_.prose>:last-child]:mb-0"
+    >
       <slot />
     </section>
 
-    <!-- Meta no rodapé: menos espaço acima/abaixo e itens mais próximos -->
-    <footer aria-label="Post meta" class="-mt-10 md:-mt-12 mb-0 flex justify-end">
+    <footer aria-label="Post meta" class="mt-10 md:mt-12 mb-0 flex justify-end">
       <div class="flex flex-wrap items-center gap-x-1 gap-y-1 text-sm text-secondary-text">
         <span class="font-semibold text-primary-text">By {author}</span>
         <span class="mx-1" aria-hidden="true">•</span>
