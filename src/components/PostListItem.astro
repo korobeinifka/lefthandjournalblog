@@ -7,10 +7,17 @@ const { data } = post;
 
 const href = `/blog/${post.slug}/`;
 
-// Data
-const dateLabel = data.pubDate
-  ? new Date(data.pubDate).toLocaleDateString("en-US", { month: "short", day: "2-digit", year: "numeric" })
-  : "";
+// Data (PT-BR, formato "OUT 09, 2025")
+const d = new Date(data.pubDate);
+const day = d.toLocaleString('pt-BR', { day: '2-digit' });
+const month = d.toLocaleString('pt-BR', { month: 'short' })
+  .replace(/\.$/, '') // remove ponto final de "out." etc.
+  .toUpperCase();
+const year = d.getFullYear();
+const dateLabel = `${day} ${month}, ${year}`;
+
+
+
 
 // Thumbnail só na listagem
 const hero: any = (data as any).heroImage;

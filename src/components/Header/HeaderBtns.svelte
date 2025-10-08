@@ -83,8 +83,9 @@
   const formatDate = (value: string) => {
     const date = new Date(value);
     if (Number.isNaN(date.valueOf())) return '';
-    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-  };
+    return date.toLocaleDateString('pt-BR', { day: '2-digit', month: 'short', year: 'numeric' });
+};
+
 
   const cleanSnippet = (s = '') => s.replace(/\s*(?:\.{3}|…)\s*$/,'');
 
@@ -238,7 +239,7 @@
     aria-expanded={searchOpen}
     aria-haspopup="dialog"
   >
-    <Icon icon="ri:search-line" class="h-5 w-5" />
+    <Icon icon="ri:search-line" class="h-6 w-6" />
   </button>
 
   <button
@@ -248,8 +249,8 @@
     aria-pressed={theme === 'dark' ? 'true' : 'false'}
     aria-label={`Activate ${theme === 'light' ? 'dark' : 'light'} mode`}
   >
-    {#if theme === 'light'} <Icon icon="solar:sun-2-bold" class="h-6 w-6 md:h-5 md:w-5" />
-    {:else}                <Icon icon="solar:moon-bold" class="h-6 w-6 md:h-5 md:w-5" /> {/if}
+    {#if theme === 'light'} <Icon icon="solar:sun-2-bold" class="h-6 w-6 md:h-6 md:w-6" />
+    {:else}                <Icon icon="solar:moon-bold" class="h-6 w-6 md:h-6 md:w-6" /> {/if}
   </button>
 </div>
 

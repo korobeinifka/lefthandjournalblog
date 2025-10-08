@@ -13,11 +13,10 @@ const {
   category,
 } = Astro.props.data as CollectionEntry<"blogs">["data"];
 
-const formattedDate = pubDate.toLocaleDateString("en-US", {
-  year: "numeric",
-  month: "long",
-  day: "numeric",
+const formattedDate = pubDate.toLocaleDateString('pt-BR', {
+  day: 'numeric', month: 'long', year: 'numeric'
 });
+
 
 const shareUrl = Astro.site
   ? new URL(Astro.url.pathname, Astro.site).toString()
