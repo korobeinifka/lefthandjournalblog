@@ -225,23 +225,23 @@
     bind:this={searchButton}
     type="button"
     on:click={() => (searchOpen ? closeSearch() : openSearch())}
-    class="flex h-10 w-10 items-center justify-center rounded bg-transparent text-secondary-text hover:text-primary-text ui-transition ui-focus"
+    class="flex h-12 w-12 md:h-10 md:w-10 items-center justify-center rounded bg-transparent text-secondary-text hover:text-primary-text ui-transition ui-focus"
     aria-label={searchOpen ? 'Close search' : 'Open search'}
     aria-expanded={searchOpen}
     aria-haspopup="dialog"
   >
-    <Icon icon="ri:search-line" class="h-5 w-5" />
+    <Icon icon="ri:search-line" class="h-6 w-6 md:h-5 md:w-5" />
   </button>
 
   <button
     type="button"
     on:click={toggleTheme}
-    class="flex h-10 w-10 items-center justify-center rounded bg-transparent text-secondary-text hover:text-primary-text ui-transition ui-focus"
+    class="flex h-12 w-12 md:h-10 md:w-10 items-center justify-center rounded bg-transparent text-secondary-text hover:text-primary-text ui-transition ui-focus"
     aria-pressed={theme === 'dark' ? 'true' : 'false'}
     aria-label={`Activate ${theme === 'light' ? 'dark' : 'light'} mode`}
   >
-    {#if theme === 'light'} <Icon icon="solar:sun-2-bold" class="h-5 w-5" />
-    {:else}                <Icon icon="solar:moon-bold" class="h-5 w-5" /> {/if}
+    {#if theme === 'light'} <Icon icon="solar:sun-2-bold" class="h-6 w-6 md:h-5 md:w-5" />
+    {:else}                <Icon icon="solar:moon-bold" class="h-6 w-6 md:h-5 md:w-5" /> {/if}
   </button>
 </div>
 
