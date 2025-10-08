@@ -146,6 +146,9 @@
     closeSearch({ restoreFocus: false });
   };
 
+  // 🔔 OUVE pedido global para abrir a busca (para o item "PESQUISAR" do hambúrguer)
+  const onOpenSearchEvent = () => { openSearch(); };
+
   onMount(() => {
     initialiseTheme();
     if (!canUseDOM) return;
@@ -159,12 +162,16 @@
     applyMatch();
     mediaQuery.addEventListener('change', applyMatch);
     removeMediaListener = () => mediaQuery.removeEventListener('change', applyMatch);
+
+    // registra listener do evento global
+    window.addEventListener('open-global-search', onOpenSearchEvent as EventListener);
   });
 
   onDestroy(() => {
     if (canUseDOM) document.removeEventListener('keydown', handleGlobalKeydown);
     teardownA11y(); unlockScroll();
     removeMediaListener?.(); removeMediaListener = null;
+    if (typeof window !== 'undefined') window.removeEventListener('open-global-search', onOpenSearchEvent as EventListener);
   });
 
   $: { if (canUseDOM) (searchOpen ? lockScroll() : unlockScroll()); }
@@ -221,16 +228,17 @@
 </script>
 
 <div class="flex items-center gap-2">
+  <!-- 🔎 Escondido no mobile; visível só no desktop -->
   <button
     bind:this={searchButton}
     type="button"
     on:click={() => (searchOpen ? closeSearch() : openSearch())}
-    class="flex h-12 w-12 md:h-10 md:w-10 items-center justify-center rounded bg-transparent text-secondary-text hover:text-primary-text ui-transition ui-focus"
+    class="hidden md:flex h-10 w-10 items-center justify-center rounded bg-transparent text-secondary-text hover:text-primary-text ui-transition ui-focus"
     aria-label={searchOpen ? 'Close search' : 'Open search'}
     aria-expanded={searchOpen}
     aria-haspopup="dialog"
   >
-    <Icon icon="ri:search-line" class="h-6 w-6 md:h-5 md:w-5" />
+    <Icon icon="ri:search-line" class="h-5 w-5" />
   </button>
 
   <button
@@ -252,10 +260,10 @@
     class="fixed inset-0 z-50 flex items-start justify-center px-4 pt-20 md:pt-24 pb-6"
     on:pointerdown={handleWrapperPointerDown}
   >
-    <!-- BACKDROP (mesma lógica do hambúrguer): bloqueia pointer e faz blur -->
+    <!-- BACKDROP -->
     <div
       class="absolute inset-0 bg-primary-bg/70 backdrop-blur-sm"
-      on:pointerdown|preventDefault|stopPropagation={() => { squelchNextClick(); closeSearch({ restoreFocus: false }); }}
+      on:pointerdown|preventDefault|stopPropagation={() => { closeSearch({ restoreFocus: false }); }}
       on:click|preventDefault|stopPropagation
     ></div>
 
@@ -279,10 +287,8 @@
             class="flex-1 bg-transparent text-base text-primary-text placeholder:text-muted-text focus:outline-none"
             autocomplete="off" spellcheck="false" {...(isMobile ? { readonly: true } : {})}
             on:pointerdown={() => {
-              // No primeiro toque, libera e foca
               if (isMobile && searchInput?.hasAttribute('readonly')) {
                 searchInput.removeAttribute('readonly');
-                // Foca depois de liberar o readonly
                 requestAnimationFrame(() => searchInput?.focus());
                }
              }} 

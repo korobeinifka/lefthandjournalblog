@@ -9,16 +9,10 @@ const linkBase =
 
 <nav class="hidden md:block">
   <ul class="flex items-center gap-8 text-sm font-semibold uppercase tracking-[0.2em] leading-none">
-    <!-- ... HOME link unchanged ... -->
+    <!-- HOME -->
     <li>
-      <a
-        href="/"
-        class={`${linkBase} ${pathname === "/" ? "border-b border-border-ink/80" : "border-b border-transparent"}`}
-      >
-        INÍCIO
-      </a>
+      <a href="/" class={linkBase}>INÍCIO</a>
     </li>
-
 
     <li class="relative" data-nav-dropdown>
       <a
@@ -27,7 +21,7 @@ const linkBase =
         data-nav-trigger
         aria-haspopup="true"
         aria-expanded="false"
-        class={`${linkBase} ${isCategoriesActive ? "border-b border-border-ink/80" : "border-b border-transparent"}`}
+        class={linkBase}
       >
         TÓPICOS
       </a>
@@ -58,14 +52,8 @@ const linkBase =
     </li>
 
     <li>
-      <a
-        href="/about"
-        class={`${linkBase} ${pathname.startsWith("/about") ? "border-b border-border-ink/80" : "border-b border-transparent"}`}
-      >
-        SOBRE
-      </a>
+      <a href="/about" class={linkBase}>SOBRE</a>
     </li>
-
   </ul>
 </nav>
 
@@ -76,8 +64,8 @@ const linkBase =
     const ROOT = '[data-nav-dropdown]';
     const TRIGGER = '[data-nav-trigger]';
     const PANEL = '[data-nav-panel]';
-    const OPEN_DELAY = 70;   // ms – small head-start so it doesn’t “snap”
-    const CLOSE_DELAY = 120; // ms – linger to avoid jitter
+    const OPEN_DELAY = 70;
+    const CLOSE_DELAY = 120;
 
     const cleanups = new Map();
 
@@ -101,7 +89,6 @@ const linkBase =
       const scheduleOpen  = () => { clearTimers(); tIn  = setTimeout(() => setOpen(true),  OPEN_DELAY); };
       const scheduleClose = () => { clearTimers(); tOut = setTimeout(() => setOpen(false), CLOSE_DELAY); };
 
-      // Hover/focus orchestration
       const onEnter = () => scheduleOpen();
       const onLeave = () => scheduleClose();
       const onClick = (e) => { e.preventDefault(); setOpen(!open); };
@@ -145,5 +132,4 @@ const linkBase =
       document.removeEventListener('astro:after-swap', init);
     });
   })();
-  
 </script>

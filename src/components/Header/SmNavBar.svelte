@@ -33,7 +33,6 @@
       e.preventDefault();
       window.removeEventListener('click', block, true);
     };
-    // Captura global: engole o próximo click que o navegador emitiria
     window.addEventListener('click', block, true);
   }
 
@@ -85,10 +84,10 @@
     aria-haspopup="true"
     aria-controls="mobile-nav"
     on:click={toggleMenu}
-    class="relative z-50 flex h-12 w-12 md:h-10 md:w-10 items-center justify-center rounded bg-transparent text-secondary-text hover:text-primary-text ui-transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-text"
-    aria-label={open ? 'Close navigation' : 'Open navigation'}
+    class="relative z-50 flex h-10 w-10 items-center justify-center rounded bg-transparent text-secondary-text hover:text-primary-text ui-transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-text"
+    aria-label={open ? 'Fechar navegação' : 'Abrir navegação'}
   >
-    <Icon icon={open ? 'ri:close-line' : 'ri:menu-line'} class="pointer-events-none h-6 w-6 md:h-5 md:w-5" />
+    <Icon icon={open ? 'ri:close-line' : 'ri:menu-line'} class="pointer-events-none h-5 w-5" />
   </button>
 
   {#if open}
@@ -104,7 +103,6 @@
           closeMenu({ restoreFocus: false });
         }}
         on:click={(e) => {
-          // Por segurança, se o navegador ainda emitir click, engolimos também
           e.preventDefault();
           e.stopPropagation();
         }}
@@ -121,7 +119,7 @@
         on:click|stopPropagation
       >
         <ul class="p-3 text-secondary-text">
-          <li>
+          <li class="mt-0">
             <a
               href="/"
               class="block rounded px-4 py-3 text-sm font-semibold uppercase tracking-[0.28em] hover:text-primary-text ui-transition"
@@ -136,7 +134,7 @@
               on:click={() => (showCats = !showCats)}
               aria-expanded={showCats}
             >
-              <span>CATEGORY</span>
+              <span>CATEGORIAS</span>
               <Icon icon={showCats ? 'ri:arrow-up-s-line' : 'ri:arrow-down-s-line'} class="h-4 w-4" />
             </button>
 
@@ -157,7 +155,7 @@
                     href="/categories"
                     class="block rounded-[6px] px-4 py-2 text-xs uppercase tracking-[0.24em] hover:text-primary-text ui-transition"
                     on:click={() => closeMenu({ restoreFocus: false })}
-                  >OUTRAS</a>
+                  >VER TODAS</a>
                 </li>
               </ul>
             {/if}
@@ -169,6 +167,22 @@
               class="block rounded px-4 py-3 text-sm font-semibold uppercase tracking-[0.28em] hover:text-primary-text ui-transition"
               on:click={() => closeMenu({ restoreFocus: false })}
             >SOBRE</a>
+          </li>
+
+          <!-- 🔎 PESQUISAR no final -->
+          <li class="mt-1">
+            <button
+              type="button"
+              class="flex w-full items-center rounded px-4 py-3 text-sm font-semibold uppercase tracking-[0.28em] hover:text-primary-text ui-transition"
+              on:click={() => {
+                if (typeof window !== 'undefined') {
+                  window.dispatchEvent(new CustomEvent('open-global-search'));
+                }
+                closeMenu({ restoreFocus: false });
+              }}
+            >
+              PESQUISAR
+            </button>
           </li>
         </ul>
       </nav>

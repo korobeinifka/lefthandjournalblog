@@ -1,50 +1,92 @@
 ---
 import PageLayout from "@/layouts/PageLayout.astro";
 import { getCollection } from "astro:content";
-import { CATEGORY_LINKS, CATEGORY_OPTIONS } from "@/utils/categories";
+import { CATEGORY_LINKS } from "@/utils/categories";
 
 const posts = await getCollection("blogs");
 
-// Mantemos o mapa caso volte a usar no futuro, mas não renderizamos o summary.
-const summaries: Record<(typeof CATEGORY_OPTIONS)[number], string> = {
-  Tecnologia: "Ferramentas, protocolos e sistemas que moldam nossa atenção coletiva.",
-  Geopolítica: "Linhas de suprimento, mapas de influência e as narrativas dos estados.",
-  Xadrez: "Estratégia, ritmo e a mente tranquila necessária para fechar a partida.",
+// 🔑 normaliza chaves (remove acentos, espaços e símbolos)
+const toKey = (s: string) =>
+  s
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "") // remove diacríticos
+    .replace(/[^a-z0-9]+/g, "");     // tira separadores
+
+// ✅ uma única imagem fixa por categoria (use chaves já normalizadas)
+const CATEGORY_THUMBS: Record<string, { src: string; alt?: string }> = {
+  tecnologia:  { src: "/images/categories/tecnologia.jpg",  alt: "Tecnologia" },
+  geopolitica: { src: "/images/categories/geopolitica.jpg", alt: "Geopolítica" },
+  xadrez:      { src: "/images/categories/xadrez.jpg",      alt: "Xadrez" },
 };
 
-const categories = CATEGORY_LINKS.map(({ label, slug }) => ({
-  label,
-  slug,
-  count: posts.filter((post) => post.data.category === label).length,
-}));
+// só para contar posts por categoria (opcional)
+const counts = new Map<string, number>();
+for (const p of posts) {
+  const label = (p.data.category ?? "").toString();
+  if (!label) continue;
+  counts.set(label, (counts.get(label) ?? 0) + 1);
+}
+
+const categories = CATEGORY_LINKS.map(({ label, slug }) => {
+  const count = counts.get(label) ?? 0;
+  // 🔒 consulta robusta: tenta slug e, se falhar, usa o label
+  const fixed = CATEGORY_THUMBS[toKey(slug)] ?? CATEGORY_THUMBS[toKey(label)];
+  const heroImage = fixed?.src;
+  const heroAlt = fixed?.alt ?? label;
+  return { label, slug, count, heroImage, heroAlt };
+});
 ---
 
 <PageLayout title="Categories">
   <section class="flex flex-col space-y-3 md:space-y-4">
     <!-- rótulo alinhado à mesma régua dos cards -->
     <div class="mx-auto w-full md:max-w-[46rem] lg:max-w-[50rem] xl:max-w-[52rem]">
-      <p class="text-[12px] font-semibold uppercase tracking-[0.16em] text-muted-text">CATEGORIES</p>
+      <p class="text-[12px] font-semibold uppercase tracking-[0.16em] text-muted-text">
+        CATEGORIES
+      </p>
     </div>
 
-    <!-- grade alinhada à mesma régua dos cards -->
-    <div class="mx-auto w-full md:max-w-[46rem] lg:max-w-[50rem] xl:max-w-[52rem]">
-      <ul class="grid gap-6 md:grid-cols-2">
-        {categories.map((category) => (
-          <li>
+    <!-- Lista com o mesmo layout dos cards de posts -->
+    <ul class="space-y-3 md:space-y-4">
+      {categories.map((cat) => {
+        const showThumb = !!cat.heroImage;
+        const layoutClass = showThumb
+          ? "grid grid-cols-[minmax(0,1fr)_6.5rem] md:grid-cols-[minmax(0,1fr)_9rem] items-center gap-4 p-3 md:p-4"
+          : "grid items-center gap-3 p-3 md:p-4";
+
+        return (
+          <li class="py-0 first:pt-0">
             <a
-              href={`/categories/${category.slug}`}
-              class="flex h-full flex-col gap-2 rounded border border-border-ink/70 bg-card-bg px-6 py-6 ui-transition hover:border-border-ink/90 hover:bg-surface-bg"
+              href={`/categories/${cat.slug}`}
+              class="group block mx-auto md:max-w-[46rem] lg:max-w-[50rem] xl:max-w-[52rem] rounded border border-border-ink/70 bg-card-bg ui-transition hover:border-border-ink/90 hover:bg-surface-bg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-text"
             >
-              <p class="text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-text">
-                {category.count} article{category.count === 1 ? "" : "s"}
-              </p>
-              <h2 class="text-xl font-semibold text-primary-text">{category.label}</h2>
-              {/* descrição removida */}
-              {/* “View stories” removido */}
+              <div class={layoutClass}>
+                <div class="min-w-0">
+                  <div class="flex flex-wrap items-center gap-2 text-[10px] md:text-[11px] font-semibold uppercase tracking-[0.28em] text-muted-text">
+                    <span>{cat.count} {cat.count === 1 ? "ARTIGO" : "ARTIGOS"}</span>
+                  </div>
+                  <h3 class="mt-0.5 text-base md:text-lg font-semibold leading-snug text-primary-text ui-transition group-hover:text-primary-text">
+                    {cat.label}
+                  </h3>
+                </div>
+
+                {showThumb && (
+                  <div class="shrink-0 ml-2">
+                    <img
+                      src={cat.heroImage!}
+                      alt={cat.heroAlt}
+                      loading="lazy"
+                      decoding="async"
+                      class="h-20 w-20 md:h-24 md:w-36 object-cover rounded"
+                    />
+                  </div>
+                )}
+              </div>
             </a>
           </li>
-        ))}
-      </ul>
-    </div>
+        );
+      })}
+    </ul>
   </section>
 </PageLayout>

@@ -5,13 +5,13 @@ import NavBar from "./NavBar.astro";
 import SmNavBar from "./SmNavBar.svelte";
 ---
 
-<header class="fixed top-0 left-0 w-full border-b border-border-ink/60 bg-primary-bg/90 backdrop-blur supports-[backdrop-filter]:bg-primary-bg/80 z-40">
-  <!-- mesma régua do site -->
+<header class="fixed top-0 left-0 w-full bg-primary-bg/90 backdrop-blur supports-[backdrop-filter]:bg-primary-bg/80 z-40">
+  <!-- mesma rAcgua do site -->
   <div class="site-container site-narrow grid grid-cols-[auto_1fr_auto] items-center min-h-[4.75rem] md:min-h-[5rem] gap-6">
-    <!-- ESQUERDA: logo com micro-nudge para a esquerda (-2px) -->
-    <a href="/" aria-label="Lefthand Journal – Home" class="justify-self-start block leading-none ui-focus text-primary-text no-underline">
+    <!-- ESQUERDA: logo com micro-nudge para a esquerda (-3px) -->
+    <a href="/" aria-label="Lefthand Journal �?" Home" class="justify-self-start block leading-none ui-focus text-primary-text no-underline">
       <ChameleonLogo
-        class="h-14 w-14 md:h-16 md:w-16 md:-translate-x-3 transform"
+        class="h-19 w-19 md:h-16 md:w-16 -translate-x-[8px] md:-translate-x-3 transform"
         width="56"
         height="56"
         frameless
@@ -24,8 +24,8 @@ import SmNavBar from "./SmNavBar.svelte";
       <NavBar />
     </div>
 
-    <!-- DIREITA: utilitários -->
-    <div class="flex items-center gap-3 justify-self-end md:-mr-[6px] lg:-mr-[9.5px]">
+    <!-- DIREITA: utilitA�rios -->
+    <div class="flex items-center gap-3 justify-self-end mr-0 pr-0 -mr-[32px] md:-mr-[10px] lg:-mr-[9.5px]">
       <div class="md:hidden"><SmNavBar client:load /></div>
       <HeaderBtns client:load />
     </div>

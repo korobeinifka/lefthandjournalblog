@@ -8,9 +8,9 @@
 @layer base {
   :root {
     --radius: 3px; /* <- raio padrão do site */
-    --primary-bg: 244 240 232;
+    --primary-bg: 232 225 214; /* #E8E1D6  ← fundo da página (mais escuro) */
     --surface-bg: 250 247 239;
-    --card-bg: 255 253 247;
+     --card-bg: 246 241 233;    /* #F6F1E9  ← cards um pouco mais escuros */
     --border-ink: 209 198 183;
     --primary-text: 30 25 21;
     --secondary-text: 82 72 63;
@@ -28,32 +28,32 @@
 
   @media (prefers-color-scheme: dark) {
     :root {
-      --primary-bg: 16 15 14;
-      --surface-bg: 24 22 21;
-      --card-bg: 28 27 26;
-      --border-ink: 78 73 68;
-      --primary-text: 240 236 230;
-      --secondary-text: 208 202 195;
-      --muted-text: 166 160 153;
-      color-scheme: dark;
-    }
-  }
-
-  [data-theme="dark"] {
-    --primary-bg: 16 15 14;
+    --primary-bg: 11 12 11;   /* #0b0c0b */
     --surface-bg: 24 22 21;
-    --card-bg: 28 27 26;
+    --card-bg: 10 11 10;
     --border-ink: 78 73 68;
     --primary-text: 240 236 230;
     --secondary-text: 208 202 195;
     --muted-text: 166 160 153;
     color-scheme: dark;
   }
+}
+
+  [data-theme="dark"] {
+  --primary-bg: 11 12 11;   /* #0b0c0b */
+  --surface-bg: 24 22 21;
+  --card-bg: 10 11 10; /* #0a0b0a */
+  --border-ink: 78 73 68;
+  --primary-text: 240 236 230;
+  --secondary-text: 208 202 195;
+  --muted-text: 166 160 153;
+  color-scheme: dark;
+}   
 
   [data-theme="light"] {
-    --primary-bg: 244 240 232;
+    --primary-bg: 232 225 214; /* #E8E1D6 */
     --surface-bg: 250 247 239;
-    --card-bg: 255 253 247;
+    --card-bg: 246 241 233;    /* #F6F1E9 */
     --border-ink: 209 198 183;
     --primary-text: 30 25 21;
     --secondary-text: 82 72 63;
