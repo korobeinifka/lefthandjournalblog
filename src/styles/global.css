@@ -119,6 +119,7 @@
     text-rendering: optimizeLegibility;
   }
 
+
   .nav-transition {
     transition-duration: var(--nav-speed);
     transition-timing-function: var(--nav-ease);

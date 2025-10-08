@@ -7,37 +7,38 @@ import SmNavBar from "./SmNavBar.svelte";
 ---
 
 <header class="fixed top-0 left-0 w-full bg-primary-bg/90 backdrop-blur supports-[backdrop-filter]:bg-primary-bg/80 z-40">
-  <!-- mesma régua do site (mesmos paddings dos cards) -->
+  <!-- mesma régua dos cards (mesmos paddings e max-width) -->
   <div
     class="site-container site-narrow
-           grid grid-cols-[auto_1fr_auto] items-center
-           min-h-[4.75rem] md:min-h-[5rem]
-           gap-7 md:gap-8"   
+           grid grid-cols-[auto_minmax(0,1fr)_auto] items-center
+           min-h-[4.75rem] md:min-h-[5rem] gap-6 md:gap-8"
   >
-    <!-- ESQUERDA: logo (sem translate) -->
+    <!-- ESQUERDA: logo (micro-nudge para corrigir “alinhamento ótico”) -->
     <a
       href="/"
       aria-label="Levogiro — Home"
       class="justify-self-start block leading-none ui-focus text-primary-text no-underline"
     >
       <ChameleonLogo
-        class="h-16 w-16 md:h-16 md:w-16"
-        width="56"
-        height="56"
+        class="h-16 w-16 md:h-16 md:w-16 -translate-x-[2px]"
+        width="64"
+        height="64"
       />
       <span class="sr-only">Levogiro</span>
     </a>
 
-    <!-- CENTRO: navbar -->
+    <!-- CENTRO: navbar (desktop) -->
     <div class="hidden md:block justify-self-center">
       <NavBar />
     </div>
 
-    <!-- DIREITA: utilitários (sem margens negativas) -->
-    <div class="flex items-center gap-3 justify-self-end">
+    <!-- DIREITA: utilitários (SEM margens negativas) -->
+    <div class="flex items-center gap-2 justify-self-end">
+      <!-- menu só no mobile -->
       <div class="md:hidden">
         <SmNavBar client:load />
       </div>
+      <!-- search (desktop) + toggle (todos) -->
       <HeaderBtns client:load />
     </div>
   </div>

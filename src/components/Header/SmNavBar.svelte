@@ -11,7 +11,6 @@
   let menuButton: HTMLButtonElement | null = null;
   let panel: HTMLElement | null = null;
 
-  // Scroll lock
   let prevOverflow = '';
   let locked = false;
   function lockScroll() {
@@ -29,8 +28,7 @@
   function squelchNextClick() {
     if (!canUseDOM) return;
     const block = (e: MouseEvent) => {
-      e.stopPropagation();
-      e.preventDefault();
+      e.stopPropagation(); e.preventDefault();
       window.removeEventListener('click', block, true);
     };
     window.addEventListener('click', block, true);
@@ -47,21 +45,14 @@
     (firstFocusable ?? panel).focus();
   }
   function closeMenu(opts: { restoreFocus?: boolean } = {}) {
-    open = false;
-    showCats = false;
-    unlockScroll();
+    open = false; showCats = false; unlockScroll();
     if (opts.restoreFocus !== false) menuButton?.focus();
   }
-  function toggleMenu() {
-    open ? closeMenu() : openMenu();
-  }
+  function toggleMenu() { open ? closeMenu() : openMenu(); }
 
   function onKey(e: KeyboardEvent) {
     if (!open) return;
-    if (e.key === 'Escape') {
-      e.preventDefault();
-      closeMenu();
-    }
+    if (e.key === 'Escape') { e.preventDefault(); closeMenu(); }
   }
 
   let boundKey: ((e: KeyboardEvent) => void) | null = null;
@@ -76,7 +67,8 @@
   });
 </script>
 
-<div class="relative [--sm-menu-zoom:0.9]">
+<div class="relative">
+  <!-- hit-target 44px no mobile; icon 28px -->
   <button
     bind:this={menuButton}
     type="button"
@@ -84,103 +76,67 @@
     aria-haspopup="true"
     aria-controls="mobile-nav"
     on:click={toggleMenu}
-    class="relative z-50 flex h-6 w-6 items-center justify-center rounded bg-transparent text-secondary-text hover:text-primary-text ui-transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-text"
+    class="relative z-50 flex h-11 w-11 items-center justify-center rounded bg-transparent text-secondary-text hover:text-primary-text ui-transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-text"
     aria-label={open ? 'Fechar navegação' : 'Abrir navegação'}
   >
-    <Icon icon={open ? 'ri:close-line' : 'ri:menu-line'} class="pointer-events-none h-6 w-6" />
+    <Icon icon={open ? 'ri:close-line' : 'ri:menu-line'} class="pointer-events-none h-7 w-7" />
   </button>
 
   {#if open}
-    <!-- Portal para garantir que o backdrop cobre TUDO (igual ao search) -->
     <div use:portal class="fixed inset-0 z-[70] md:hidden">
-      <!-- BACKDROP: bloqueia pointer e fecha -->
       <div
         class="absolute inset-0 bg-primary-bg/70 backdrop-blur-sm"
         on:pointerdown={(e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          squelchNextClick();
-          closeMenu({ restoreFocus: false });
+          e.preventDefault(); e.stopPropagation();
+          squelchNextClick(); closeMenu({ restoreFocus: false });
         }}
-        on:click={(e) => {
-          e.preventDefault();
-          e.stopPropagation();
-        }}
+        on:click={(e) => { e.preventDefault(); e.stopPropagation(); }}
       />
-
-      <!-- PAINEL -->
       <nav
         bind:this={panel}
         id="mobile-nav"
-        role="dialog"
-        aria-modal="true"
+        role="dialog" aria-modal="true"
         class="fixed right-3 top-14 z-[75] w-72 max-w-[85vw] rounded border border-border-ink/80 bg-card-bg shadow-xl transition-transform duration-200 md:hidden"
-        style="transform: scale(var(--sm-menu-zoom, 0.9)); transform-origin: top right;"
+        style="transform-origin: top right;"
         on:click|stopPropagation
       >
         <ul class="p-3 text-secondary-text">
           <li class="mt-0">
-            <a
-              href="/"
-              class="block rounded px-4 py-3 text-sm font-semibold uppercase tracking-[0.28em] hover:text-primary-text ui-transition"
-              on:click={() => closeMenu({ restoreFocus: false })}
-            >INÍCIO</a>
+            <a href="/" class="block rounded px-4 py-3 text-sm font-semibold uppercase tracking-[0.28em] hover:text-primary-text ui-transition" on:click={() => closeMenu({ restoreFocus: false })}>INÍCIO</a>
           </li>
 
           <li class="mt-1">
-            <button
-              type="button"
-              class="flex w-full items-center justify-between rounded px-4 py-3 text-sm font-semibold uppercase tracking-[0.28em] hover:text-primary-text ui-transition"
-              on:click={() => (showCats = !showCats)}
-              aria-expanded={showCats}
-            >
+            <button type="button" class="flex w-full items-center justify-between rounded px-4 py-3 text-sm font-semibold uppercase tracking-[0.28em] hover:text-primary-text ui-transition" on:click={() => (showCats = !showCats)} aria-expanded={showCats}>
               <span>CATEGORIAS</span>
               <Icon icon={showCats ? 'ri:arrow-up-s-line' : 'ri:arrow-down-s-line'} class="h-4 w-4" />
             </button>
-
             {#if showCats}
               <ul class="mt-1 space-y-1">
                 {#each CATEGORY_LINKS as item}
                   <li>
-                    <a
-                      href={`/categories/${item.slug}`}
-                      class="block rounded px-4 py-2 text-xs uppercase tracking-[0.24em] hover:text-primary-text ui-transition"
-                      on:click={() => closeMenu({ restoreFocus: false })}
-                    >{item.label.toUpperCase()}</a>
+                    <a href={`/categories/${item.slug}`} class="block rounded px-4 py-2 text-xs uppercase tracking-[0.24em] hover:text-primary-text ui-transition" on:click={() => closeMenu({ restoreFocus: false })}>
+                      {item.label.toUpperCase()}
+                    </a>
                   </li>
                 {/each}
                 <li><div class="mx-4 my-1 h-px bg-border-ink/60"></div></li>
                 <li>
-                  <a
-                    href="/categories"
-                    class="block rounded-[6px] px-4 py-2 text-xs uppercase tracking-[0.24em] hover:text-primary-text ui-transition"
-                    on:click={() => closeMenu({ restoreFocus: false })}
-                  >VER TODAS</a>
+                  <a href="/categories" class="block rounded-[6px] px-4 py-2 text-xs uppercase tracking-[0.24em] hover:text-primary-text ui-transition" on:click={() => closeMenu({ restoreFocus: false })}>VER TODAS</a>
                 </li>
               </ul>
             {/if}
           </li>
 
           <li class="mt-1">
-            <a
-              href="/about"
-              class="block rounded px-4 py-3 text-sm font-semibold uppercase tracking-[0.28em] hover:text-primary-text ui-transition"
-              on:click={() => closeMenu({ restoreFocus: false })}
-            >SOBRE</a>
+            <a href="/about" class="block rounded px-4 py-3 text-sm font-semibold uppercase tracking-[0.28em] hover:text-primary-text ui-transition" on:click={() => closeMenu({ restoreFocus: false })}>SOBRE</a>
           </li>
 
-          <!-- 🔎 PESQUISAR no final -->
           <li class="mt-1">
-            <button
-              type="button"
-              class="flex w-full items-center rounded px-4 py-3 text-sm font-semibold uppercase tracking-[0.28em] hover:text-primary-text ui-transition"
+            <button type="button" class="flex w-full items-center rounded px-4 py-3 text-sm font-semibold uppercase tracking-[0.28em] hover:text-primary-text ui-transition"
               on:click={() => {
-                if (typeof window !== 'undefined') {
-                  window.dispatchEvent(new CustomEvent('open-global-search'));
-                }
+                if (typeof window !== 'undefined') window.dispatchEvent(new CustomEvent('open-global-search'));
                 closeMenu({ restoreFocus: false });
-              }}
-            >
+              }}>
               PESQUISAR
             </button>
           </li>

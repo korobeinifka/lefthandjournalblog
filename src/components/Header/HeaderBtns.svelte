@@ -4,13 +4,8 @@
   import { onDestroy, onMount, tick } from 'svelte';
 
   type SearchEntry = {
-    title: string;
-    description: string;
-    category: string;
-    url: string;
-    excerpt: string;
-    pubDate: string;
-    searchField: string;
+    title: string; description: string; category: string; url: string;
+    excerpt: string; pubDate: string; searchField: string;
   };
 
   let theme: 'light' | 'dark' = 'light';
@@ -29,8 +24,6 @@
   let openedBy: HTMLElement | null = null;
   let shortcutLabel = 'Ctrl K';
   let isMobile = false;
-
-  // 🔧 FALTAVA esta declaração
   let removeMediaListener: (() => void) | null = null;
 
   let previousOverflow = '';
@@ -84,17 +77,14 @@
     const date = new Date(value);
     if (Number.isNaN(date.valueOf())) return '';
     return date.toLocaleDateString('pt-BR', { day: '2-digit', month: 'short', year: 'numeric' });
-};
-
+  };
 
   const cleanSnippet = (s = '') => s.replace(/\s*(?:\.{3}|…)\s*$/,'');
 
-  // Bloqueia o próximo "click" global após um pointerdown (evita click-through)
   function squelchNextClick() {
     if (!canUseDOM) return;
     const block = (e: MouseEvent) => {
-      e.stopPropagation();
-      e.preventDefault();
+      e.stopPropagation(); e.preventDefault();
       window.removeEventListener('click', block, true);
     };
     window.addEventListener('click', block, true);
@@ -109,9 +99,7 @@
     await loadSearchIndex();
     await tick();
     setupA11y();
-    if (!isMobile) {
-      searchInput?.focus();
-    }
+    if (!isMobile) searchInput?.focus();
   };
 
   const closeSearch = (options: { restoreFocus?: boolean } = { restoreFocus: true }) => {
@@ -136,18 +124,15 @@
     if (event.key === 'Escape') { event.preventDefault(); event.stopPropagation(); closeSearch(); }
   };
 
-  // Fecha ao clicar FORA do diálogo no pointerdown e bloqueia o próximo click
   const handleWrapperPointerDown = (event: PointerEvent) => {
     if (!searchDialog) return;
     const target = event.target as Node | null;
-    if (target && searchDialog.contains(target)) return; // clique dentro do dialog -> ignora
-    event.preventDefault();
-    event.stopPropagation();
+    if (target && searchDialog.contains(target)) return;
+    event.preventDefault(); event.stopPropagation();
     squelchNextClick();
     closeSearch({ restoreFocus: false });
   };
 
-  // 🔔 OUVE pedido global para abrir a busca (para o item "PESQUISAR" do hambúrguer)
   const onOpenSearchEvent = () => { openSearch(); };
 
   onMount(() => {
@@ -164,7 +149,6 @@
     mediaQuery.addEventListener('change', applyMatch);
     removeMediaListener = () => mediaQuery.removeEventListener('change', applyMatch);
 
-    // registra listener do evento global
     window.addEventListener('open-global-search', onOpenSearchEvent as EventListener);
   });
 
@@ -229,7 +213,7 @@
 </script>
 
 <div class="flex items-center gap-2">
-  <!-- 🔎 Escondido no mobile; visível só no desktop -->
+  <!-- 🔎 escondido no mobile; visível no desktop -->
   <button
     bind:this={searchButton}
     type="button"
@@ -242,15 +226,16 @@
     <Icon icon="ri:search-line" class="h-6 w-6" />
   </button>
 
+  <!-- 🌙 toggle com hit-target grande no mobile -->
   <button
     type="button"
     on:click={toggleTheme}
-    class="flex h-12 w-12 md:h-10 md:w-10 items-center justify-center rounded bg-transparent text-secondary-text hover:text-primary-text ui-transition ui-focus"
+    class="flex h-11 w-11 md:h-10 md:w-10 items-center justify-center rounded bg-transparent text-secondary-text hover:text-primary-text ui-transition ui-focus"
     aria-pressed={theme === 'dark' ? 'true' : 'false'}
-    aria-label={`Activate ${theme === 'light' ? 'dark' : 'light'} mode`}
+    aria-label={`Ativar modo ${theme === 'light' ? 'escuro' : 'claro'}`}
   >
     {#if theme === 'light'} <Icon icon="solar:sun-2-bold" class="h-6 w-6 md:h-6 md:w-6" />
-    {:else}                <Icon icon="solar:moon-bold" class="h-6 w-6 md:h-6 md:w-6" /> {/if}
+    {:else}                <Icon icon="solar:moon-bold"  class="h-6 w-6 md:h-6 md:w-6" /> {/if}
   </button>
 </div>
 
@@ -261,13 +246,11 @@
     class="fixed inset-0 z-50 flex items-start justify-center px-4 pt-20 md:pt-24 pb-6"
     on:pointerdown={handleWrapperPointerDown}
   >
-    <!-- BACKDROP -->
     <div
       class="absolute inset-0 bg-primary-bg/70 backdrop-blur-sm"
       on:pointerdown|preventDefault|stopPropagation={() => { closeSearch({ restoreFocus: false }); }}
       on:click|preventDefault|stopPropagation
-    ></div>
-
+    />
     <section
       bind:this={searchDialog}
       role="dialog"
@@ -277,12 +260,12 @@
       on:keydown={handleInputKeydown}
       on:click|stopPropagation
     >
-      <h2 id="global-search-title" class="sr-only">Global search</h2>
+      <h2 id="global-search-title" class="sr-only">Busca global</h2>
 
       <div class="flex flex-col gap-4 p-4">
         <div class="flex items-center gap-3 rounded border border-border-ink/70 bg-card-bg px-3 py-2.5 shadow-sm">
           <Icon icon="ri:search-line" class="h-5 w-5 text-secondary-text" />
-          <label class="sr-only" for="global-search-input">Search posts</label>
+          <label class="sr-only" for="global-search-input">Buscar posts</label>
           <input id="global-search-input" bind:this={searchInput} bind:value={searchQuery} type="search" inputmode="search"
             placeholder="Pesquise por tópicos, palavras ou postagens"
             class="flex-1 bg-transparent text-base text-primary-text placeholder:text-muted-text focus:outline-none"
@@ -291,15 +274,15 @@
               if (isMobile && searchInput?.hasAttribute('readonly')) {
                 searchInput.removeAttribute('readonly');
                 requestAnimationFrame(() => searchInput?.focus());
-               }
-             }} 
-             />
+              }
+            }}
+          />
         </div>
 
         {#if searchError}
           <p class="rounded border border-red-500/40 bg-red-500/10 px-4 py-3 text-sm text-red-200">{searchError}</p>
         {:else if isLoadingSearch}
-          <p class="px-1 text-sm text-secondary-text">Loading search index...</p>
+          <p class="px-1 text-sm text-secondary-text">Carregando índice…</p>
         {:else if (isMobile ? mobileVisible.length : desktopVisible.length)}
           <div class={isMobile ? 'max-h-[60vh] overflow-y-auto' : ''}>
             <ul class="flex flex-col gap-3 pr-1">
@@ -319,7 +302,7 @@
           </div>
         {:else}
           <p class="px-1 text-sm text-secondary-text">
-            {trimmedQuery ? 'No posts match your search yet.' : 'Start typing to search.'}
+            {trimmedQuery ? 'Nenhum post encontrado.' : 'Comece a digitar para buscar.'}
           </p>
         {/if}
       </div>
