@@ -5,16 +5,16 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ========== BASE (dark-only) =========================================== */
+/* ========== BASE (dark + light) ======================================= */
 @layer base {
   :root {
     --radius: 3px;
 
     /* 🎯 DARK tokens (padrão do site) */
-    --primary-bg: 11 12 11;     /* #0b0c0b */
-    --surface-bg: 24 22 21;     /* usado para painéis/modais, ligeiramente diferente */
-    --card-bg: 11 12 11;        /* = primary (cards com o mesmo fundo do body) */
-    --border-ink: 78 73 68;     /* #4e4944 */
+    --primary-bg: 11 12 11;
+    --surface-bg: 24 22 21;
+    --card-bg: 11 12 11;
+    --border-ink: 78 73 68;
     --primary-text: 240 236 230;
     --secondary-text: 208 202 195;
     --muted-text: 166 160 153;
@@ -22,16 +22,27 @@
     --nav-speed: 200ms;
     --nav-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
 
-    color-scheme: dark;         /* informa aos browsers que o site é escuro */
+    color-scheme: dark;
   }
 
-  /* Mantém a régua estável entre páginas com/sem scroll vertical */
+  /* 👇 Tema CLARO (apenas estes valores foram escurecidos) */
+  [data-theme="light"] {
+    --primary-bg: 249 249 248;   /* fundo */
+    --surface-bg: 255 255 255;   /* painéis */
+    --card-bg: 255 255 255;
+    --border-ink: 209 205 198;
+
+    --primary-text: 28 28 27;    /* mantém o preto */
+    --secondary-text: 38 38 36;  /* antes: 56 56 54 → mais escuro */
+    --muted-text: 78 76 72;      /* antes: 106 103 98 → mais escuro */
+
+    color-scheme: light;
+  }
+
   html { scrollbar-gutter: stable both-edges; }
   @supports not (scrollbar-gutter: stable) { html { overflow-y: scroll; } }
 
-  *,
-  *::before,
-  *::after { box-sizing: border-box; }
+  *, *::before, *::after { box-sizing: border-box; }
 
   body {
     @apply bg-primary-bg text-primary-text font-body antialiased;
@@ -48,15 +59,14 @@
   a:hover, a:focus { color: rgb(var(--secondary-text)); }
 
   h1,h2,h3,h4,h5,h6 {
-    font-family: "Source Sans 3", "Source Sans Pro", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-family: "Source Sans 3","Source Sans Pro",ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
     font-weight: 700;
     letter-spacing: 0;
   }
 
-  ::selection { background: rgba(208, 202, 195, 0.18); }
+  ::selection { background: rgba(208,202,195,0.18); }
 
   img { max-width: 100%; display: block; }
-
   code { font-family: "Fira Code","SFMono-Regular",Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace; }
 
   pre {
@@ -67,14 +77,13 @@
     overflow-x: auto;
   }
 
-  /* Força cantos 0.5rem (não afeta rounded-full) */
   :where(
-    .rounded, .rounded-sm, .rounded-md, .rounded-lg, .rounded-xl, .rounded-2xl, .rounded-3xl,
+    .rounded,.rounded-sm,.rounded-md,.rounded-lg,.rounded-xl,.rounded-2xl,.rounded-3xl,
     [class*="rounded-"]:not(.rounded-full)
-  ) { border-radius: var(--radius) !important; }
+  ){ border-radius: var(--radius) !important; }
 }
 
-/* ========== COMPONENTS (tokens e utils do header) ====================== */
+/* ========== COMPONENTS =============================================== */
 @layer components {
   .nav-link {
     transition-property: color, border-color;
@@ -86,52 +95,34 @@
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
   }
-
-  .nav-transition {
-    transition-duration: var(--nav-speed);
-    transition-timing-function: var(--nav-ease);
-  }
-
-  .ui-transition {
-    transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
-    transition-duration: var(--nav-speed);
-    transition-timing-function: var(--nav-ease);
-  }
-
+  .nav-transition { transition-duration: var(--nav-speed); transition-timing-function: var(--nav-ease); }
+  .ui-transition { transition-property: color, background-color, border-color, text-decoration-color, fill, stroke; transition-duration: var(--nav-speed); transition-timing-function: var(--nav-ease); }
   .ui-focus { @apply focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-text; }
 
   .site-container { @apply mx-auto w-full px-4 sm:px-6 lg:px-8; }
   .site-narrow    { @apply md:max-w-[46rem] lg:max-w-[50rem] xl:max-w-[52rem]; }
-  
 }
 
-/* ========== UTILITIES ================================================== */
+/* ========== UTILITIES ================================================= */
 @layer utilities {
   :where(
-    .rounded, .rounded-sm, .rounded-md, .rounded-lg, .rounded-xl,
-    .rounded-2xl, .rounded-3xl, .rounded-full, [class*="rounded-"]
-  ) { border-radius: var(--radius) !important; }
+    .rounded,.rounded-sm,.rounded-md,.rounded-lg,.rounded-xl,
+    .rounded-2xl,.rounded-3xl,.rounded-full,[class*="rounded-"]
+  ){ border-radius: var(--radius) !important; }
 
-  /* Mobile tuning: code & mermaid */
-  @media (max-width: 767.98px) {
-    .prose pre,
-    .prose pre code { font-size: 0.8rem; line-height: 1.5; }
-    .prose pre { padding: 0.85rem 1rem; }
-    .prose :not(pre) > code { font-size: 0.8rem; }
-    .prose .mermaid { font-size: 0.85rem; }
+  @media (max-width: 767.98px){
+    .prose pre, .prose pre code { font-size: .8rem; line-height: 1.5; }
+    .prose pre { padding: .85rem 1rem; }
+    .prose :not(pre) > code { font-size: .8rem; }
+    .prose .mermaid { font-size: .85rem; }
   }
-      /* Clamp multiline com reticências */
-    .clamp-1, .clamp-2 {
-      display: -webkit-box;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
-    .clamp-1 { -webkit-line-clamp: 1; }
-    .clamp-2 { -webkit-line-clamp: 2; }
 
+  .clamp-1,.clamp-2{ display: -webkit-box; -webkit-box-orient: vertical; overflow: hidden; }
+  .clamp-1{ -webkit-line-clamp: 1; }
+  .clamp-2{ -webkit-line-clamp: 2; }
 }
 
-/* ========== PRINT (claro para economizar tinta) ======================== */
+/* ========== PRINT ===================================================== */
 @media print {
   :root { color-scheme: light; }
   body { background: #fff; color: #000; }

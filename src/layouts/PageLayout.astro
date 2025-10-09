@@ -7,14 +7,14 @@ import Footer from "@/components/Footer/Footer.astro";
 interface Props { title?: string; description?: string; ogImage?: string; }
 const { title = "", description, ogImage }: Props = Astro.props;
 
-const BRAND = "levogiro.com";
+const BRAND = "o levógiro.com";
 const pageTitle = title ? `${title} · ${BRAND}` : `${BRAND}`;
 const metaDescription =
   description ??
-  "Levogiro — um caderno editorial minimalista sobre tecnologia, arte, geopolítica, filosofia e xadrez.";
+  "O Levógiro — Repositório de memórias.";
 
 const canonical = Astro.url?.href ?? "https://levogiro.com/";
-const ogImageUrl = ogImage ?? "/og-default.jpg"; // troque se quiser
+const ogImageUrl = ogImage ?? "/og-default.jpg";
 ---
 <!doctype html>
 <html lang="pt-BR">
@@ -22,19 +22,16 @@ const ogImageUrl = ogImage ?? "/og-default.jpg"; // troque se quiser
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <!-- Identidade -->
     <title>{pageTitle}</title>
-    <meta name="application-name" content="Levogiro" />
-    <meta property="og:site_name" content="Levogiro" />
+    <meta name="application-name" content="O Levógiro" />
+    <meta property="og:site_name" content="O Levógiro" />
     <meta name="description" content={metaDescription} />
     <meta name="robots" content="index,follow" />
     <link rel="canonical" href={canonical} />
 
-    <!-- Cores do navegador -->
     <meta name="theme-color" content="#0b0c0b" media="(prefers-color-scheme: dark)" />
     <meta name="theme-color" content="#0b0c0b" />
 
-    <!-- Ícones -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
@@ -43,20 +40,18 @@ const ogImageUrl = ogImage ?? "/og-default.jpg"; // troque se quiser
     <link rel="icon" type="image/png" sizes="512x512" href="/android-chrome-512x512.png" />
     <link rel="icon" href="/favicon.ico" sizes="any" />
 
-    <!-- Social (Open Graph / Twitter) -->
     <meta property="og:type" content="website" />
     <meta property="og:title" content={pageTitle} />
     <meta property="og:description" content={metaDescription} />
     <meta property="og:url" content={canonical} />
     <meta property="og:image" content={ogImageUrl} />
-    <meta property="og:image:alt" content="Levogiro" />
+    <meta property="og:image:alt" content="O Levógiro" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={pageTitle} />
     <meta name="twitter:description" content={metaDescription} />
     <meta name="twitter:image" content={ogImageUrl} />
     <meta property="og:updated_time" content={new Date().toISOString()} />
 
-    <!-- Performance: fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 
@@ -65,13 +60,16 @@ const ogImageUrl = ogImage ?? "/og-default.jpg"; // troque se quiser
   </head>
 
   <body class="bg-primary-bg text-primary-text font-body transition-colors duration-200">
-    <!-- aplica o tema salvo (padrão: dark) antes de pintar -->
+    <!-- aplica o tema salvo ANTES de pintar (corrigido p/ claro/escuro) -->
     <script is:inline>
       (() => {
         try {
           const stored = localStorage.getItem("theme");
           const prefersDark = matchMedia("(prefers-color-scheme: dark)").matches;
-          const theme = stored === "light" || stored === "dark" ? stored : (prefersDark ? "dark" : "dark");
+          const theme =
+            stored === "light" || stored === "dark"
+              ? stored
+              : (prefersDark ? "dark" : "light");  /* <-- CORRIGIDO */
           document.documentElement.setAttribute("data-theme", theme);
         } catch {
           document.documentElement.setAttribute("data-theme", "dark");
@@ -82,7 +80,7 @@ const ogImageUrl = ogImage ?? "/og-default.jpg"; // troque se quiser
     <div><Header /></div>
 
     <!-- Régua única do conteúdo -->
-    <main class="site-container site-narrow pt-28 pb-16 min-h-[70vh]">
+    <main class="site-container site-narrow pt-20 sm:pt-28 pb-10 sm:pb-16 min-h-[60vh] sm:min-h-[70vh]">
       <slot />
     </main>
 

@@ -8,8 +8,7 @@ const description =
 
 <PageLayout title={title} description={description}>
   <article class="w-full">
-
-    <!-- rótulo alinhado à régua dos cards -->
+    <!-- Rótulo alinhado à régua dos cards -->
     <div class="mx-auto w-full md:max-w-[46rem] lg:max-w-[50rem] xl:max-w-[52rem]">
       <header class="mb-3 md:mb-4">
         <p class="pl-3 md:pl-4 text-[12px] font-semibold uppercase tracking-[0.14em] text-muted-text">
@@ -18,11 +17,12 @@ const description =
       </header>
     </div>
 
-    <!-- conteúdo alinhado e com o mesmo recuo interno dos cards -->
+    <!-- Conteúdo alinhado + MESMO recuo e topo dos cards -->
     <div class="mx-auto w-full md:max-w-[46rem] lg:max-w-[50rem] xl:max-w-[52rem]">
-      <section class="px-3 md:px-4 flex flex-col gap-4 text-secondary-text leading-relaxed [&>p:first-child]:mt-0">
+      <!-- 👇 adição: pt-3 md:pt-4 (igual ao p-3 md:p-4 dos cards) -->
+      <section class="px-3 md:px-4 pt-3 md:pt-4 flex flex-col gap-4 text-secondary-text leading-relaxed [&>p:first-child]:mt-0">
         <p class="mt-0">
-          <strong>levogiro</strong> — <em>[que desvia o plano da luz polarizada no sentido contrário ao dos ponteiros do relógio]</em>.
+          <strong>levógiro</strong> — <em>[que desvia o plano da luz polarizada no sentido contrário ao dos ponteiros do relógio]</em>.
         </p>
 
         <p>
@@ -37,7 +37,6 @@ const description =
           </ul>
         </div>
 
-        <!-- complemento discreto sobre o site -->
         <p class="text-xs md:text-sm text-muted-text">
           *site feito com <a href="https://astro.build" class="underline-offset-4 hover:underline" rel="noopener">Astro</a> — framework <em>open-source</em> baseado em
           <strong>JavaScript/TypeScript</strong>

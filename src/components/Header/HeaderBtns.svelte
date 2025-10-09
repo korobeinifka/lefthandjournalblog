@@ -3,14 +3,33 @@
   import { portal } from '@/lib/actions/portal';
   import { onDestroy, onMount, tick } from 'svelte';
 
+  // THEME
+  let theme: 'light' | 'dark' = 'dark';
+  const canUseDOM = typeof document !== 'undefined';
+
+  const setTheme = (value: 'light' | 'dark') => {
+    theme = value;
+    if (!canUseDOM) return;
+    try { localStorage.setItem('theme', value); } catch {}
+    document.documentElement.setAttribute('data-theme', value);
+  };
+  const initTheme = () => {
+    if (!canUseDOM) return;
+    try {
+      const stored = localStorage.getItem('theme');
+      if (stored === 'light' || stored === 'dark') return setTheme(stored);
+      const attr = document.documentElement.getAttribute('data-theme');
+      if (attr === 'light' || attr === 'dark') return setTheme(attr);
+      const prefersDark = matchMedia('(prefers-color-scheme: dark)').matches;
+      setTheme(prefersDark ? 'dark' : 'light');
+    } catch { setTheme('dark'); }
+  };
+  const toggleTheme = () => setTheme(theme === 'light' ? 'dark' : 'light');
+
+  // SEARCH (como estava)
   type SearchEntry = {
-    title: string;
-    description: string;
-    category: string;
-    url: string;
-    excerpt: string;
-    pubDate: string;
-    searchField: string;
+    title: string; description: string; category: string; url: string;
+    excerpt: string; pubDate: string; searchField: string;
   };
 
   let searchOpen = false;
@@ -29,37 +48,28 @@
   let isMobile = false;
   let removeMediaListener: (() => void) | null = null;
 
-  const canUseDOM = typeof document !== 'undefined';
-
   const loadSearchIndex = async () => {
     if (hasLoadedSearch || isLoadingSearch) return;
     isLoadingSearch = true; searchError = '';
     try {
-      const response = await fetch('/search.json', { headers: { Accept: 'application/json' } });
-      if (!response.ok) throw new Error('Indisponível no momento. Tente novamente.');
-      searchEntries = await response.json();
-      hasLoadedSearch = true;
-    } catch {
-      searchError = 'Pesquisa indisponível no momento. Tente novamente.';
-    } finally {
-      isLoadingSearch = false;
-    }
+      const res = await fetch('/search.json', { headers: { Accept: 'application/json' } });
+      if (!res.ok) throw new Error('Indisponível no momento.');
+      searchEntries = await res.json(); hasLoadedSearch = true;
+    } catch { searchError = 'Pesquisa indisponível no momento. Tente novamente.'; }
+    finally { isLoadingSearch = false; }
   };
 
   const formatDate = (value: string) => {
-    const date = new Date(value);
-    if (Number.isNaN(date.valueOf())) return '';
-    return date.toLocaleDateString('pt-BR', { day: '2-digit', month: 'short', year: 'numeric' });
+    const d = new Date(value);
+    if (Number.isNaN(d.valueOf())) return '';
+    return d.toLocaleDateString('pt-BR', { day: '2-digit', month: 'short', year: 'numeric' });
   };
 
   const cleanSnippet = (s = '') => s.replace(/\s*(?:\.{3}|…)\s*$/,'');
 
   function squelchNextClick() {
     if (!canUseDOM) return;
-    const block = (e: MouseEvent) => {
-      e.stopPropagation(); e.preventDefault();
-      window.removeEventListener('click', block, true);
-    };
+    const block = (e: MouseEvent) => { e.stopPropagation(); e.preventDefault(); window.removeEventListener('click', block, true); };
     window.addEventListener('click', block, true);
   }
 
@@ -86,37 +96,36 @@
     openedBy = null;
   };
 
-  const handleGlobalKeydown = (event: KeyboardEvent) => {
-    if ((event.metaKey || event.ctrlKey) && (event.key === 'k' || event.key === 'K')) {
-      event.preventDefault(); searchOpen ? closeSearch() : openSearch();
-    } else if (event.key === 'Escape' && searchOpen) {
-      event.preventDefault(); closeSearch();
+  const handleGlobalKeydown = (ev: KeyboardEvent) => {
+    if ((ev.metaKey || ev.ctrlKey) && (ev.key === 'k' || ev.key === 'K')) {
+      ev.preventDefault(); searchOpen ? closeSearch() : openSearch();
+    } else if (ev.key === 'Escape' && searchOpen) {
+      ev.preventDefault(); closeSearch();
     }
   };
 
-  const handleInputKeydown = (event: KeyboardEvent) => {
-    if (event.key === 'Escape') { event.preventDefault(); event.stopPropagation(); closeSearch(); }
+  const handleInputKeydown = (ev: KeyboardEvent) => {
+    if (ev.key === 'Escape') { ev.preventDefault(); ev.stopPropagation(); closeSearch(); }
   };
 
-  const handleWrapperPointerDown = (event: PointerEvent) => {
+  const handleWrapperPointerDown = (ev: PointerEvent) => {
     if (!searchDialog) return;
-    const target = event.target as Node | null;
+    const target = ev.target as Node | null;
     if (target && searchDialog.contains(target)) return;
-    event.preventDefault(); event.stopPropagation();
-    squelchNextClick();
-    closeSearch({ restoreFocus: false });
+    ev.preventDefault(); ev.stopPropagation(); squelchNextClick(); closeSearch({ restoreFocus: false });
   };
 
   const onOpenSearchEvent = () => { openSearch(); };
 
   onMount(() => {
+    initTheme();
     if (!canUseDOM) return;
+
     document.addEventListener('keydown', handleGlobalKeydown);
 
     const mq = window.matchMedia('(max-width: 640px)');
     const apply = () => { isMobile = mq.matches; };
-    apply();
-    mq.addEventListener('change', apply);
+    apply(); mq.addEventListener('change', apply);
     removeMediaListener = () => mq.removeEventListener('change', apply);
 
     window.addEventListener('open-global-search', onOpenSearchEvent as EventListener);
@@ -124,7 +133,6 @@
 
   onDestroy(() => {
     if (canUseDOM) document.removeEventListener('keydown', handleGlobalKeydown);
-    teardownA11y();
     removeMediaListener?.(); removeMediaListener = null;
     if (typeof window !== 'undefined') window.removeEventListener('open-global-search', onOpenSearchEvent as EventListener);
   });
@@ -150,14 +158,14 @@
   const setupA11y = () => {
     if (!searchDialog) return;
     teardownA11y();
-    trapListener = (event: KeyboardEvent) => {
-      if (event.key !== 'Tab') return;
+    trapListener = (ev: KeyboardEvent) => {
+      if (ev.key !== 'Tab') return;
       const focusables = getFocusableElements(); if (!focusables.length) return;
       const first = focusables[0]; const last = focusables[focusables.length - 1];
       const active = document.activeElement as HTMLElement | null;
-      if (event.shiftKey) {
-        if (active === first || !searchDialog.contains(active)) { event.preventDefault(); last.focus(); }
-      } else if (active === last || !searchDialog.contains(active)) { event.preventDefault(); first.focus(); }
+      if (ev.shiftKey) {
+        if (active === first || !searchDialog.contains(active)) { ev.preventDefault(); last.focus(); }
+      } else if (active === last || !searchDialog.contains(active)) { ev.preventDefault(); first.focus(); }
     };
     searchDialog.addEventListener('keydown', trapListener);
   };
@@ -168,7 +176,7 @@
 </script>
 
 <div class="flex items-center gap-2">
-  <!-- 🔎 Desktop only -->
+  <!-- 🔎 Busca — desktop apenas -->
   <button
     bind:this={searchButton}
     type="button"
@@ -179,6 +187,21 @@
     aria-haspopup="dialog"
   >
     <Icon icon="ri:search-line" class="h-6 w-6" />
+  </button>
+
+  <!-- 🌗 Toggle de tema — mobile + desktop -->
+  <button
+    type="button"
+    on:click={toggleTheme}
+    class="flex h-10 w-10 items-center justify-center rounded bg-transparent text-secondary-text hover:text-primary-text ui-transition ui-focus"
+    aria-pressed={theme === 'dark' ? 'true' : 'false'}
+    aria-label={`Ativar modo ${theme === 'light' ? 'escuro' : 'claro'}`}
+  >
+    {#if theme === 'light'}
+      <Icon icon="solar:sun-2-bold" class="h-5 w-5" />
+    {:else}
+      <Icon icon="solar:moon-bold" class="h-5 w-5" />
+    {/if}
   </button>
 </div>
 
@@ -232,13 +255,19 @@
             <ul class="flex flex-col gap-2 pr-1">
               {#each (isMobile ? mobileVisible : desktopVisible) as result}
                 <li>
-                  <a href={result.url} class="block rounded border border-transparent px-3 py-2.5 ui-transition hover:border-border-ink/70 hover:bg-surface-bg ui-focus" on:click={() => closeSearch({ restoreFocus: false })}>
+                  <a
+                    href={result.url}
+                    class="block rounded border border-transparent px-3 py-2.5 ui-transition hover:border-border-ink/70 hover:bg-surface-bg ui-focus"
+                    on:click={() => closeSearch({ restoreFocus: false })}
+                  >
                     <div class="flex flex-wrap items-center gap-2 text-xs font-semibold uppercase tracking-[0.3em] text-muted-text">
                       <span>{result.category}</span>
                       {#if result.pubDate}<span aria-hidden="true">/</span><span>{formatDate(result.pubDate)}</span>{/if}
                     </div>
                     <p class="mt-1 text-base font-semibold text-primary-text">{result.title}</p>
-                    
+                    {#if result.description || result.excerpt}
+                      <p class="mt-0.5 text-sm text-secondary-text">{cleanSnippet(result.description || result.excerpt)}</p>
+                    {/if}
                   </a>
                 </li>
               {/each}

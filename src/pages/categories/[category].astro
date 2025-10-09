@@ -4,43 +4,30 @@ import { getCollection, type CollectionEntry } from "astro:content";
 import PostListItem from "@/components/PostListItem.astro";
 import { slugify } from "@/utils/slug";
 
-/** Gera páginas estáticas para:
- *  - categorias declaradas em `src/content/categories`
- *  - categorias que apareçam apenas em posts
- */
 export async function getStaticPaths() {
   const cats  = await getCollection("categories").catch(() => []) as any[];
   const posts = await getCollection("blogs");
 
-  // mapa slug -> label preferencial
   const bySlug = new Map<string, string>();
-
-  // categorias de /content/categories
   for (const c of cats) {
     const { label, slug } = (c?.data ?? {}) as { label?: string; slug?: string };
     if (label && slug) bySlug.set(slug, label);
   }
-
-  // categorias que existem só em posts
   for (const p of posts) {
     const raw = (p.data.category ?? "").toString().trim();
     if (!raw) continue;
     const s = slugify(raw);
     if (!bySlug.has(s)) bySlug.set(s, raw);
   }
-
-  // monta paths com os itens já ordenados por data
   const paths = Array.from(bySlug.entries()).map(([slug, label]) => {
     const items = posts
       .filter((p) => slugify(p.data.category ?? "") === slug)
       .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
     return { params: { category: slug }, props: { label, items } };
   });
-
   return paths;
 }
 
-// ----- Fallback de runtime (útil em dev) -----
 type P = { label?: string; items?: CollectionEntry<"blogs">[] };
 let { label, items } = Astro.props as P;
 
@@ -49,7 +36,6 @@ if (!label || !items) {
   const all = await getCollection("blogs");
   const first = all.find((p) => slugify(p.data.category ?? "") === incoming);
   label = (first?.data.category as string) ?? incoming;
-
   items = all
     .filter((p) => slugify(p.data.category ?? "") === incoming)
     .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
@@ -58,9 +44,8 @@ if (!label || !items) {
 
 <PageLayout>
   <section class="flex flex-col space-y-3 md:space-y-4">
-    <!-- rótulo alinhado exatamente à régua dos cards -->
     <div class="mx-auto w-full md:max-w-[46rem] lg:max-w-[50rem] xl:max-w-[52rem] px-3 md:px-4">
-      <p class="text-[12px] font-semibold uppercase tracking-[0.16em] text-muted-text">
+      <p class="text-[12px] font-semibold uppercase tracking-[0.16em] text-secondary-text">
         {(label ?? "").toUpperCase()}
       </p>
     </div>
@@ -74,7 +59,7 @@ if (!label || !items) {
         ))}
       </ul>
     ) : (
-      <div class="mx-auto w-full md:max-w-[46rem] lg:max-w-[50rem] xl:max-w-[52rem]">
+      <div class="mx-auto w-full md:max-w-[46rem] lg:max-w-[50rem] xl:max-w-[52rem] px-3 md:px-4">
         <p class="text-secondary-text">No posts in this category yet.</p>
       </div>
     )}

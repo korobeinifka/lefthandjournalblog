@@ -9,20 +9,18 @@ const posts: CollectionEntry<"blogs">[] = (await getCollection("blogs"))
 
 <PageLayout>
   <section class="flex flex-col space-y-3 md:space-y-4">
-  <!-- rótulo alinhado à “régua” interna dos cards -->
-  <div class="mx-auto w-full md:max-w-[46rem] lg:max-w-[50rem] xl:max-w-[52rem]">
-    <p class="pl-3 md:pl-4 text-[12px] font-semibold uppercase tracking-[0.14em] text-muted-text">
-      O LEVÓGIRO 🦖
-    </p>
-  </div>
+    <div class="mx-auto w-full md:max-w-[46rem] lg:max-w-[50rem] xl:max-w-[52rem]">
+      <p class="text-[12px] font-semibold uppercase tracking-[0.14em] text-secondary-text px-3 md:px-4">
+        O LEVÓGIRO 🦖
+      </p>
+    </div>
 
-  <!-- lista com a mesma largura dos cards -->
-  <ul class="space-y-3 md:space-y-4 mx-auto w-full md:max-w-[46rem] lg:max-w-[50rem] xl:max-w-[52rem]">
-    {posts.map((post) => (
-      <li class="py-0 first:pt-0">
-        <PostListItem post={post} />
-      </li>
-    ))}
-  </ul>
-</section>
+    <ul class="space-y-3 md:space-y-4 mx-auto w-full md:max-w-[46rem] lg:max-w-[50rem] xl:max-w-[52rem]">
+      {posts.map((post) => (
+        <li class="py-0 first:pt-0">
+          <PostListItem post={post} />
+        </li>
+      ))}
+    </ul>
+  </section>
 </PageLayout>

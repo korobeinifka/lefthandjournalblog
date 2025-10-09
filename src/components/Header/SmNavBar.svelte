@@ -3,7 +3,7 @@
   import { onDestroy, onMount, tick } from 'svelte';
   import { portal } from '@/lib/actions/portal';
 
-  export let links: { label: string; slug: string }[] = []; // ← recebido do Header
+  export let links: { label: string; slug: string }[] = [];
 
   const canUseDOM = typeof document !== 'undefined';
   let open = false, showCats = false;
@@ -51,7 +51,7 @@
         id="mobile-nav"
         role="dialog"
         aria-modal="true"
-        class="fixed right-3 top-14 z-[75] w-72 max-w-[85vw] rounded border border-border-ink/80 bg-card-bg shadow-xl transition-transform duration-200 md:hidden"
+        class="smnav-panel fixed right-3 top-14 z-[75] w-72 max-w-[85vw] rounded border border-border-ink/80 bg-card-bg shadow-xl transition-transform duration-200 md:hidden"
         style="transform: scale(var(--sm-menu-zoom, 0.9)); transform-origin: top right;"
         on:click|stopPropagation
       >
@@ -70,15 +70,29 @@
               <ul class="mt-1 space-y-1">
                 {#each links as item}
                   <li>
-                    <a href={`/categories/${item.slug}`} class="block rounded px-4 py-2 text-xs uppercase tracking-[0.24em] hover:text-primary-text ui-transition" on:click={() => closeMenu({ restoreFocus: false })}>
+                    <a
+                      href={`/categories/${item.slug}`}
+                      class="cat-link block rounded px-4 py-2 text-xs uppercase tracking-[0.24em] hover:text-primary-text ui-transition"
+                      on:click={() => closeMenu({ restoreFocus: false })}
+                    >
                       {item.label.toUpperCase()}
                     </a>
                   </li>
                 {/each}
-                <li><div class="mx-4 my-1 h-px bg-border-ink/60"></div></li>
+
+                <!-- ✅ OUTROS agora vem antes da linha -->
                 <li>
-                  <a href="/categories" class="block rounded-[6px] px-4 py-2 text-xs uppercase tracking-[0.24em] hover:text-primary-text ui-transition" on:click={() => closeMenu({ restoreFocus: false })}>OUTROS</a>
+                  <a
+                    href="/categories"
+                    class="cat-link block rounded px-4 py-2 text-xs uppercase tracking-[0.24em] hover:text-primary-text ui-transition"
+                    on:click={() => closeMenu({ restoreFocus: false })}
+                  >
+                    OUTROS
+                  </a>
                 </li>
+
+                <!-- Linha por último -->
+                <li><div class="mx-4 my-1 h-px bg-border-ink/60"></div></li>
               </ul>
             {/if}
           </li>

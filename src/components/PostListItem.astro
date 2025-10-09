@@ -7,16 +7,12 @@ const { data } = post;
 
 const href = `/blog/${post.slug}/`;
 
-// Data (PT-BR, formato "09 OUT, 2025")
 const d = new Date(data.pubDate);
 const day = d.toLocaleString('pt-BR', { day: '2-digit' });
-const month = d.toLocaleString('pt-BR', { month: 'short' })
-  .replace(/\.$/, '')
-  .toUpperCase();
+const month = d.toLocaleString('pt-BR', { month: 'short' }).replace(/\.$/, '').toUpperCase();
 const year = d.getFullYear();
 const dateLabel = `${day} ${month}, ${year}`;
 
-// Thumbnail só na listagem
 const hero: any = (data as any).heroImage;
 const heroSrc: string | undefined =
   typeof hero === "string" ? (hero?.trim() ? hero : undefined) : (hero?.src ?? undefined);
@@ -24,12 +20,8 @@ const heroSrc: string | undefined =
 const showThumbnail = Boolean(heroSrc);
 const thumbnailAlt = data.heroImageAlt ?? data.title;
 
-/* layout
-   - mobile: coluna 6.5rem
-   - desktop: coluna 6rem (estreita para não sair da régua)
-*/
 const layoutClass = showThumbnail
-  ? "grid grid-cols-[minmax(0,1fr)_6.5rem] md:grid-cols-[minmax(0,1fr)_6rem] items-center gap-4 p-3 md:p-4"
+  ? "grid grid-cols-[minmax(0,1fr)_6.25rem] md:grid-cols-[minmax(0,1fr)_6rem] items-center gap-4 p-3 md:p-4"
   : "grid items-center gap-3 p-3 md:p-4";
 ---
 
@@ -39,7 +31,8 @@ const layoutClass = showThumbnail
 >
   <div class={layoutClass}>
     <div class="min-w-0">
-      <div class="flex flex-wrap items-center gap-2 text-[10px] md:text-[11px] font-semibold uppercase tracking-[0.28em] text-muted-text">
+      <!-- usa tokens → no light fica mais escuro pelos novos valores -->
+      <div class="flex flex-wrap items-center gap-2 text-[10px] md:text-[11px] font-semibold uppercase tracking-[0.28em] text-secondary-text">
         {data.category && <span>{data.category}</span>}
         {dateLabel && (<><span aria-hidden="true">/</span><span>{dateLabel}</span></>)}
       </div>
