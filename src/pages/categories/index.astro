@@ -1,64 +1,54 @@
 ---
 import PageLayout from "@/layouts/PageLayout.astro";
 import { getCollection } from "astro:content";
+import { slugify } from "@/utils/slug";
 
-// Normalizador básico: deixa tudo comparável por "slug"
-const toSlug = (s: string) =>
-  (s || "")
-    .toLowerCase()
-    .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "");
-
-// Carrega docs de categorias e posts
-const cats = await getCollection("categories");
+// lê categorias (data) e posts
+const cats  = await getCollection("categories");   // { label, slug, heroImage?, showInMenu?, order? }
 const posts = await getCollection("blogs");
 
-// Monta mapa {slug -> {label, slug, heroImage, count}}
+// slug -> { label, slug, heroImage, count }
 const catMap = new Map<string, { label: string; slug: string; heroImage?: string; count: number }>();
 for (const c of cats) {
-  const { label, slug, heroImage } = c.data;
+  const { label, slug, heroImage } = c.data as { label?: string; slug?: string; heroImage?: string };
   if (!label || !slug) continue;
   catMap.set(slug, { label, slug, heroImage, count: 0 });
 }
 
-// Conta posts por slug de categoria (comparando por slug do label do post)
+// conta posts por categoria (comparando por slug normalizado)
 for (const p of posts) {
-  const raw = p.data.category ?? "";
-  const s = toSlug(raw);
-  if (!s) continue;
-  // Se a categoria do post não existir nos docs, ignora (ou inclua dinâmica se quiser)
-  if (catMap.has(s)) {
-    const entry = catMap.get(s)!;
-    entry.count += 1;
-  }
+  const s = slugify(p.data.category ?? "");
+  const hit = catMap.get(s);
+  if (hit) hit.count += 1;
 }
 
-const categories = Array.from(catMap.values());
+const categories = Array.from(catMap.values()).sort((a, b) =>
+  a.label.localeCompare(b.label, "pt-BR")
+);
 ---
 
-<PageLayout title="Categories">
+<PageLayout title="Tópicos">
   <section class="flex flex-col space-y-3 md:space-y-4">
     <!-- rótulo alinhado à mesma régua dos cards -->
     <div class="mx-auto w-full md:max-w-[46rem] lg:max-w-[50rem] xl:max-w-[52rem]">
-      <p class="text-[12px] font-semibold uppercase tracking-[0.16em] text-muted-text">
+      <p class="text-[12px] font-semibold uppercase tracking-[0.14em] text-muted-text">
         TÓPICOS
       </p>
     </div>
 
-    <!-- Cards no mesmo layout dos posts -->
+    <!-- lista vertical, mesmo layout dos cards de post (sem borda) -->
     <ul class="space-y-3 md:space-y-4">
       {categories.map((cat) => {
         const showThumb = !!cat.heroImage;
         const layoutClass = showThumb
-          ? "grid grid-cols-[minmax(0,1fr)_6.5rem] md:grid-cols-[minmax(0,1fr)_9rem] items-center gap-4 p-3 md:p-4"
+          ? "grid grid-cols-[minmax(0,1fr)_6.5rem] md:grid-cols-[minmax(0,1fr)_6rem] items-center gap-4 p-3 md:p-4"
           : "grid items-center gap-3 p-3 md:p-4";
 
         return (
           <li class="py-0 first:pt-0">
             <a
               href={`/categories/${cat.slug}`}
-              class="group block mx-auto md:max-w-[46rem] lg:max-w-[50rem] xl:max-w-[52rem] rounded border border-border-ink/70 bg-card-bg ui-transition hover:border-border-ink/90 hover:bg-surface-bg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-text"
+              class="group block w-full rounded bg-transparent ui-transition hover:bg-surface-bg/30 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-text"
             >
               <div class={layoutClass}>
                 <div class="min-w-0">
@@ -77,7 +67,7 @@ const categories = Array.from(catMap.values());
                       alt={cat.label}
                       loading="lazy"
                       decoding="async"
-                      class="h-20 w-20 md:h-24 md:w-36 object-cover rounded"
+                      class="h-20 w-20 md:h-20 md:w-24 object-cover rounded"
                     />
                   </div>
                 )}

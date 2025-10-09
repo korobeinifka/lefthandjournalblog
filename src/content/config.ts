@@ -6,7 +6,6 @@ const blogs = defineCollection({
     title: z.string(),
     description: z.string().optional(),
     pubDate: z.coerce.date(),
-    // 🔑 Agora string livre (sem enum), não quebra com novas categorias
     category: z.string().optional(),
     author: z.string(),
     heroImage: z.string().optional(),
@@ -17,9 +16,11 @@ const blogs = defineCollection({
 const categories = defineCollection({
   type: "data",
   schema: z.object({
-    label: z.string(),
-    slug: z.string(),               // ex.: "geopolitica"
-    heroImage: z.string().optional() // thumb fixa opcional
+    label: z.string(),          // Ex.: "Geopolítica"
+    slug: z.string(),           // Ex.: "geopolitica"
+    heroImage: z.string().optional(),
+    showInMenu: z.boolean().optional(), // true/false (default: true)
+    order: z.number().optional(),       // ordem no dropdown (menor primeiro)
   }),
 });
 

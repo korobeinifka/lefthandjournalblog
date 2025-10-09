@@ -1,4 +1,7 @@
 {
   "label": "Geopolítica",
-  "slug": "geopolitica"
+  "slug": "geopolitica",
+  "heroImage": "/images/categories/geopolitica.jpg",
+  "showInMenu": true,
+  "order": 2
 }

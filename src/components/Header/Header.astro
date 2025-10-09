@@ -1,44 +1,46 @@
 ---
 // src/components/Header/Header.astro
+import { getCollection } from "astro:content";
 import ChameleonLogo from "./ChameleonLogo.astro";
 import HeaderBtns from "./HeaderBtns.svelte";
 import NavBar from "./NavBar.astro";
 import SmNavBar from "./SmNavBar.svelte";
+
+// Monta os links do menu a partir de /content/categories/*.json
+const cats = await getCollection("categories");
+const menuLinks = cats
+  .filter((c) => c.data.showInMenu !== false)
+  .sort((a, b) => (a.data.order ?? 999) - (b.data.order ?? 999))
+  .map(({ data }) => ({ label: data.label, slug: data.slug }));
 ---
 
 <header class="fixed top-0 left-0 w-full bg-primary-bg/90 backdrop-blur supports-[backdrop-filter]:bg-primary-bg/80 z-40">
-  <!-- mesma régua dos cards (mesmos paddings e max-width) -->
   <div
     class="site-container site-narrow
-           grid grid-cols-[auto_minmax(0,1fr)_auto] items-center
-           min-h-[4.75rem] md:min-h-[5rem] gap-6 md:gap-8"
+           grid grid-cols-[auto_1fr_auto] items-center
+           min-h-[4.75rem] md:min-h-[5rem]
+           gap-7 md:gap-8"
   >
-    <!-- ESQUERDA: logo (micro-nudge para corrigir “alinhamento ótico”) -->
+    <!-- ESQUERDA: logo (micro-nudge p/ alinhar a régua no mobile) -->
     <a
       href="/"
       aria-label="Levogiro — Home"
-      class="justify-self-start block leading-none ui-focus text-primary-text no-underline"
+      class="justify-self-start block leading-none ui-focus text-primary-text no-underline -ml-3 md:ml-0"
     >
-      <ChameleonLogo
-        class="h-16 w-16 md:h-16 md:w-16 -translate-x-[2px]"
-        width="64"
-        height="64"
-      />
+      <ChameleonLogo class="h-16 w-16 md:h-16 md:w-16" width="56" height="56" />
       <span class="sr-only">Levogiro</span>
     </a>
 
     <!-- CENTRO: navbar (desktop) -->
     <div class="hidden md:block justify-self-center">
-      <NavBar />
+      <NavBar links={menuLinks} />
     </div>
 
-    <!-- DIREITA: utilitários (SEM margens negativas) -->
-    <div class="flex items-center gap-2 justify-self-end">
-      <!-- menu só no mobile -->
+    <!-- DIREITA: menu (mobile) + busca/tema -->
+    <div class="flex items-center gap-3 justify-self-end -mr-2 md:mr-0">
       <div class="md:hidden">
-        <SmNavBar client:load />
+        <SmNavBar client:load links={menuLinks} />
       </div>
-      <!-- search (desktop) + toggle (todos) -->
       <HeaderBtns client:load />
     </div>
   </div>

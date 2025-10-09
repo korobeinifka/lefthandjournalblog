@@ -5,9 +5,9 @@ import { slugify } from "@/utils/slug";
 export async function GET(context) {
   const posts = await getCollection("blogs");
   return rss({
-    title: "Lefthand Journal",
+    title: "O Levógiro",
     description:
-      "Minimal editorial essays on chess, geopolitics, philosophy, and technology.",
+      "Repositório de ideias.",
     site: context.site,
     items: posts.map((post) => {
       const slug = slugify(post.data.title);

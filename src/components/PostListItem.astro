@@ -7,17 +7,14 @@ const { data } = post;
 
 const href = `/blog/${post.slug}/`;
 
-// Data (PT-BR, formato "OUT 09, 2025")
+// Data (PT-BR, formato "09 OUT, 2025")
 const d = new Date(data.pubDate);
 const day = d.toLocaleString('pt-BR', { day: '2-digit' });
 const month = d.toLocaleString('pt-BR', { month: 'short' })
-  .replace(/\.$/, '') // remove ponto final de "out." etc.
+  .replace(/\.$/, '')
   .toUpperCase();
 const year = d.getFullYear();
 const dateLabel = `${day} ${month}, ${year}`;
-
-
-
 
 // Thumbnail só na listagem
 const hero: any = (data as any).heroImage;
@@ -38,7 +35,7 @@ const layoutClass = showThumbnail
 
 <a
   href={href}
-  class="group block w-full rounded border border-border-ink/70 bg-card-bg ui-transition hover:border-border-ink/90 hover:bg-surface-bg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-text"
+  class="group block w-full rounded bg-card-bg ui-transition hover:bg-surface-bg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-text"
 >
   <div class={layoutClass}>
     <div class="min-w-0">
@@ -52,7 +49,7 @@ const layoutClass = showThumbnail
       </h3>
 
       {data.description && (
-        <p class="mt-1 text-[13px] leading-snug text-secondary-text">
+        <p class="mt-1 text-[13px] leading-snug text-secondary-text clamp-2">
           {data.description}
         </p>
       )}

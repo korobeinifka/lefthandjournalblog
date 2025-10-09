@@ -5,61 +5,29 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ========== BASE (dark-only) =========================================== */
 @layer base {
   :root {
-    --radius: 3px; /* <- raio padrão do site */
-    --primary-bg: 232 225 214; /* #E8E1D6  ← fundo da página (mais escuro) */
-    --surface-bg: 250 247 239;
-     --card-bg: 246 241 233;    /* #F6F1E9  ← cards um pouco mais escuros */
-    --border-ink: 209 198 183;
-    --primary-text: 30 25 21;
-    --secondary-text: 82 72 63;
-    --muted-text: 128 118 109;
-    --nav-speed: 200ms;
-    --nav-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
-    color-scheme: light;
-  }
+    --radius: 3px;
 
-  /* 🔧 Mantém a régua estável entre páginas com/sem scroll vertical */
-  html { scrollbar-gutter: stable both-edges; }
-  @supports not (scrollbar-gutter: stable) {
-    html { overflow-y: scroll; } /* fallback amplo: reserva a barra sempre */
-  }
-
-  @media (prefers-color-scheme: dark) {
-    :root {
-    --primary-bg: 11 12 11;   /* #0b0c0b */
-    --surface-bg: 24 22 21;
-    --card-bg: 10 11 10;
-    --border-ink: 78 73 68;
+    /* 🎯 DARK tokens (padrão do site) */
+    --primary-bg: 11 12 11;     /* #0b0c0b */
+    --surface-bg: 24 22 21;     /* usado para painéis/modais, ligeiramente diferente */
+    --card-bg: 11 12 11;        /* = primary (cards com o mesmo fundo do body) */
+    --border-ink: 78 73 68;     /* #4e4944 */
     --primary-text: 240 236 230;
     --secondary-text: 208 202 195;
     --muted-text: 166 160 153;
-    color-scheme: dark;
-  }
-}
 
-  [data-theme="dark"] {
-  --primary-bg: 11 12 11;   /* #0b0c0b */
-  --surface-bg: 24 22 21;
-  --card-bg: 10 11 10; /* #0a0b0a */
-  --border-ink: 78 73 68;
-  --primary-text: 240 236 230;
-  --secondary-text: 208 202 195;
-  --muted-text: 166 160 153;
-  color-scheme: dark;
-}   
+    --nav-speed: 200ms;
+    --nav-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
 
-  [data-theme="light"] {
-    --primary-bg: 232 225 214; /* #E8E1D6 */
-    --surface-bg: 250 247 239;
-    --card-bg: 246 241 233;    /* #F6F1E9 */
-    --border-ink: 209 198 183;
-    --primary-text: 30 25 21;
-    --secondary-text: 82 72 63;
-    --muted-text: 128 118 109;
-    color-scheme: light;
+    color-scheme: dark;         /* informa aos browsers que o site é escuro */
   }
+
+  /* Mantém a régua estável entre páginas com/sem scroll vertical */
+  html { scrollbar-gutter: stable both-edges; }
+  @supports not (scrollbar-gutter: stable) { html { overflow-y: scroll; } }
 
   *,
   *::before,
@@ -85,7 +53,7 @@
     letter-spacing: 0;
   }
 
-  ::selection { background: rgba(82, 72, 63, 0.2); }
+  ::selection { background: rgba(208, 202, 195, 0.18); }
 
   img { max-width: 100%; display: block; }
 
@@ -99,14 +67,14 @@
     overflow-x: auto;
   }
 
-  /* --- Força cantos 0.5rem em todo lugar (sem afetar rounded-full) --- */
+  /* Força cantos 0.5rem (não afeta rounded-full) */
   :where(
     .rounded, .rounded-sm, .rounded-md, .rounded-lg, .rounded-xl, .rounded-2xl, .rounded-3xl,
     [class*="rounded-"]:not(.rounded-full)
   ) { border-radius: var(--radius) !important; }
 }
 
-/* ===== Components layer: tokens e utils do header ==================== */
+/* ========== COMPONENTS (tokens e utils do header) ====================== */
 @layer components {
   .nav-link {
     transition-property: color, border-color;
@@ -118,7 +86,6 @@
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
   }
-
 
   .nav-transition {
     transition-duration: var(--nav-speed);
@@ -132,47 +99,40 @@
   }
 
   .ui-focus { @apply focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-text; }
-  
+
   .site-container { @apply mx-auto w-full px-4 sm:px-6 lg:px-8; }
   .site-narrow    { @apply md:max-w-[46rem] lg:max-w-[50rem] xl:max-w-[52rem]; }
+  
 }
 
+/* ========== UTILITIES ================================================== */
 @layer utilities {
-  /* Force all Tailwind rounded classes to our --radius */
   :where(
-    .rounded,
-    .rounded-sm,
-    .rounded-md,
-    .rounded-lg,
-    .rounded-xl,
-    .rounded-2xl,
-    .rounded-3xl,
-    .rounded-full,
-    [class*="rounded-"]
-  ) {
-    border-radius: var(--radius) !important;
-  }
-  /* ===== Mobile tuning: code blocks & Mermaid dentro do corpo ===== */
-@media (max-width: 767.98px) {
-  /* Blocos de código */
-  .prose pre,
-  .prose pre code {
-    font-size: 0.8rem;     /* ~12.8px */
-    line-height: 1.5;
-  }
-  .prose pre {
-    padding: 0.85rem 1rem; /* um pouco menos de padding no mobile */
-  }
+    .rounded, .rounded-sm, .rounded-md, .rounded-lg, .rounded-xl,
+    .rounded-2xl, .rounded-3xl, .rounded-full, [class*="rounded-"]
+  ) { border-radius: var(--radius) !important; }
 
-  /* Código inline no texto */
-  .prose :not(pre) > code {
-    font-size: 0.8rem;     /* mantém coerência com o bloco */
+  /* Mobile tuning: code & mermaid */
+  @media (max-width: 767.98px) {
+    .prose pre,
+    .prose pre code { font-size: 0.8rem; line-height: 1.5; }
+    .prose pre { padding: 0.85rem 1rem; }
+    .prose :not(pre) > code { font-size: 0.8rem; }
+    .prose .mermaid { font-size: 0.85rem; }
   }
+      /* Clamp multiline com reticências */
+    .clamp-1, .clamp-2 {
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .clamp-1 { -webkit-line-clamp: 1; }
+    .clamp-2 { -webkit-line-clamp: 2; }
 
-  /* Mermaid (diagramas) — controla o tamanho das labels */
-  .prose .mermaid {
-    font-size: 0.85rem;    /* ~13.6px */
-  }
 }
 
+/* ========== PRINT (claro para economizar tinta) ======================== */
+@media print {
+  :root { color-scheme: light; }
+  body { background: #fff; color: #000; }
 }

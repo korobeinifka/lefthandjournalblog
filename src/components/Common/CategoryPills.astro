@@ -1,22 +1,32 @@
 ---
-import { CATEGORY_LINKS } from "@/utils/categories";
+import { getCollection } from "astro:content";
 
-interface Props {
-  class?: string;
-}
+type MenuLink = { label: string; slug: string };
 
-const { class: className = "" }: Props = Astro.props;
+// Carrega categorias do content e monta os links do “pills”
+const cats = await getCollection("categories"); // cada JSON tem: { label, slug, showInMenu?, order? }
+
+const links: MenuLink[] = cats
+  .filter((c) => c.data.showInMenu !== false) // default: mostra
+  .sort((a, b) => (a.data.order ?? 999) - (b.data.order ?? 999))
+  .map(({ data }) => ({ label: data.label, slug: data.slug }));
 ---
 
-<ul class={`flex flex-wrap gap-3 ${className}`}>
-  {CATEGORY_LINKS.map((category) => (
-    <li>
-      <a
-        href={`/categories/${category.slug}`}
-        class="inline-flex items-center rounded-full border border-border-ink/70 bg-card-bg px-4 py-2 text-xs font-semibold uppercase tracking-[0.3em] text-secondary-text transition-colors duration-200 hover:text-primary-text focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-text"
-      >
-        {category.label}
-      </a>
-    </li>
-  ))}
-</ul>
+{links.length ? (
+  <nav aria-label="Categorias" class="w-full">
+    <ul class="flex flex-wrap gap-2">
+      {links.map((item) => (
+        <li>
+          <a
+            href={`/categories/${item.slug}`}
+            class="inline-flex items-center rounded px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.2em]
+                   text-secondary-text hover:text-primary-text ui-transition
+                   bg-transparent hover:bg-surface-bg/30"
+          >
+            {item.label}
+          </a>
+        </li>
+      ))}
+    </ul>
+  </nav>
+) : null}

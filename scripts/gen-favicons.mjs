@@ -7,7 +7,7 @@ const OUT = "public";
 
 const config = {
   path: "/",                   // <link> paths
-  appName: "Lefthand Journal", // optional
+  appName: "O Levógiro", // optional
   icons: {
     favicons: true,
     android: true,

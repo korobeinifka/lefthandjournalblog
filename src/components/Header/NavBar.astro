@@ -1,30 +1,18 @@
 ---
-import { CATEGORY_LINKS } from "@/utils/categories";
-const { pathname } = Astro.url;
-const isCategoriesActive = pathname.startsWith("/categories");
-
+export interface Props {
+  links: { label: string; slug: string }[];
+}
+const { links = [] } = Astro.props as Props;
 const linkBase =
   "nav-link ui-transition ui-focus inline-flex items-center px-0 pb-[3px] pt-0 leading-none font-[inherit] tracking-[inherit]";
 ---
 
 <nav class="hidden md:block">
   <ul class="flex items-center gap-8 text-sm font-semibold uppercase tracking-[0.2em] leading-none">
-    <!-- HOME -->
-    <li>
-      <a href="/" class={linkBase}>INÍCIO</a>
-    </li>
+    <li><a href="/" class={linkBase}>INÍCIO</a></li>
 
     <li class="relative" data-nav-dropdown>
-      <a
-        href="/categories"
-        role="button"
-        data-nav-trigger
-        aria-haspopup="true"
-        aria-expanded="false"
-        class={linkBase}
-      >
-        TÓPICOS
-      </a>
+      <a href="/categories" role="button" data-nav-trigger aria-haspopup="true" aria-expanded="false" class={linkBase}>TÓPICOS</a>
 
       <div
         data-nav-panel
@@ -34,7 +22,7 @@ const linkBase =
                before:absolute before:-top-3 before:left-0 before:right-0 before:h-3 before:content-['']
                data-[open='true']:visible data-[open='true']:pointer-events-auto data-[open='true']:opacity-100 data-[open='true']:translate-y-0">
         <ul class="flex flex-col">
-          {CATEGORY_LINKS.map((c) => (
+          {links.map((c) => (
             <li>
               <a href={`/categories/${c.slug}`} class="block rounded px-3 py-2 text-xs uppercase tracking-[0.28em] text-secondary-text hover:text-primary-text ui-transition">
                 {c.label}
@@ -44,92 +32,35 @@ const linkBase =
           <li class="my-1 h-px bg-border-ink/60"></li>
           <li>
             <a href="/categories" class="block rounded px-3 py-2 text-xs uppercase tracking-[0.28em] text-secondary-text hover:text-primary-text ui-transition">
-              MISCELÂNEA
+              OUTROS
             </a>
           </li>
         </ul>
       </div>
     </li>
 
-    <li>
-      <a href="/about" class={linkBase}>SOBRE</a>
-    </li>
+    <li><a href="/about" class={linkBase}>SOBRE</a></li>
   </ul>
 </nav>
 
 <script is:inline>
   (() => {
     if (typeof window === 'undefined') return;
-
-    const ROOT = '[data-nav-dropdown]';
-    const TRIGGER = '[data-nav-trigger]';
-    const PANEL = '[data-nav-panel]';
-    const OPEN_DELAY = 70;
-    const CLOSE_DELAY = 120;
-
-    const cleanups = new Map();
-
-    const setup = (root) => {
-      const trigger = root.querySelector(TRIGGER);
-      const panel = root.querySelector(PANEL);
-      if (!(trigger && panel)) return () => {};
-
-      let open = false;
-      let tIn = 0, tOut = 0;
-
-      const setOpen = (v) => {
-        if (open === v) return;
-        open = v;
-        panel.dataset.open = v ? 'true' : 'false';
-        trigger.setAttribute('aria-expanded', v ? 'true' : 'false');
-      };
-
-      const clearTimers = () => { clearTimeout(tIn); clearTimeout(tOut); tIn = tOut = 0; };
-
-      const scheduleOpen  = () => { clearTimers(); tIn  = setTimeout(() => setOpen(true),  OPEN_DELAY); };
-      const scheduleClose = () => { clearTimers(); tOut = setTimeout(() => setOpen(false), CLOSE_DELAY); };
-
-      const onEnter = () => scheduleOpen();
-      const onLeave = () => scheduleClose();
-      const onClick = (e) => { e.preventDefault(); setOpen(!open); };
-      const onKey = (e) => { if (e.key === 'Escape' && open) { e.preventDefault(); setOpen(false); trigger.focus(); } };
-
-      trigger.addEventListener('pointerenter', onEnter);
-      trigger.addEventListener('pointerleave', onLeave);
-      trigger.addEventListener('click', onClick);
-      trigger.addEventListener('focus', onEnter);
-      trigger.addEventListener('blur', onLeave);
-      panel.addEventListener('pointerenter', onEnter);
-      panel.addEventListener('pointerleave', onLeave);
-      root.addEventListener('keydown', onKey);
-
-      setOpen(false);
-
-      return () => {
-        clearTimers();
-        trigger.removeEventListener('pointerenter', onEnter);
-        trigger.removeEventListener('pointerleave', onLeave);
-        trigger.removeEventListener('click', onClick);
-        trigger.removeEventListener('focus', onEnter);
-        trigger.removeEventListener('blur', onLeave);
-        panel.removeEventListener('pointerenter', onEnter);
-        panel.removeEventListener('pointerleave', onLeave);
-        root.removeEventListener('keydown', onKey);
-      };
+    const ROOT='[data-nav-dropdown]',TRIGGER='[data-nav-trigger]',PANEL='[data-nav-panel]';
+    const OPEN_DELAY=70,CLOSE_DELAY=120; const cleanups=new Map();
+    const setup=(root)=>{const t=root.querySelector(TRIGGER),p=root.querySelector(PANEL); if(!(t&&p)) return ()=>{};
+      let open=false,ti=0,to=0; const set=(v)=>{ if(open===v) return; open=v; p.dataset.open=v?'true':'false'; t.setAttribute('aria-expanded',v?'true':'false'); };
+      const clr=()=>{clearTimeout(ti);clearTimeout(to);ti=to=0}; const o=()=>{clr();ti=setTimeout(()=>set(true),OPEN_DELAY)};
+      const c=()=>{clr();to=setTimeout(()=>set(false),CLOSE_DELAY)}; const k=(e)=>{if(e.key==='Escape'&&open){e.preventDefault();set(false);t.focus();}}
+      t.addEventListener('pointerenter',o); t.addEventListener('pointerleave',c); t.addEventListener('click',(e)=>{e.preventDefault();set(!open)});
+      t.addEventListener('focus',o); t.addEventListener('blur',c); p.addEventListener('pointerenter',o); p.addEventListener('pointerleave',c);
+      root.addEventListener('keydown',k); set(false);
+      return ()=>{clr(); t.removeEventListener('pointerenter',o); t.removeEventListener('pointerleave',c); t.removeEventListener('click',(e)=>{});
+        t.removeEventListener('focus',o); t.removeEventListener('blur',c); p.removeEventListener('pointerenter',o); p.removeEventListener('pointerleave',c);
+        root.removeEventListener('keydown',k);}
     };
-
-    const init = () => {
-      cleanups.forEach((fn) => fn());
-      cleanups.clear();
-      document.querySelectorAll(ROOT).forEach((root) => cleanups.set(root, setup(root)));
-    };
-
-    init();
-    document.addEventListener('astro:after-swap', init);
-    document.addEventListener('astro:unload', () => {
-      cleanups.forEach((fn) => fn());
-      cleanups.clear();
-      document.removeEventListener('astro:after-swap', init);
-    });
+    const init=()=>{cleanups.forEach(fn=>fn());cleanups.clear();document.querySelectorAll(ROOT).forEach(r=>cleanups.set(r,setup(r)))};
+    init(); document.addEventListener('astro:after-swap',init);
+    document.addEventListener('astro:unload',()=>{cleanups.forEach(fn=>fn());cleanups.clear();document.removeEventListener('astro:after-swap',init);});
   })();
 </script>

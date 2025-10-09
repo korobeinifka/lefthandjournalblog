@@ -1,4 +1,6 @@
 {
   "label": "Xadrez",
-  "slug": "xadrez"
+  "slug": "xadrez",
+  "heroImage": "/images/categories/xadrez.jpg",
+  "showInMenu": true
 }

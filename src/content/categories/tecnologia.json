@@ -1,4 +1,7 @@
 {
   "label": "Tecnologia",
-  "slug": "tecnologia"
+  "slug": "tecnologia",
+  "heroImage": "/images/categories/tecnologia.jpg",
+  "showInMenu": true,
+  "order": 1
 }

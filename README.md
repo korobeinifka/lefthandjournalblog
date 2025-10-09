@@ -1,4 +1,4 @@
-# Lefthand Journal
+# LEVOGIRO
 
 Minimal editorial blog built with [Astro](https://astro.build) and Tailwind CSS. The project reimagines the original template as a calm magazine-inspired layout with light/dark themes, responsive editorial cards, and focused typography.
 
@@ -20,7 +20,7 @@ The site runs at `http://localhost:4321` by default.
   description: "One-sentence dek that appears in cards."
   pubDate: 2024-02-12
   category: "Chess" # Chess | Geopolitics | Philosophy | Technology
-  author: "Lefthand Editorial"
+  author: "O Levógiro."
   heroImage: "https://..." # optional 16:9 image
   heroImageAlt: "Accessible alt text"
   ---
