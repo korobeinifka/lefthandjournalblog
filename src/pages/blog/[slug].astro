@@ -6,17 +6,16 @@ import Prose from "@/components/Utils/Prose.astro";
 export async function getStaticPaths() {
   const posts = await getCollection("blogs");
   return posts.map((post) => ({
-    params: { slug: post.slug }, // ← use SEMPRE o slug do arquivo
+    params: { slug: post.slug },
     props: { post },
   }));
 }
 
-// ✅ Compatível com SSG (build) e SSR (dev):
-let post =
-  (Astro.props as { post?: CollectionEntry<"blogs"> } | undefined)?.post;
+// Compatível com SSG e dev/SSR
+let post = (Astro.props as { post?: CollectionEntry<"blogs"> } | undefined)?.post;
 
 if (!post) {
-  const slug = Astro.params.slug as string;
+  const slug = (Astro.params.slug as string) ?? "";
   const all = await getCollection("blogs");
   post = all.find((p) => p.slug === slug);
   if (!post) {
@@ -28,7 +27,10 @@ const { Content } = await post.render();
 ---
 
 <BlogLayout {...post}>
-  <Prose>
-    <Content />
-  </Prose>
+  <!-- Wrapper que aplica o ajuste de espaçamento pós-H1 -->
+  <div class="prose-post">
+    <Prose>
+      <Content />
+    </Prose>
+  </div>
 </BlogLayout>

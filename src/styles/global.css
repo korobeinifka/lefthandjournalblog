@@ -116,10 +116,17 @@
     .prose :not(pre) > code { font-size: .8rem; }
     .prose .mermaid { font-size: .85rem; }
   }
+/* ===== Espaço menor entre H1 e a primeira mídia no post =====
+/* Aperta o topo do primeiro bloco dentro do corpo do post */
+.prose > :first-child { margin-top: 0 !important; }
 
-  .clamp-1,.clamp-2{ display: -webkit-box; -webkit-box-orient: vertical; overflow: hidden; }
-  .clamp-1{ -webkit-line-clamp: 1; }
-  .clamp-2{ -webkit-line-clamp: 2; }
+/* Casos comuns: imagem/figure no topo vindo do Tina */
+.prose > p:first-child { margin-top: 0 !important; }
+.prose > p:first-child > img { margin-top: 0 !important; }
+.prose > figure:first-child,
+.prose > figure:first-child img { margin-top: 0 !important; }
+
+
 }
 
 /* ========== PRINT ===================================================== */
