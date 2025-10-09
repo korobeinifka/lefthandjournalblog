@@ -29,7 +29,7 @@
   [data-theme="light"] {
     --primary-bg: 249 249 248;   /* fundo */
     --surface-bg: 255 255 255;   /* painéis */
-    --card-bg: 255 255 255;
+    --card-bg: 249 249 248;
     --border-ink: 209 205 198;
 
     --primary-text: 28 28 27;    /* mantém o preto */
