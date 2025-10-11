@@ -52,7 +52,8 @@
     if (hasLoadedSearch || isLoadingSearch) return;
     isLoadingSearch = true; searchError = '';
     try {
-      const res = await fetch('/search.json', { headers: { Accept: 'application/json' } });
+      const versionedUrl = `/search.json?v=${encodeURIComponent(__BUILD_VERSION__)}`;
+      const res = await fetch(versionedUrl, { headers: { Accept: 'application/json' } });
       if (!res.ok) throw new Error('Indisponível no momento.');
       searchEntries = await res.json(); hasLoadedSearch = true;
     } catch { searchError = 'Pesquisa indisponível no momento. Tente novamente.'; }

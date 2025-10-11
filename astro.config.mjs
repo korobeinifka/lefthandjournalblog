@@ -9,6 +9,12 @@ import vercel from "@astrojs/vercel/static";
 // Habilita SSR apenas quando ASTRO_SSR=true (ex.: no dev)
 const isSSR = process.env.ASTRO_SSR === "true";
 
+const buildVersion =
+  process.env.BUILD_VERSION ??
+  process.env.VERCEL_GIT_COMMIT_SHA ??
+  process.env.GITHUB_SHA ??
+  `${Date.now()}`;
+
 // https://astro.build/config
 export default defineConfig({
   integrations: [tailwind(), icon(), svelte(), react(), sitemap()],
@@ -16,6 +22,11 @@ export default defineConfig({
   // base: "/blog2.0",
   output: isSSR ? "server" : "static",
   adapter: isSSR ? undefined : vercel(), // evita conflito no modo server (dev)
+  vite: {
+    define: {
+      __BUILD_VERSION__: JSON.stringify(buildVersion),
+    },
+  },
   // (opcional) se quiser fixar host/porta aqui em vez do script:
   // server: { host: true, port: 4323 },
 });

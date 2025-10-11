@@ -1,5 +1,4 @@
 import { getCollection } from "astro:content";
-import { slugify } from "@/utils/slug";
 
 const normalise = (value: string) => value.replace(/\s+/g, " ").trim();
 
@@ -16,7 +15,6 @@ export async function GET() {
   const payload = posts
     .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
     .map((post) => {
-      const slug = slugify(post.data.title);
       const rawBody = typeof post.body === "string" ? post.body : "";
       const cleanedBody = normalise(stripMarkdown(rawBody));
       const excerptSource = cleanedBody || post.data.description || "";
@@ -26,7 +24,7 @@ export async function GET() {
         title: post.data.title,
         description: post.data.description,
         category: post.data.category,
-        url: `/blog/${slug}/`,
+        url: `/blog/${post.slug}/`,
         excerpt: excerpt ? `${excerpt}${excerptSource.length > excerpt.length ? "…" : ""}` : "",
         pubDate: post.data.pubDate.toISOString(),
         searchField: normalise(
