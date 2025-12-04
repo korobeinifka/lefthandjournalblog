@@ -70,19 +70,14 @@ Eu sei que essas coisas não soam divertidas ou joviais ou grandiosamente inspir
 
 É inimaginavelmente difícil fazer isso, se manter consciente e vivo no mundo adulto dia após dia. O que significa que mais um grande clichê acaba sendo verdade: sua educação realmente é o trabalho de uma vida toda. Eu lhes desejo muito mais que sorte.
 
+Moral da história:
 
-Moral da história: 
+A analogia dos peixes é um lembrete de que as coisas mais essenciais da vida são justamente as que deixamos de notar, e esse descuido cobra um preço. Crescer, estudar, trabalhar… nada disso importa se você continua funcionando no automático, acreditando que, como no mito de Narciso, tudo o que não reflete você passa a ser feio, irrelevante ou descartável.
 
-A “água” são as coisas mais óbvias e fundamentais da vida — tão próximas e constantes que deixamos de percebê-las. A verdadeira educação não é acumular conhecimento, mas aprender a escolher como perceber, interpretar e significar a própria experiência, em vez de viver no piloto automático do egocentrismo. A liberdade real vem dessa consciência: escolher onde colocar a atenção, escolher o que venerar, escolher como pensar.
+A verdadeira dificuldade da vida adulta é prestar atenção no simples. Não de um jeito espiritualizado ou romântico, mas na capacidade básica de perceber o que está acontecendo ao seu redor: entender que o mundo não gira em torno de você e que perceber deve vir antes de reagir. É recusar a tentação confortável de ler tudo pela lente do próprio cansaço.
 
-Se você não escolhe, o mundo escolhe por você — e aí você vive preso na própria cabeça, escravo das reações automáticas, irritado, insatisfeito e inconsciente, mesmo tendo uma vida “bem-sucedida”.
+A educação não é sobre acumular conhecimento, e sim sobre aprender a olhar. É escolher, com senso crítico, o que tem significado e o que não tem. É decidir o que ocupa o centro da sua perspectiva — e, principalmente, reconhecer que essa decisão existe.
 
-A história ensina que:
+Sem isso, o resto vira ruído: uma vida não vivida, repetida como um eco surdo, cego e mudo.
 
-A vida adulta é feita de pequenos momentos aparentemente banais — e a forma como decidimos percebê-los define tudo.
-
-Ou seja:
-
-Estar vivo de verdade exige consciência, esforço e atenção.
-
-O resto é água — e quase ninguém percebe que está nadando nela.
+A água está aqui o tempo todo. O difícil é lembrar disso.
