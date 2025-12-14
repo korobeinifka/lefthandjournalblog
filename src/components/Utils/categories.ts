@@ -16,8 +16,10 @@ export function slugify(input: string): string {
 /** Labels canônicos exibidos na UI */
 export const CATEGORY_OPTIONS = [
   "Tecnologia",
-  "Geopolítica",
-  "Xadrez",
+  "Sistemas",
+  "Cultura",
+  "Ideias"
+
 ] as const;
 
 export type Category = (typeof CATEGORY_OPTIONS)[number];

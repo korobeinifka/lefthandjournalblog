@@ -57,7 +57,7 @@
       >
         <ul class="p-3 text-secondary-text">
           <li class="mt-0">
-            <a href="/" class="block rounded px-4 py-3 text-sm font-semibold uppercase tracking-[0.28em] hover:text-primary-text ui-transition" on:click={() => closeMenu({ restoreFocus: false })}>INÍCIO</a>
+            <a href="/" class="block rounded px-4 py-3 text-sm font-semibold uppercase tracking-[0.28em] hover:text-primary-text ui-transition" on:click={() => closeMenu({ restoreFocus: false })}>HOME</a>
           </li>
 
           <li class="mt-1">
@@ -87,7 +87,7 @@
                     class="cat-link block rounded px-4 py-2 text-xs uppercase tracking-[0.24em] hover:text-primary-text ui-transition"
                     on:click={() => closeMenu({ restoreFocus: false })}
                   >
-                    OUTROS
+                    ARQUIVO
                   </a>
                 </li>
 
