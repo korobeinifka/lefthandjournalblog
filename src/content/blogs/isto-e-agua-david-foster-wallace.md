@@ -6,9 +6,9 @@ author: antonio maluf
 heroImage: /david.png
 ---
 
-O texto abaixo representa o discurso de formatura feito pelo escritor romancista e professor David Foster Wallace para a turma de 2005 do Kenyon College. O discurso foi transformado no livro “Isto é Água” e é até hoje devido a sua preciosidade intelectual.
+O texto abaixo representa o discurso de formatura feito pelo escritor romancista e professor David Foster Wallace para a turma de 2005 do Kenyon College e foi imortalizado no livro “Isto é Água”. Wallace, que travou uma longa batalha contra a depressão, faleceu em 2008 aos 46 anos, deixando um legado de profundo conhecimento.
 
-David faleceu no dia 12 setembro de 2008 aos 46 anos, vítima de suicídio.
+***
 
 "Há esta história de dois peixinhos jovens nadando em um riacho, que de repente encontram um peixe mais velho nadando na direção oposta. Ao passar por eles o peixe mais velho lhes diz: “Bom dia, meus jovens: como está a água lá de onde vocês vêm?”. Os dois peixinhos sorriem, continuam nadando e um pouco mais à frente um olha para o outro e pergunta: “Que diabo será essa tal de água?”
 
