@@ -16,7 +16,15 @@ Suas composições misturam minimalismo, música clássica, jazz e estruturas r�
 
 Um bom exemplo disso é “Bird’s Lament”, talvez sua obra mais conhecida. A música é construída sobre uma linha rítmica constante, quase hipnótica, que se repete enquanto pequenas variações vão surgindo. Não há clímax nem resolução tradicional. A força da música está justamente na repetição e na forma como ela se sustenta sozinha.
 
-<iframe width="927" height="695" src="https://www.youtube.com/embed/RW8SBwGNcF8" title="Moondog - Bird&#39;s Lament" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<div class="video-embed">
+  <iframe
+    src="https://www.youtube.com/embed/RW8SBwGNcF8"
+    title="Moondog – Bird’s Lament"
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+    allowfullscreen
+  ></iframe>
+</div>
+
 “Bird’s Lament” foi composta em homenagem ao saxofonista Charlie Parker e mostra bem como Moondog transitava entre mundos. A música soa moderna até hoje, mas é baseada em ideias musicais antigas, como o uso rigoroso de ostinatos e formas cíclicas.
 
 Durante muito tempo, Moondog foi ignorado pelas instituições musicais. Ainda assim, influenciou compositores minimalistas como Steve Reich e Philip Glass, além de músicos do jazz e da música experimental. Seu reconhecimento veio tarde, quando ele já havia passado décadas à margem.
