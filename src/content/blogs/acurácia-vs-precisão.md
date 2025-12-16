@@ -8,30 +8,24 @@ heroImage: /alvo.png
 
 ![](/accpcs.png)
 
-Acurácia e precisão não significam a mesma coisa.
+Acurácia é o quão perto um resultado chega do valor correto.
 
-Acurácia indica o quão perto um resultado está do valor correto.
+Precisão é o quão parecidos os resultados são entre si.
 
-Precisão indica o quão próximos os resultados estão uns dos outros.
+Essas duas ideias costumam andar juntas, mas não são a mesma coisa.
 
-É possível ter precisão sem acurácia.
+É possível medir algo várias vezes e obter valores muito parecidos, sempre no mesmo lugar. Nesse caso, há precisão. Mas se todos esses valores estiverem longe do valor real, não há acurácia.
 
-É possível ter acurácia sem precisão.
+Também é possível chegar perto do valor correto, mas com resultados espalhados, sem consistência. Nesse caso, há acurácia, mas não há precisão.
 
-E só em um caso se tem os dois ao mesmo tempo.
+Só quando os resultados são próximos entre si e também próximos do valor real é que se tem acurácia e precisão ao mesmo tempo.
 
-Na imagem, cada alvo representa um valor correto.
+A imagem ajuda a visualizar isso. O centro do alvo representa o valor correto. Os pontos representam medições. O que muda não é o alvo, mas o comportamento das medições em relação a ele.
 
-Quando os pontos estão espalhados e longe do centro, não há acurácia nem precisão.
+Essa diferença é importante porque medir bem não é apenas chegar perto uma vez. É conseguir chegar perto de forma consistente. Em dados, ciência ou qualquer tipo de análise, entender essa distinção evita conclusões erradas baseadas em números que parecem bons, mas não são confiáveis.
 
-Quando os pontos estão juntos, mas longe do centro, há precisão, mas não acurácia.
+Acurácia e precisão não competem entre si.
 
-Quando os pontos estão espalhados, mas em torno do centro, há acurácia, mas não precisão.
+Elas respondem a perguntas diferentes sobre a mesma medição.
 
-Quando os pontos estão juntos e no centro, há acurácia e precisão.
-
-Acurácia responde à pergunta: estamos chegando no lugar certo?
-
-Precisão responde à pergunta: os resultados são consistentes?
-
-Em medições, análises ou previsões, os dois conceitos são importantes, mas eles medem coisas diferentes.
+Entender essa diferença é o primeiro passo para confiar no que está sendo medido.
