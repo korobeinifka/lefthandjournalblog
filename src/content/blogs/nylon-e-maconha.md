@@ -6,7 +6,7 @@ author: antonio maluf
 heroImage: /cannabis.jpg
 ---
 
-Antes de ser tratada como ameaça moral, a cannabis era uma planta comum. O **cânhamo **era amplamente usado para fazer tecidos, cordas, papel e óleo. Era resistente, barato e renovável. Não havia escândalo nisso. Havia utilidade.
+Antes de ser tratada como ameaça moral, a cannabis era uma planta comum. O** cânhamo **era amplamente usado para fazer tecidos, cordas, papel e óleo. Era resistente, barato e renovável. Não havia escândalo nisso. Havia utilidade.
 
 Isso muda nos anos 1930, quando interesses industriais passam a disputar espaço. O nylon, fibra sintética derivada do petróleo, surge como promessa de futuro. Para que esse futuro fosse viável, concorrentes naturais precisavam desaparecer. O cânhamo era um deles.
 
