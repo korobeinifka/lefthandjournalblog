@@ -3,10 +3,10 @@ title: Vida extraterrestre segundo Neil deGrasse Tyson
 pubDate: 2025-12-18T00:00:00.000Z
 category: ideias
 author: antonio maluf
-heroImage: /etmovie.webp
+heroImage: /neil.webp
 ---
 
-![](/neil.webp)
+![](/etmovie.webp)
 
 Quando Neil deGrasse Tyson fala sobre vida extraterrestre, ele costuma tirar a discussão do campo da ficção e trazer para a biologia. O argumento dele parte de algo simples: a semelhança genética não significa equivalência de capacidade.
 
