@@ -3,7 +3,7 @@ title: A trágica história de Ian Curtis
 pubDate: 2025-12-04T00:00:00.000Z
 category: cultura
 author: antonio maluf
-heroImage: /iancurtis.jpg
+heroImage: /ian - Copy.jpg
 ---
 
 A história de Ian Curtis costuma ser contada como tragédia, mas isso quase nunca ajuda a entender o que aconteceu. Tragédia vira distância. E o que incomoda em Ian Curtis é justamente o contrário: a proximidade.
