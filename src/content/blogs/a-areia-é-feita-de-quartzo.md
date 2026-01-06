@@ -3,7 +3,7 @@ title: A areia é feita de quartzo
 pubDate: 2025-12-18T00:00:00.000Z
 category: sistemas
 author: antonio maluf
-heroImage: /areia.png
+heroImage: /quartzo.jpg
 ---
 
 Quando a gente pensa em areia, costuma imaginar algo genérico. Um monte de grãos pequenos, sem muita identidade. Mas a maior parte da areia que existe nas praias, rios e desertos é feita quase inteiramente de quartzo.
