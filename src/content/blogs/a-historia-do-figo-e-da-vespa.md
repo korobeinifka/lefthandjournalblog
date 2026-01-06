@@ -3,7 +3,7 @@ title: A história do figo e da vespa
 pubDate: 2025-12-17T00:00:00.000Z
 category: ideias
 author: antonio maluf
-heroImage: /bw_figo.png
+heroImage: /figo.webp
 ---
 
 O figo não é exatamente uma fruta comum. Ele é, na verdade, uma estrutura fechada, chamada sicônio, onde as flores ficam escondidas dentro. Por causa disso, o figo não pode ser polinizado por insetos comuns.
