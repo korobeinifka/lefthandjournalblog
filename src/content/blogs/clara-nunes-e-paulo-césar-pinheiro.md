@@ -3,7 +3,7 @@ title: Clara Nunes e Paulo César Pinheiro
 pubDate: 2025-12-18T00:00:00.000Z
 category: cultura
 author: antonio maluf
-heroImage: /clara e paulo.jpg
+heroImage: /claraepaulo.png
 ---
 
 ![](/clara.jpg)
