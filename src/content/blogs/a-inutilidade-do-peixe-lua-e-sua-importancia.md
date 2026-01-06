@@ -3,7 +3,7 @@ title: A inutilidade do peixe-lua e sua importância
 pubDate: 2025-12-19T00:00:00.000Z
 category: ideias
 author: antonio maluf
-heroImage: /peixelua.png
+heroImage: /peixe-lua-mola-mola.jpg
 ---
 
 ![](/peixelua.png)
