@@ -3,7 +3,7 @@ title: Acurácia vs Precisão
 pubDate: 2025-12-17T00:00:00.000Z
 category: tecnologia
 author: antonio maluf
-heroImage: /alvo.png
+heroImage: /dardo.webp
 ---
 
 ![](/accpcs.png)
