@@ -3,7 +3,7 @@ title: Vida extraterrestre segundo Neil deGrasse Tyson
 pubDate: 2025-12-18T00:00:00.000Z
 category: ideias
 author: antonio maluf
-heroImage: /neil.webp
+heroImage: /neil.jpg
 ---
 
 ![](/etmovie.webp)
