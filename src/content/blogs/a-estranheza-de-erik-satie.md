@@ -3,7 +3,7 @@ title: A estranheza de Erik Satie
 pubDate: 2025-12-17T00:00:00.000Z
 category: cultura
 author: antonio maluf
-heroImage: /satie.webp
+heroImage: /satie.jpg
 ---
 
 Erik Satie é lembrado hoje principalmente como o autor das Gymnopédies, mas reduzir sua figura a essas peças é ignorar o que realmente o tornava estranho.
