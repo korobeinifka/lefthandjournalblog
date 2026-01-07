@@ -3,7 +3,7 @@ title: Moondog
 pubDate: 2025-12-17T00:00:00.000Z
 category: cultura
 author: antonio maluf
-heroImage: /moondog.png
+heroImage: /moondog.jpg
 ---
 
 ![](/moondog2.jpg)
