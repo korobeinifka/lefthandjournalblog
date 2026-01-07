@@ -6,14 +6,16 @@ author: antonio maluf
 heroImage: /kintsugi.jpg
 ---
 
-Kintsugi é uma técnica japonesa de reparo de cerâmica quebrada. Em vez de esconder as rachaduras, elas são preenchidas com laca misturada a pó de ouro, prata ou platina. O objeto volta a ser utilizável, mas com as quebras visíveis.
+Kintsugi é uma técnica japonesa de reparar cerâmica quebrada usando laca misturada com ouro. As rachaduras não são escondidas. Elas ficam ali, visíveis, destacadas.
 
-A técnica surgiu no Japão entre os séculos XV e XVI. Há relatos de que ela se desenvolveu quando cerâmicas quebradas, consideradas valiosas demais para serem descartadas, passaram a ser reparadas localmente em vez de substituídas.
+O objeto não volta a ser o que era antes. Ele continua sendo o mesmo, mas agora carrega uma linha nova, uma cicatriz que passa a fazer parte da forma.
 
-No kintsugi, a fratura não é tratada como defeito a ser apagado. Ela passa a fazer parte da forma final do objeto. A peça não retorna ao estado original. Ela se transforma em outra coisa.
+O reparo é lento. A laca precisa de tempo para secar, camada por camada. Não é possível apressar o processo sem comprometer o resultado. O conserto exige pausa, cuidado e repetição.
 
-O processo exige tempo. A laca precisa secar lentamente, camada por camada. Não é um conserto rápido. É um trabalho cuidadoso, que assume a quebra como parte do histórico da peça.
+O que se obtém ao final não é uma ilusão de intacto. É outra coisa. Um objeto que funciona, mas que também mostra por onde passou.
 
-Hoje, o kintsugi costuma ser citado como metáfora, mas originalmente ele é apenas uma técnica prática. Um modo específico de lidar com dano, desgaste e uso contínuo.
+Talvez por isso o kintsugi seja lembrado fora da cerâmica. Ele oferece uma imagem simples para algo que costuma ser difícil de aceitar: nem tudo precisa parecer novo para continuar existindo.
 
-O objeto reparado continua sendo o mesmo, mas não é mais idêntico ao que era antes.
+Há coisas que seguem adiante sem apagar o que as quebrou.
+
+E às vezes é justamente isso que as mantém inteiras.
