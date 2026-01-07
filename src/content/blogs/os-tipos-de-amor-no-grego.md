@@ -3,7 +3,7 @@ title: Os tipos de amor no grego
 pubDate: 2025-12-17T00:00:00.000Z
 category: ideias
 author: antonio maluf
-heroImage: /amorgrego.jpg
+heroImage: /amorgrego.webp
 ---
 
 Para os gregos antigos, o amor não era entendido como um único sentimento. A língua grega possuía diferentes palavras para nomear formas distintas de relação, cada uma associada a comportamentos, vínculos e expectativas específicas.
