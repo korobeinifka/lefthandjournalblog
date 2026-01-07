@@ -3,7 +3,7 @@ title: O infinito como um laço amoroso
 pubDate: 2025-12-18T00:00:00.000Z
 category: ideias
 author: antonio maluf
-heroImage: /infinito.jpg
+heroImage: /infinitoa.jpg
 ---
 
 O símbolo do infinito não surgiu como metáfora romântica. Ele vem da matemática e é conhecido como **lemniscata**. Foi usado para representar algo que não tem começo nem fim definidos, um percurso contínuo.
