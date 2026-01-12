@@ -1,5 +1,5 @@
 ---
-title: 'Nova Zelândia, a ilha dos pássaros'
+title: 'Nova Zelândia, o arquipélago dos pássaros'
 pubDate: 2026-01-12T00:00:00.000Z
 category: cultura
 author: antonio maluf
