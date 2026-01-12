@@ -1,5 +1,5 @@
 ---
-title: '1- Python '
+title: 'Python '
 pubDate: 2026-01-12T00:00:00.000Z
 category: tecnologia
 author: antonio maluf
