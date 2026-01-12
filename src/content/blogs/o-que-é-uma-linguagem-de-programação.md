@@ -1,5 +1,5 @@
 ---
-title: 1- O que é uma linguagem de programação?
+title: O que é uma linguagem de programação?
 pubDate: 2026-01-11T00:00:00.000Z
 category: tecnologia
 author: antonio maluf
