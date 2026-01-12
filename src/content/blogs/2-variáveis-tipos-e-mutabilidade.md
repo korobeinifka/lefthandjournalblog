@@ -1,5 +1,5 @@
 ---
-title: '2- Variáveis, tipos e mutabilidade'
+title: 'Variáveis, tipos e mutabilidade'
 pubDate: 2026-01-12T00:00:00.000Z
 category: tecnologia
 author: antonio maluf
