@@ -1,9 +1,9 @@
 ---
-title: '[0] O que é uma linguagem de programação?'
+title: 1- O que é uma linguagem de programação?
 pubDate: 2026-01-11T00:00:00.000Z
 category: tecnologia
 author: antonio maluf
-heroImage: '/ChatGPT Image 11 de jan. de 2026, 21_38_43.png'
+heroImage: /asdas.png
 ---
 
 Muita gente pensa que programar significa “falar com o computador”, mas na prática é algo um pouco diferente disso.
